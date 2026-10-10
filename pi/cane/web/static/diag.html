@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>盲杖诊断</title>
+<style>
+  :root { --bg:#fff; --fg:#111; --muted:#666; --card:#f4f4f5; --warn:#b45309; --bad:#b91c1c; --ok:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111; --fg:#eee; --muted:#999; --card:#1d1d20; } }
+  body { font: 15px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--fg); margin: 0 auto; padding: 16px; max-width: 900px; }
+  h1 { font-size: 20px; margin: 0 0 8px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border-radius: 8px; padding: 12px; }
+  .card h2 { font-size: 14px; margin: 0 0 6px; color: var(--muted); }
+  .banner { padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; font-weight: 600; display: none; }
+  .test { background: var(--warn); color: #fff; }
+  .fault { background: var(--bad); color: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  td { padding: 2px 4px; border-bottom: 1px solid rgba(127,127,127,.2); }
+  .ok { color: var(--ok); } .bad { color: var(--bad); }
+  code { font-size: 13px; }
+  input, button { font: inherit; padding: 4px 8px; }
+  .note { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>EE3070 盲杖诊断 <span class="note">（只读，组员用）</span></h1>
+<div id="test" class="banner test">测试模式</div>
+<div id="fault" class="banner fault">故障</div>
+<div class="grid">
+  <div class="card"><h2>状态</h2><table id="st"></table></div>
+  <div class="card"><h2>传感器</h2><table id="sens"></table></div>
+  <div class="card"><h2>输出仲裁</h2><table id="arb"></table></div>
+  <div class="card"><h2>导航</h2><table id="nav"></table></div>
+</div>
+<div class="card" style="margin-top:12px"><h2>最近输出</h2><table id="hist"></table></div>
+<div class="card" style="margin-top:12px">
+  <h2>语音目的地（文字代替说话）</h2>
+  <form id="vf"><input id="vt" placeholder="例如：去城大" maxlength="200"> <button>发送</button> <span id="vr" class="note"></span></form>
+  <p class="note">匹配后盲杖读回目的地，仍需在杖上按确认键才出发。</p>
+</div>
+<div class="card" style="margin-top:12px"><h2>日志下载</h2><ul id="logs"></ul></div>
+<p class="note">本页不能解除安全否决、不能静音安全提示，也不显示任何密钥。</p>
+<script>
+const rows = (el, obj) => {
+  el.innerHTML = Object.entries(obj).map(([k, v]) =>
+    `<tr><td>${k}</td><td><code>${v === null ? '—' : (typeof v === 'object' ? JSON.stringify(v) : v)}</code></td></tr>`).join('');
+};
+async function refresh() {
+  try {
+    const s = await (await fetch('/api/status')).json();
+    document.getElementById('test').style.display = s.test_mode ? 'block' : 'none';
+    document.getElementById('fault').style.display = s.state === 'FAULT' ? 'block' : 'none';
+    rows(st, {state: s.state, aligned: s.aligned, language: s.language, sim: s.sim, pico_ok: s.pico_ok, vsys: s.vsys, terrain: s.terrain});
+    rows(sens, Object.assign({}, s.sensors || {}, s.imu || {}, {hazards: s.hazards.join(', ')}));
+    rows(arb, {speaking: s.speaking, queue: s.queue.join(', '), safety_hold: s.safety_hold, orientation_ok: s.orientation_ok});
+    rows(nav, s.nav);
+    hist.innerHTML = s.recent_outputs.slice().reverse().map(e =>
+      `<tr><td>${e.t.toFixed(1)}</td><td>${e.action}</td><td>${e.prompt_id}</td><td>${e.priority}</td></tr>`).join('');
+  } catch (e) { document.getElementById('fault').style.display = 'block'; }
+}
+async function loadLogs() {
+  const l = await (await fetch('/api/logs')).json();
+  logs.innerHTML = l.map(f => `<li><a href="/api/logs/${encodeURIComponent(f.name)}">${f.name}</a> (${f.bytes} B)</li>`).join('');
+}
+vf.onsubmit = async (e) => {
+  e.preventDefault();
+  const r = await fetch('/api/voice/text', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({text: vt.value})});
+  vr.textContent = JSON.stringify(await r.json());
+};
+refresh(); loadLogs(); setInterval(refresh, 1000); setInterval(loadLogs, 15000);
+</script>
+</body>
+</html>

@@ -184,5 +184,9 @@ class OutputArbiter:
         self._audio.play([req.prompt_id, *req.extra_clips], req.text)
         self._log(now, "played", req)
 
+    QUIET_ACTIONS = ("queued", "dropped_cooldown")  # too frequent to be useful in history
+
     def _log(self, now: float, action: str, req: OutputRequest) -> None:
+        if action in self.QUIET_ACTIONS:
+            return
         self.history.append(ArbiterEvent(now, action, req.prompt_id, req.priority.name))

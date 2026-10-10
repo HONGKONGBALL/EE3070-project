@@ -106,3 +106,57 @@ class MotionDetector:
         elif std > self.accel_std_walk or gyro > self.gyro_walk:
             self.moving = True
         return self.moving
+
+
+class ImuRunner:
+    """Samples the MPU6050 in a thread; exposes .moving, .pitch_deg, .window().
+
+    `on_window` is called every `window_s` (used for roughness classification).
+    """
+
+    def __init__(self, sensor, rate_hz: int = 200, window_s: float = 1.0, on_window=None) -> None:
+        import threading
+
+        self.sensor = sensor
+        self.rate_hz = rate_hz
+        self.n = max(16, int(rate_hz * window_s))
+        self.on_window = on_window
+        self.motion = MotionDetector(window=max(20, rate_hz // 2))
+        self._norms: deque[float] = deque(maxlen=self.n)
+        self._lock = threading.Lock()
+        self._stop = threading.Event()
+        self._threading = threading
+        self.moving = False
+        self.pitch_deg: float | None = None
+        self.errors = 0
+
+    def window(self) -> list[float]:
+        with self._lock:
+            return list(self._norms)
+
+    def start(self) -> None:
+        self._threading.Thread(target=self._run, daemon=True, name="imu").start()
+
+    def stop(self) -> None:
+        self._stop.set()
+
+    def _run(self) -> None:
+        period = 1.0 / self.rate_hz
+        count = 0
+        while not self._stop.is_set():
+            try:
+                s = self.sensor.read()
+            except OSError:
+                self.errors += 1
+                time.sleep(0.05)
+                continue
+            self.moving = self.motion.update(s)
+            p = pitch_deg(s)
+            self.pitch_deg = p if self.pitch_deg is None else 0.95 * self.pitch_deg + 0.05 * p
+            with self._lock:
+                self._norms.append(s.accel_norm)
+            count += 1
+            if self.on_window is not None and count >= self.n:
+                count = 0
+                self.on_window()
+            time.sleep(period)

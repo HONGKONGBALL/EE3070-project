@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>盲杖定位</title>
+<style>
+  :root { --bg:#fff; --fg:#111; --muted:#666; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111; --fg:#eee; --muted:#999; } }
+  body { font: 18px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--fg); padding: 16px; margin: 0; }
+  #s { font-size: 22px; font-weight: 600; }
+  .note { color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>盲杖定位共享</h1>
+<p id="s">等待定位授权…</p>
+<p id="d" class="note"></p>
+<p class="note">保持本页在前台、屏幕常亮。手机同时开着热点给盲杖上网。导航语音由盲杖播报，手机不发声。</p>
+<script>
+const token = new URLSearchParams(location.search).get('token') || '';
+let sent = 0, last = 0;
+function post(p) {
+  const now = Date.now();
+  if (now - last < 1000) return;  // at most 1 fix per second
+  last = now;
+  fetch('/api/phone/location', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({lng: p.coords.longitude, lat: p.coords.latitude, accuracy: p.coords.accuracy, token})})
+    .then(r => { s.textContent = r.ok ? '定位已共享' : '被拒绝（口令？）'; if (r.ok) sent++; })
+    .catch(() => { s.textContent = '连不上盲杖'; });
+  d.textContent = `精度 ±${Math.round(p.coords.accuracy)} m，已发送 ${sent} 次`;
+}
+if (!('geolocation' in navigator)) { s.textContent = '浏览器不支持定位'; }
+else navigator.geolocation.watchPosition(post, e => { s.textContent = '定位失败：' + e.message; },
+  {enableHighAccuracy: true, maximumAge: 1000, timeout: 10000});
+let wake = null;
+if ('wakeLock' in navigator) navigator.wakeLock.request('screen').then(w => wake = w).catch(() => {});
+</script>
+</body>
+</html>
