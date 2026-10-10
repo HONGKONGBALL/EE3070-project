@@ -302,8 +302,7 @@ class CaneApp:
     def repeat_last_nav(self) -> None:
         if self.last_nav is not None and self.navigator.active:
             o = self.last_nav
-            self.arbiter._last_played.pop(  # allow an explicit repeat inside the cooldown
-                OutputRequest(o.prompt_id, Priority.NAV, extra_clips=o.extra_clips, text=o.text).key, None)
+            self.arbiter.allow_repeat(OutputRequest(o.prompt_id, Priority.NAV, extra_clips=o.extra_clips, text=o.text))
             self.say(o.prompt_id, extra=o.extra_clips, direction=o.direction, text=o.text)
 
     # ------------------------------------------------------------ voice

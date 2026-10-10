@@ -95,6 +95,12 @@ class OutputArbiter:
         with self._lock:
             return [r.prompt_id for _, r in sorted(self._queue, key=self._sort_key)]
 
+    def allow_repeat(self, req: OutputRequest) -> None:
+        """Let the user explicitly repeat a NAV/INFO prompt inside its cooldown."""
+        if not req.priority.is_safety:
+            with self._lock:
+                self._last_played.pop(req.key, None)
+
     # ----------------------------------------------------------------- submit
     def submit(self, req: OutputRequest) -> bool:
         now = self._clock()
