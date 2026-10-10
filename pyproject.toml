@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cane"
+version = "0.1.0"
+description = "EE3070 smart white cane - Raspberry Pi 5 side"
+requires-python = ">=3.11"
+dependencies = ["pyserial>=3.5"]
+
+[project.optional-dependencies]
+web = ["fastapi>=0.110", "uvicorn>=0.29"]
+pi = ["smbus2>=0.4", "numpy>=1.24"]
+vision = ["numpy>=1.24", "opencv-python-headless>=4.8"]
+asr = ["vosk>=0.3.45"]
+test = ["pytest>=8", "httpx>=0.27", "numpy>=1.24"]
+
+[tool.setuptools.packages.find]
+where = ["pi"]
+
+[tool.setuptools.package-data]
+"cane.web" = ["static/*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["pi", "pico", "tools"]
+testpaths = ["tests"]

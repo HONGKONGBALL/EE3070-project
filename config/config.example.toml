@@ -1,0 +1,97 @@
+# EE3070 smart cane - example config. Copy to config/config.toml and edit.
+# Secrets are NEVER stored here. Use environment variables:
+#   AMAP_KEY            高德 Web 服务 Key
+#   CANE_PHONE_TOKEN    手机定位页口令
+#   GOOGLE_APPLICATION_CREDENTIALS  (only for tools/gen_prompts.py)
+
+[general]
+language = "cmn"            # cmn | yue | en
+test_mode = false           # shown on the diagnostics page
+log_dir = "logs"
+
+[pico]
+port = "/dev/ttyACM0"
+baud = 115200
+heartbeat_s = 0.5           # Pi -> Pico heartbeat period
+timeout_s = 1.0             # no sensor frame for this long -> FAULT
+
+[audio]
+dir = "audio"
+device = "plughw:1,0"       # USB sound card, check `aplay -l`
+player = "aplay"
+
+[arbiter]
+safety_hold_s = 2.0         # no NAV prompts this long after a SAFETY prompt
+repeat_cooldown_s = 3.0     # same prompt not repeated within this window
+
+[hazard]
+walking_speed_mps = 1.0
+sensor_latency_s = 0.25
+comprehension_s = 0.5       # 附录 B：听懂语音 0.5 s
+margin_m = 0.3
+stop_distance_m = 0.6       # front obstacle closer than this -> CRITICAL "stop"
+head_warn_m = 1.2           # upward sonar
+max_valid_m = 4.0
+
+[tfmini]
+role = "ground"             # ground: angled down at the floor; front: horizontal
+mount_height_m = 0.85       # height of TFmini-S above ground along the cane
+tilt_down_deg = 35.0        # angle below horizontal when cane is held normally
+drop_tolerance_m = 0.12     # longer than expected by this -> drop / step down
+rise_tolerance_m = 0.12     # shorter than expected by this -> step up / curb
+min_strength = 100          # TFmini-S signal strength below this = invalid
+
+[imu]
+enabled = true
+bus = 1
+address = 0x68
+rate_hz = 200
+window_s = 1.0
+
+[vision]
+enabled = true
+left_device = "/dev/video0"
+right_device = "/dev/video2"
+calibration = "calib/stereo.npz"
+odometry = true
+odometry_max_yaw_deg = 15.0  # turned more than this since alignment -> orientation uncertain
+
+[nav]
+enabled = true
+coord_mode = "amap_api"     # amap_api | offline_gcj02 | none   (HK needs testing)
+city = "香港"
+announce_m = [50, 20, 8]    # distances before a maneuver at which to announce
+arrive_m = 8
+offroute_m = 25
+read_route_with_tts = false # live TTS for road names; safety prompts never use it
+
+[[nav.destinations]]   # 坐标为大致 WGS84 值，演示前实地核对
+id = "dest1"
+name = "香港城市大学"
+aliases = ["城大", "城市大学", "city university", "cityu", "城市大學"]
+lng = 114.1733
+lat = 22.3364
+
+[[nav.destinations]]   # 坐标为大致 WGS84 值，演示前实地核对
+id = "dest2"
+name = "九龙塘站"
+aliases = ["九龙塘", "九龍塘", "kowloon tong"]
+lng = 114.1763
+lat = 22.3369
+
+[voice]
+enabled = true
+device = "plughw:1,0"
+record_s = 4.0
+backend = "keyword"         # keyword (text in -> preset match) | vosk
+vosk_model_dir = "models"   # models/vosk-cmn, models/vosk-en
+
+[web]
+enabled = true
+diag_host = "127.0.0.1"
+diag_port = 8080
+phone_host = "0.0.0.0"
+phone_port = 8443
+certfile = "certs/cane.crt"
+keyfile = "certs/cane.key"
+diag_allow = ["127.0.0.1/32", "::1/128"]   # add lab subnet if needed

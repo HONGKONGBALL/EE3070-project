@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+config/config.toml
+config/*.local.toml
+*.env
+certs/
+logs/
+audio/*/
+!audio/README.md
+models/
+calib/*.npz
