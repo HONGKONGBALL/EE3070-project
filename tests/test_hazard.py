@@ -16,7 +16,7 @@ def ha():
     return HazardAssessor(HazardCfg(), TfminiCfg(), confirm_frames=2)
 
 
-GROUND = expected_ground_range(0.85, 35.0)
+GROUND = expected_ground_range(0.85, TfminiCfg().tilt_down_deg)
 
 
 def kinds(hs):
@@ -24,7 +24,7 @@ def kinds(hs):
 
 
 def test_expected_ground_range():
-    assert GROUND == pytest.approx(0.85 / math.sin(math.radians(35)))
+    assert expected_ground_range(0.85, 35) == pytest.approx(0.85 / math.sin(math.radians(35)))
 
 
 def test_stop_is_immediate(ha):

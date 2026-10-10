@@ -187,7 +187,7 @@ class SimPicoLink(PicoLinkBase):
                 self._front = self._rng.uniform(2.5, 4.0)
             up = self._rng.choice([-1, -1, -1, 110])
             ms = int((time.monotonic() - start) * 1000)
-            line = encode({"t": "d", "f": int(self._front * 100), "u": up, "g": 148, "gs": 800, "ms": ms})
+            line = encode({"t": "d", "f": int(self._front * 100), "u": up, "g": 201, "gs": 800, "ms": ms})
             msg = parse_line(line)
             self.last_rx = time.monotonic()
             self.inbox.put(msg)

@@ -28,6 +28,12 @@ class Hazard:
     distance_m: float | None
 
 
+def ground_spot_ahead_m(mount_height_m: float, tilt_down_deg: float) -> float:
+    """Horizontal distance from the ranger to where its beam hits flat ground."""
+    t = math.tan(math.radians(tilt_down_deg))
+    return math.inf if t <= 0.05 else mount_height_m / t
+
+
 def expected_ground_range(mount_height_m: float, tilt_down_deg: float) -> float:
     """Slant range from a down-tilted ranger to flat ground."""
     s = math.sin(math.radians(tilt_down_deg))

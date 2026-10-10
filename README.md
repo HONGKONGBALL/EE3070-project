@@ -149,7 +149,9 @@ USB CDC 串口，每行一条 JSON：
 
 ### 3.4 提前量（附录 B）
 
-所需报警距离 = 步速 × (传感延迟 + 最长那条语言提示的时长 + 听懂 0.5 s) + 余量。三种语言同一句长短不同，按**最长**的算；超过上限就改短句子。`tools/check_lead_time.py` 会读生成好的音频时长逐句检查。
+所需报警距离 = 步速 × (传感延迟 + 最长那条语言提示的时长 + 听懂 0.5 s) + 余量。三种语言同一句长短不同，按**最长**的算；超过上限就改短句子。`tools/check_lead_time.py` 会读生成好的音频时长逐句检查，落差/台阶的可见距离按 TFmini-S 的安装高度和下倾角算。
+
+已发现的一条：TFmini-S 装在约 0.85 m 高、下倾 35° 时，光斑只在前方约 1.2 m；1 m/s、0.6 s 的提示就需要约 1.65 m，来不及。所以默认改成下倾 25°（光斑约 1.8 m 前，斜距约 2.0 m），振动和语音同时发出。实际角度要在杖上实测，掠射角变小后地面回波强度会下降，要看 TFmini-S 的信号强度是否还够。
 
 ---
 
@@ -176,7 +178,7 @@ USB CDC 串口，每行一条 JSON：
 │   ├── imu.py                  # MPU6050 驱动
 │   ├── pico_link.py            # Pico 串口 + 模拟 Pico
 │   ├── logbook.py              # JSON 行日志
-│   ├── vision/                 # 双目深度、视觉里程计
+│   ├── vision/                 # 双目深度、视觉里程计、相机线程
 │   ├── nav/                    # 高德接口、坐标、导航器（含过街交接）
 │   ├── voice/                  # 录音、识别、预设目的地匹配
 │   └── web/                    # FastAPI 诊断网页 + 手机定位页
@@ -191,6 +193,7 @@ USB CDC 串口，每行一条 JSON：
 ├── tools/
 │   ├── gen_prompts.py          # 预生成三语提示音
 │   ├── check_lead_time.py      # 按最长语言检查提前量
+│   ├── calibrate_stereo.py     # 棋盘格双目标定 -> calib/stereo.npz
 │   └── make_cert.sh            # 给手机定位页生成自签证书
 ├── audio/                      # 生成的提示音（不入库）
 ├── deploy/cane.service         # systemd 服务
@@ -227,8 +230,12 @@ export CANE_PHONE_TOKEN=随便一串长随机字符           # 手机定位页�
 
 aplay -l                                 # 找 USB 声卡编号，填到 audio.device
 tools/make_cert.sh                       # 手机定位页要 HTTPS
+python tools/calibrate_stereo.py capture   # 双目标定（摄像头装好后做一次）
+python tools/calibrate_stereo.py solve
 python -m cane --config config/config.toml
 ```
+
+IMU、摄像头没接或没标定时，程序会记一条警告并在没有这部分功能的情况下继续跑（避障不受影响）。
 
 开机自启：`sudo cp deploy/cane.service /etc/systemd/system/ && sudo systemctl enable --now cane`（先改里面的路径和环境文件）。
 
@@ -252,7 +259,16 @@ mpremote cp pico/*.py :                  # 拷到 Pico 根目录，重启后自�
 
 引脚表在 `pico/config.py`。接线前看第 2 节「下单 / 装机前要核对」。
 
-### 5.5 手机定位
+### 5.5 按键
+
+| 键 | 短按 | 长按 |
+|---|---|---|
+| ok | 停步后：确认已对正（之后才发左右指令）；过街时：我已自行判断，继续；有待确认目的地时：出发 | — |
+| dest | 说目的地（录音 4 s） | 结束导航 |
+| repeat | 重复上一条导航提示 | 切换语言（普通话 → 粤语 → 英语） |
+| mode | 开关 COB 灯 | 开关测试模式 |
+
+### 5.6 手机定位
 
 手机开热点，Pi 连上。手机浏览器打开 `https://<Pi 的 IP>:8443/phone?token=<CANE_PHONE_TOKEN>`，接受自签证书，允许定位。诊断网页默认只在 Pi 本机可看，要在实验网络里看需在配置 `web.diag_allow` 里加网段。
 

@@ -1,4 +1,5 @@
 import json
+import math
 from pathlib import Path
 
 import pytest
@@ -12,7 +13,7 @@ from cane.state_machine import State
 
 from test_nav import A, B, ROUTE_JSON, lerp
 
-GROUND = 1.482
+GROUND = 0.85 / math.sin(math.radians(25))
 EXAMPLE = Path(__file__).resolve().parents[1] / "config" / "config.example.toml"
 
 

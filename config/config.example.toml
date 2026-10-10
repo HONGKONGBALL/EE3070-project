@@ -36,7 +36,7 @@ max_valid_m = 4.0
 [tfmini]
 role = "ground"             # ground: angled down at the floor; front: horizontal
 mount_height_m = 0.85       # height of TFmini-S above ground along the cane
-tilt_down_deg = 35.0        # angle below horizontal when cane is held normally
+tilt_down_deg = 25.0        # below horizontal; 25 deg puts the spot ~1.8 m ahead (35 deg = 1.2 m, too late at 1 m/s)
 drop_tolerance_m = 0.12     # longer than expected by this -> drop / step down
 rise_tolerance_m = 0.12     # shorter than expected by this -> step up / curb
 min_strength = 100          # TFmini-S signal strength below this = invalid

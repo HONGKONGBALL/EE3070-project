@@ -1,0 +1,19 @@
+# sudo cp deploy/cane.service /etc/systemd/system/ && sudo systemctl enable --now cane
+# Edit User/WorkingDirectory. Secrets go in /etc/cane.env (chmod 600), e.g.
+#   AMAP_KEY=...
+#   CANE_PHONE_TOKEN=...
+[Unit]
+Description=EE3070 smart cane
+After=network-online.target sound.target
+Wants=network-online.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/EE3070-project
+EnvironmentFile=-/etc/cane.env
+ExecStart=/home/pi/EE3070-project/.venv/bin/python -m cane --config config/config.toml
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

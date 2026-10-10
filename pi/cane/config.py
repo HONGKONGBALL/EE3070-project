@@ -58,7 +58,7 @@ class HazardCfg:
 class TfminiCfg:
     role: str = "ground"
     mount_height_m: float = 0.85
-    tilt_down_deg: float = 35.0
+    tilt_down_deg: float = 25.0
     drop_tolerance_m: float = 0.12
     rise_tolerance_m: float = 0.12
     min_strength: int = 100
