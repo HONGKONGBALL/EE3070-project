@@ -1,0 +1,16 @@
+[Unit]
+Description=Smart cane camera sample
+Wants=pipewire.service wireplumber.service
+After=pipewire.service wireplumber.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/EE3070-project
+Environment=PYTHONUNBUFFERED=1
+ExecStart=%h/EE3070-project/.venv/bin/python -m cane.vision.demo --config config/camera.example.toml
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=10
+
+[Install]
+WantedBy=default.target

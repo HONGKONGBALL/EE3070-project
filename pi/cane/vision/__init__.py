@@ -1,4 +1,6 @@
-"""Two unsynchronised USB cameras.
+"""Camera perception: independent single-camera demo and legacy stereo modules.
+
+- demo.py: Logitech + pretrained YOLO11n + live boxes + optional USB headset.
 
 - stereo.py: depth only while the user is stationary and facing ahead
   (frames are not synchronised, so motion would corrupt the disparity).

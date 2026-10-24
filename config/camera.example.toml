@@ -1,0 +1,28 @@
+# Independent Pi camera sample. Uses no Pico, IMU, navigation or stereo calibration.
+[server]
+host = "127.0.0.1"
+port = 8000
+
+[camera]
+device = "auto"
+width = 640
+height = 480
+fps = 15
+
+[model]
+directory = "models/yolo11n"
+size = 416
+confidence = 0.45
+threads = 1
+# Keep the latest frame; cap inference duty while verifying the current power setup.
+max_fps = 8
+
+[warning]
+roi = [[0.25, 0.35], [0.75, 0.35], [0.95, 1.0], [0.05, 1.0]]
+cooldown_s = 8.0
+
+[audio]
+enabled = true
+directory = "audio/en"
+# Empty means the PipeWire default output. Verify HyperX is selected on this Pi.
+target = ""
