@@ -56,6 +56,8 @@ class WarningPolicy:
                     self.announced[label] = False
                 hits.append(now)
                 self.last_seen[label] = now
+            else:
+                hits.clear()
         for label, detection in present.items():
             if (len(self.hits[label]) >= 3 and not self.announced[label]
                     and now - self.last_emitted[label] >= self.cooldown

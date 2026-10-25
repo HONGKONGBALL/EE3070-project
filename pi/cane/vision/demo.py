@@ -115,13 +115,13 @@ class Demo:
             sample = self.camera.next_frame(previous)
             if sample is None:
                 self.policy.reset()
-                self.audio.clear_pending()
                 message = self.camera.status()["error"] or "No fresh camera frame"
                 changed = message != self.error
                 with self.condition:
                     self.jpeg, self.detections = None, []
                     self.error = message
                 if changed:
+                    self.audio.clear_pending()
                     self.log("camera_error", message=message)
                     self.audio.submit({"phrase_id": "camera_unavailable", "ttl_ms": 1500})
                 continue
@@ -166,11 +166,11 @@ class Demo:
                 self.stopped.wait(max(0, self.frame_period - (time.monotonic() - started)))
             except Exception as exc:
                 self.policy.reset()
-                self.audio.clear_pending()
                 changed = str(exc) != self.error
                 with self.condition:
                     self.jpeg, self.detections, self.error = None, [], str(exc)
                 if changed:
+                    self.audio.clear_pending()
                     self.log("error", message=str(exc))
                     self.audio.submit({"phrase_id": "visual_unavailable", "ttl_ms": 1500})
                 self.stopped.wait(1)
