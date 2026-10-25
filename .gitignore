@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 .venv/
+.venv-*/
 *.egg-info/
 .pytest_cache/
 config/config.toml
@@ -12,3 +13,4 @@ audio/*/
 !audio/README.md
 models/
 calib/*.npz
+captures/
