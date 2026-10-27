@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#eef3f6">
+  <link rel="icon" href="data:,">
+  <title>激光与超声波测距 · EE3070</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main>
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">)))</span><span>EE3070 <span class="brand-divider">/</span> SENSOR LAB</span></div>
+    <span class="device">Pico H · TFmini-S + HC-SR04 × 2</span>
+  </header>
+  <div class="heading"><div><p class="eyebrow">LASER + ULTRASONIC MONITOR</p><h1>激光与超声波测距</h1><p class="intro">一个连接，同时观察 TFmini 与两路超声波。</p></div><span id="connection" class="connection" role="status">未连接设备</span></div>
+  <section class="toolbar" aria-label="设备连接">
+    <div class="connection-controls"><button id="connect" class="primary">连接 Pico</button><button id="disconnect" disabled>断开连接</button><span class="toolbar-divider"></span><button id="demo">查看演示</button></div>
+    <label class="mode-label">连接方式 <select id="mode"><option value="upload">临时运行测距程序</option><option value="listen">只接收现有程序的数据</option></select></label>
+  </section>
+  <div id="notice" class="notice" role="status" aria-live="polite">连接后选择 Pico / USB Serial。请先关闭 TFmini 网页、Thonny 等占用串口的软件。</div>
+  <section class="sensors" aria-label="三路实时距离">
+    <article id="sensor-tf" class="sensor laser" data-state="idle">
+      <div class="sensor-heading"><div><p class="eyebrow">TFmini-S <span>· LASER</span></p><h2>激光距离</h2></div><span class="direction-icon" aria-hidden="true">⊙</span></div>
+      <div class="reading"><span id="distance-tf">—</span><small>cm</small></div>
+      <div class="range-track"><span id="range-tf"></span></div><div class="range-labels"><span>10 cm</span><span>1200 cm</span></div>
+      <div class="sensor-status"><span id="status-tf">等待测距</span><span id="age-tf" class="age">尚无数据</span></div>
+      <div class="tf-details"><span>信号强度 <b id="strength">—</b></span><span>原始值 <b id="raw-tf">—</b></span><label>原始单位 <select id="tf-unit"><option value="cm">cm</option><option value="mm">mm</option></select></label></div>
+      <div class="sensor-footer"><span>UART1 · TX GP8 / RX GP9</span><span>解析间隔 <b id="interval-tf">—</b></span></div>
+    </article>
+    <article id="sensor-0" class="sensor front" data-state="idle">
+      <div class="sensor-heading"><div><p class="eyebrow">HC-SR04 <span>· FRONT</span></p><h2>前方超声波</h2></div><span class="direction-icon" aria-hidden="true">→</span></div>
+      <div class="reading"><span id="distance-0">—</span><small>cm</small></div>
+      <div class="range-track"><span id="range-0"></span></div><div class="range-labels"><span>2 cm</span><span>400 cm</span></div>
+      <div class="sensor-status"><span id="status-0">等待测距</span><span id="age-0" class="age">尚无数据</span></div>
+      <div class="us-details">Pico 采集时间 <b id="tick-0">—</b><span> ms</span></div>
+      <div class="sensor-footer"><span id="pins-0">TRIG GP2 · ECHO GP3</span><span>回波 <b id="pulse-0">—</b> µs</span></div>
+    </article>
+    <article id="sensor-1" class="sensor upper" data-state="idle">
+      <div class="sensor-heading"><div><p class="eyebrow">HC-SR04 <span>· UPPER</span></p><h2>上方超声波</h2></div><span class="direction-icon" aria-hidden="true">↑</span></div>
+      <div class="reading"><span id="distance-1">—</span><small>cm</small></div>
+      <div class="range-track"><span id="range-1"></span></div><div class="range-labels"><span>2 cm</span><span>400 cm</span></div>
+      <div class="sensor-status"><span id="status-1">等待测距</span><span id="age-1" class="age">尚无数据</span></div>
+      <div class="us-details">Pico 采集时间 <b id="tick-1">—</b><span> ms</span></div>
+      <div class="sensor-footer"><span id="pins-1">TRIG GP4 · ECHO GP5</span><span>回波 <b id="pulse-1">—</b> µs</span></div>
+    </article>
+  </section>
+  <section class="trend" aria-label="距离历史">
+    <div class="section-heading"><div><h2>距离变化</h2><span class="section-description">最近 30 秒 · 勾选要显示的通道</span></div><div class="legend"><label class="laser-key"><input id="show-tf" type="checkbox" checked>激光</label><label class="front-key"><input id="show-0" type="checkbox" checked>前方</label><label class="upper-key"><input id="show-1" type="checkbox" checked>上方</label></div></div>
+    <canvas id="chart" role="img" aria-label="TFmini、前方与上方超声波的最近30秒曲线"></canvas>
+    <div class="session"><span>激光 <b id="count-tf">0</b> 帧 · <b id="rate-tf">—</b></span><span>超声波 <b id="count-us">0</b> 组 · <b id="rate-us">—</b></span><span>最近接收 <b id="updated">—</b></span><div class="session-actions"><button id="clear">清空记录</button><button id="export" disabled>导出 CSV ↗</button></div></div>
+    <p class="retention">无效读数和断流处留空。CSV 保留最近 10,000 条记录；三路按各自采集时刻记录。</p>
+  </section>
+  <details class="help"><summary>接线与使用说明</summary><div class="help-body"><p>TFmini-S：白色 RX 接 GP8，绿色 TX 接 GP9，UART1 / 115200；红线接合适的 5V，黑线接地。前方超声波 TRIG GP2 / ECHO GP3，上方 TRIG GP4 / ECHO GP5。TRIG 按图经 SN74AHCT125N 升为 5V；Echo 经 2.2kΩ / 3.3kΩ 分压后进入 Pico，不能将 5V Echo 直接接到 GPIO。全部共地。</p><p>“临时运行测距程序”会暂停 Pico 当前程序，在 RAM 中读取两种测距模块，不写 main.py。只需本页连接一次；使用前断开旧 TFmini、超声波网页或 Thonny 的串口。“只接收”不发送命令，要求现有程序输出 TF_DATA / US_DATA 协议。</p><p>超声波依次触发，间隔至少 80 ms；激光帧在间隙读取。TFmini 时间及解析间隔是 Pico 处理串口帧的时间，超声波采集期间可能积压后集中解析，不能视为 TFmini 的真实采样间隔。三路并非同时测量。</p><p>TFmini 原始单位默认 cm；若传感器已经配置为 mm，请手选 mm。该选项只影响激光距离；改变单位会清空激光曲线，CSV 每条保留当时的单位。超声波按 343 m/s 换算，未做温度补偿。</p><p><a href="distance_pico_stream.py" download>下载合并 Pico 读取程序</a> · <a href="README.md" target="_blank" rel="noopener">完整说明</a></p></div></details>
+  <details class="help"><summary>串口诊断</summary><pre id="log">尚无串口数据</pre></details>
+  <footer>EE3070 / 激光 + 超声波 <span>一个 Pico · 一个连接 · 数据仅保存在本机</span></footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+[
+  {
+    "slug": "a-precision-lab",
+    "checks": {
+      "baselineValues": true,
+      "baselineUnits": true,
+      "demoLabeled": true,
+      "asynchronousDisclosure": true,
+      "thirtySecondPlot": true,
+      "actionFeedback": true,
+      "channelHidden": true,
+      "channelRestored": true,
+      "unitDoesNotAffectFront": true,
+      "mmRestored": true,
+      "diagnosticsInitiallyCollapsed": true,
+      "diagnosticsExpand": true,
+      "diagnosticsContainRecords": true,
+      "diagnosticsCollapse": true,
+      "noMobileOverflow": true,
+      "mobileTouchTargets44": true,
+      "noHardwareAccess": true,
+      "noExternalRequests": true,
+      "noPageErrors": true
+    },
+    "feedback": [
+      {
+        "selector": "[data-feedback].primary",
+        "text": "这是设计预览，连接操作仅展示外观。"
+      },
+      {
+        "selector": "[data-feedback]:not(.primary)",
+        "text": "设计预览：已展示断开控制，不会访问串口。"
+      },
+      {
+        "selector": "#demo-toggle",
+        "text": "当前显示演示数据，未连接传感器。"
+      },
+      {
+        "selector": "#export-button",
+        "text": "设计预览：CSV 导出控制。"
+      }
+    ],
+    "mobile": {
+      "overflow": false,
+      "controls": [
+        {
+          "text": "连接 Pico",
+          "w": 156,
+          "h": 44
+        },
+        {
+          "text": "断开连接",
+          "w": 156,
+          "h": 44
+        },
+        {
+          "text": "演示数据",
+          "w": 156,
+          "h": 44
+        },
+        {
+          "text": "导出 CSV ↗",
+          "w": 156,
+          "h": 44
+        },
+        {
+          "text": "TFmini",
+          "w": 56.765625,
+          "h": 44
+        },
+        {
+          "text": "前方",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "上方",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "cm",
+          "w": 50,
+          "h": 44
+        },
+        {
+          "text": "mm",
+          "w": 50,
+          "h": 44
+        },
+        {
+          "text": "串口诊断Pico USB / TF_DATA + US_DATA",
+          "w": 348,
+          "h": 54
+        }
+      ],
+      "undersized": [],
+      "table": null
+    },
+    "pageErrors": [],
+    "network": [
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/index.html",
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/assets/InstrumentSans-Bold.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/assets/InstrumentSans-Regular.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/assets/IBMPlexMono-Regular.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/assets/NotoSansSC-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/index.html",
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/assets/NotoSansSC-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/assets/InstrumentSans-Regular.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/assets/InstrumentSans-Bold.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/a-precision-lab/assets/IBMPlexMono-Regular.ttf"
+    ]
+  },
+  {
+    "slug": "b-control-room",
+    "checks": {
+      "baselineValues": true,
+      "baselineUnits": true,
+      "demoLabeled": true,
+      "asynchronousDisclosure": true,
+      "thirtySecondPlot": true,
+      "actionFeedback": true,
+      "channelHidden": true,
+      "channelRestored": true,
+      "unitDoesNotAffectFront": true,
+      "mmRestored": true,
+      "diagnosticsInitiallyCollapsed": true,
+      "diagnosticsExpand": true,
+      "diagnosticsContainRecords": true,
+      "diagnosticsCollapse": true,
+      "modeFeedback": true,
+      "csvDialogOpens": true,
+      "csvDialogCloses": true,
+      "noMobileOverflow": true,
+      "mobileTouchTargets44": true,
+      "noHardwareAccess": true,
+      "noExternalRequests": true,
+      "noPageErrors": true
+    },
+    "feedback": [
+      {
+        "selector": "#connect",
+        "text": "连接操作预览 · 此设计稿不访问 USB 设备。"
+      },
+      {
+        "selector": "#disconnect",
+        "text": "断开操作预览 · 当前显示固定演示数据。"
+      },
+      {
+        "selector": "#demo",
+        "text": "正在展示演示数据 · 三路均为固定界面预览。"
+      },
+      {
+        "selector": "#clear",
+        "text": "清空记录操作预览 · 演示记录保持显示。"
+      }
+    ],
+    "mobile": {
+      "overflow": false,
+      "controls": [
+        {
+          "text": "连接 Pico ↗",
+          "w": 112,
+          "h": 44
+        },
+        {
+          "text": "断开连接 ×",
+          "w": 112,
+          "h": 44
+        },
+        {
+          "text": "演示中 Ⅱ",
+          "w": 112,
+          "h": 44
+        },
+        {
+          "text": "激光",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "前方",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "上方",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "cm",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "mm",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "清空记录",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "导出 CSV ↗",
+          "w": 71.40625,
+          "h": 44
+        },
+        {
+          "text": "›串口诊断USB / 115200 / 8N1",
+          "w": 350,
+          "h": 48
+        }
+      ],
+      "undersized": [],
+      "table": {
+        "clientWidth": 348,
+        "scrollWidth": 348
+      }
+    },
+    "pageErrors": [],
+    "network": [
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/index.html",
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/assets/NotoSansSC-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/assets/SpaceGrotesk-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/fonts/IBMPlexMono-Regular.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/fonts/IBMPlexMono-Bold.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/index.html",
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/assets/SpaceGrotesk-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/assets/NotoSansSC-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/fonts/IBMPlexMono-Regular.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/b-control-room/fonts/IBMPlexMono-Bold.ttf"
+    ]
+  },
+  {
+    "slug": "c-spatial-compass",
+    "checks": {
+      "baselineValues": true,
+      "baselineUnits": true,
+      "demoLabeled": true,
+      "asynchronousDisclosure": true,
+      "thirtySecondPlot": true,
+      "actionFeedback": true,
+      "channelHidden": true,
+      "channelRestored": true,
+      "unitDoesNotAffectFront": true,
+      "mmRestored": true,
+      "diagnosticsInitiallyCollapsed": true,
+      "diagnosticsExpand": true,
+      "diagnosticsContainRecords": true,
+      "diagnosticsCollapse": true,
+      "noMobileOverflow": true,
+      "mobileTouchTargets44": true,
+      "noHardwareAccess": true,
+      "noExternalRequests": true,
+      "noPageErrors": true
+    },
+    "feedback": [
+      {
+        "selector": "[data-preview=\"connect\"]",
+        "text": "连接操作预览：只模拟按钮反馈，未打开 USB 串口。"
+      },
+      {
+        "selector": "[data-preview=\"disconnect\"]",
+        "text": "断开操作预览：当前是演示连接，没有实际串口可释放。"
+      },
+      {
+        "selector": "[data-preview=\"demo\"]",
+        "text": "演示数据：128.4 cm / 46.2 cm / 上方超时，三路独立标记。"
+      },
+      {
+        "selector": "[data-preview=\"csv\"]",
+        "text": "CSV 操作预览：TF / US 分行记录，各自保留时间；本预览不导出文件。"
+      }
+    ],
+    "mobile": {
+      "overflow": false,
+      "controls": [
+        {
+          "text": "连接 Pico",
+          "w": 98.828125,
+          "h": 44
+        },
+        {
+          "text": "断开",
+          "w": 82.375,
+          "h": 44
+        },
+        {
+          "text": "演示",
+          "w": 65.890625,
+          "h": 44
+        },
+        {
+          "text": "CSV ↗",
+          "w": 65.90625,
+          "h": 44
+        },
+        {
+          "text": "cm",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "mm",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "激光",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "前方",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "上方",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "text": "串口诊断演示记录 · 仅界面预览",
+          "w": 348,
+          "h": 48
+        }
+      ],
+      "undersized": [],
+      "table": null
+    },
+    "pageErrors": [],
+    "network": [
+      "http://127.0.0.1:8289/opendesign/mockups/c-spatial-compass/index.html",
+      "http://127.0.0.1:8289/opendesign/mockups/c-spatial-compass/assets/Sora-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/c-spatial-compass/assets/IBMPlexMono-Regular.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/c-spatial-compass/assets/NotoSansSC-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/c-spatial-compass/index.html",
+      "http://127.0.0.1:8289/opendesign/mockups/c-spatial-compass/assets/Sora-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/c-spatial-compass/assets/NotoSansSC-Variable.ttf",
+      "http://127.0.0.1:8289/opendesign/mockups/c-spatial-compass/assets/IBMPlexMono-Regular.ttf"
+    ]
+  }
+]

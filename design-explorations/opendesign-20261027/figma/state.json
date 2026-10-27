@@ -1,0 +1,143 @@
+{
+  "fileKey": "gRakiEjVhFartJGVOWtVsU",
+  "fileUrl": "https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU",
+  "pages": {
+    "A": "0:1",
+    "B": "3:2",
+    "C": "3:3"
+  },
+  "frames": {
+    "A": [
+      {
+        "id": "4:101",
+        "name": "A · Precision Lab 精密仪器 / Desktop",
+        "x": 80,
+        "y": 80,
+        "width": 1440,
+        "height": 1002,
+        "counts": {
+          "FRAME": 28,
+          "RECTANGLE": 41,
+          "ELLIPSE": 1,
+          "GROUP": 9,
+          "VECTOR": 21,
+          "TEXT": 84,
+          "INSTANCE": 6
+        },
+        "capturedElements": 117,
+        "nativeTextCount": 84,
+        "buttonInstances": 6,
+        "imageFilledNodeIds": []
+      },
+      {
+        "id": "4:299",
+        "name": "A · Precision Lab 精密仪器 / Mobile",
+        "x": 1600,
+        "y": 80,
+        "width": 390,
+        "height": 1724,
+        "counts": {
+          "FRAME": 28,
+          "RECTANGLE": 38,
+          "ELLIPSE": 1,
+          "GROUP": 8,
+          "VECTOR": 21,
+          "TEXT": 73,
+          "INSTANCE": 6
+        },
+        "capturedElements": 117,
+        "nativeTextCount": 73,
+        "buttonInstances": 6,
+        "imageFilledNodeIds": []
+      }
+    ],
+    "B": [
+      {
+        "id": "4:1162",
+        "name": "B · Control Room 测量控制台 / Desktop",
+        "x": 80,
+        "y": 80,
+        "width": 1440,
+        "height": 1005,
+        "counts": {
+          "FRAME": 23,
+          "RECTANGLE": 71,
+          "ELLIPSE": 9,
+          "GROUP": 8,
+          "VECTOR": 22,
+          "TEXT": 131,
+          "INSTANCE": 8
+        },
+        "capturedElements": 196,
+        "nativeTextCount": 131,
+        "buttonInstances": 8,
+        "imageFilledNodeIds": []
+      },
+      {
+        "id": "4:1446",
+        "name": "B · Control Room 测量控制台 / Mobile",
+        "x": 1600,
+        "y": 80,
+        "width": 390,
+        "height": 1511,
+        "counts": {
+          "FRAME": 23,
+          "RECTANGLE": 57,
+          "ELLIPSE": 5,
+          "GROUP": 6,
+          "VECTOR": 22,
+          "TEXT": 89,
+          "INSTANCE": 7
+        },
+        "capturedElements": 152,
+        "nativeTextCount": 89,
+        "buttonInstances": 7,
+        "imageFilledNodeIds": []
+      }
+    ],
+    "C": [
+      {
+        "id": "4:650",
+        "name": "C · Spatial Compass 方向可视化 / Desktop",
+        "x": 80,
+        "y": 80,
+        "width": 1440,
+        "height": 1002,
+        "counts": {
+          "FRAME": 33,
+          "RECTANGLE": 40,
+          "ELLIPSE": 12,
+          "GROUP": 8,
+          "VECTOR": 13,
+          "TEXT": 84,
+          "INSTANCE": 6
+        },
+        "capturedElements": 144,
+        "nativeTextCount": 84,
+        "buttonInstances": 6,
+        "imageFilledNodeIds": []
+      },
+      {
+        "id": "4:856",
+        "name": "C · Spatial Compass 方向可视化 / Mobile",
+        "x": 1600,
+        "y": 80,
+        "width": 390,
+        "height": 1497,
+        "counts": {
+          "FRAME": 33,
+          "RECTANGLE": 34,
+          "ELLIPSE": 11,
+          "GROUP": 8,
+          "VECTOR": 13,
+          "TEXT": 79,
+          "INSTANCE": 6
+        },
+        "capturedElements": 132,
+        "nativeTextCount": 79,
+        "buttonInstances": 6,
+        "imageFilledNodeIds": []
+      }
+    ]
+  }
+}
