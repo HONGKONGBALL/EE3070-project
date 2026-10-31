@@ -2,6 +2,7 @@
 
 import hashlib
 from pathlib import Path
+import time
 
 import cv2
 import numpy as np
@@ -52,12 +53,14 @@ class PuddleDetector:
         left,top=np.rint(points.min(axis=0)).astype(int)
         right,bottom=np.rint(points.max(axis=0)).astype(int)
         raw=self.boxes.predict(image[top:bottom,left:right])['detections']
+        candidates_at=time.monotonic()
         for detection in raw:
             detection['bbox']=[float(v)+(left if i%2==0 else top) for i,v in enumerate(detection['bbox'])]
             detection['path_relevant']=bool(ground_overlaps_region(
                 [v/(width if i%2==0 else height) for i,v in enumerate(detection['bbox'])],self.ground_roi))
         eligible=[d for d in raw if d['path_relevant']]
-        if not eligible:return {'detections':[],'candidate_detections':raw}
+        if not eligible:return {'detections':[],'candidate_detections':raw,'candidates_observed_at':candidates_at,
+                                'verification_completed_at':time.monotonic()}
         pixels=context_pixels(image)
         embedding=self.visual.run(['image_embeddings'],{'pixel_values':pixels})[0][0]
         norm=float(np.linalg.norm(embedding))
@@ -77,4 +80,5 @@ class PuddleDetector:
                 'verification_reason':('puddle_context' if label=='puddle' else 'strong_detector_wet_context')
                     if accepted else 'context_rejected'}
         return {'detections':[d for d in eligible if d['evidence']['verification_accepted']],
-                'candidate_detections':raw}
+                'candidate_detections':raw,'candidates_observed_at':candidates_at,
+                'verification_completed_at':time.monotonic()}

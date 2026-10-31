@@ -251,7 +251,9 @@ def test_puddle_without_candidates_skips_expensive_visual_encoder():
     detector.boxes=SimpleNamespace(predict=lambda _: {'detections':[]})
     detector.ground_roi=ROI
     detector.visual=SimpleNamespace(run=lambda *_:pytest.fail('No crop should be encoded'))
-    assert detector.predict(np.zeros((100,100,3),np.uint8))=={'detections':[],'candidate_detections':[]}
+    result=detector.predict(np.zeros((100,100,3),np.uint8))
+    assert not result['detections'] and not result['candidate_detections']
+    assert result['verification_completed_at']>=result['candidates_observed_at']
 
 
 def test_context_encoder_retains_upper_scene_instead_of_only_the_detection_box():
@@ -548,7 +550,7 @@ def test_v2_replay_preview_and_ground_event_without_distance(tmp_path,monkeypatc
         deadline=time.monotonic()+3
         while time.monotonic()<deadline:
             status=app.status()
-            if status['recent_events'] and any(d.get('reason_counts',{}).get('already_handled')
+            if status['recent_events'] and any(d.get('reason_counts',{}).get('episode_announced')
                     for d in status['ground_diagnostics'].values()):break
             time.sleep(.02)
         status=app.status()
@@ -573,6 +575,6 @@ def test_v2_replay_preview_and_ground_event_without_distance(tmp_path,monkeypatc
         assert status['capabilities']['sudden_drop']=='required_unverified'
         if source_usable:
             assert status['ground_diagnostics']['road']['raw_count']==1
-            assert any(d.get('reason_counts',{}).get('already_handled')==1
+            assert any(d.get('reason_counts',{}).get('episode_announced')==1
                        for d in status['ground_diagnostics'].values())
     finally: app.close()

@@ -1,4 +1,4 @@
-"""Replay actual moving videos through the unchanged V2 pipeline and save timed evidence.
+"""Replay actual moving videos through the current V2 pipeline and save timed evidence.
 
 Labels are read only after inference; they never reset tracking or generate predictions.
 Rendered WebM reviews resample actual runtime JPEGs onto the source media clock.
@@ -44,15 +44,21 @@ def evaluate_intervals(clip,events):
     return rows
 
 
-def run_clip(clip,config,models_root,out):
+def run_clip(clip,config,models_root,out,timed_audio_dir=None,encode_review=True):
     source=Path(clip['input']);assert hashlib.sha256(source.read_bytes()).hexdigest()==clip['input_sha256']
     settings=load_config(config,mode='ground',models_root=models_root)
     settings['source']={'video':str(source)};settings['distance']['mode']='none';settings['audio']['enabled']=False
     settings.pop('simulation',None)
     app=V2(settings);assert not app.timeline
+    if timed_audio_dir:
+        from timed_review_audio import TimedReviewAudio
+        app.audio.sink=TimedReviewAudio(app.audio,timed_audio_dir)
     started=time.monotonic();samples=[];previews=[];events={};errors={};seen_preview=-1
     report={'id':clip['id'],'input_sha256':clip['input_sha256'],'config':settings,
-        'no_policy_scene_resets':True,'audio_playback_tested':False,'not_pi_timing':True,'completed':False}
+        'no_policy_scene_resets':True,'audio_playback_tested':False,'not_pi_timing':True,'completed':False,
+        'timed_wav_simulation':bool(timed_audio_dir),
+        'runtime_source_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in (Path(__file__).parents[1]/'pi/cane/vision').glob('*.py')}}
     try:
         app.start();report['run_id']=app.run_id;report['runtime_log']=str(app.log_path)
         while time.monotonic()-started<clip['duration_s']*1.5+20:
@@ -84,11 +90,14 @@ def run_clip(clip,config,models_root,out):
     log=[json.loads(line) for line in app.log_path.read_text(encoding='utf8').splitlines()]
     report['runtime_error_records']=[r for r in log if r['record_type'] in ('model_error','inference_error','camera_error')]
     report['arbiter_records']=[r for r in log if r['record_type']=='arbiter']
-    video=out/(clip['id']+'-annotated.webm');writer=cv2.VideoWriter(str(video),cv2.VideoWriter_fourcc(*'VP80'),10,(640,480))
-    assert writer.isOpened(),'WebM encoder unavailable'
+    report['episode_records']=[r for r in log if r['record_type'].startswith('hazard_episode_')]
+    report['audio_records']=[r for r in log if r['record_type'].startswith('audio_')]
+    video=out/(clip['id']+'-annotated.webm')
+    writer=cv2.VideoWriter(str(video),cv2.VideoWriter_fourcc(*'VP80'),10,(640,480)) if encode_review else None
+    assert writer is None or writer.isOpened(),'WebM encoder unavailable'
     clocks=[x[0] for x in previews]
     try:
-        for i in range(int(clip['duration_s']*10)):
+        for i in range(int(clip['duration_s']*10) if encode_review else 0):
             now=i/10;index=bisect.bisect_right(clocks,now)-1
             if index>=0 and now-clocks[index]<=1.5:
                 image=cv2.imdecode(np.frombuffer(previews[index][1],np.uint8),cv2.IMREAD_COLOR)
@@ -100,8 +109,9 @@ def run_clip(clip,config,models_root,out):
             recent=[e['object_class'] for e in events.values() if 0<=now-e['first_seen_decision_source_s']<2]
             cv2.putText(image,'EVENT: '+(', '.join(recent) if recent else 'none newly emitted'),(7,470),cv2.FONT_HERSHEY_SIMPLEX,.47,(70,230,255),1)
             writer.write(image)
-    finally:writer.release()
-    report['annotated_video']=video.name
+    finally:
+        if writer:writer.release()
+    report['annotated_video']=video.name if encode_review else None
     (out/(clip['id']+'-report.json')).write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
     (out/(clip['id']+'-samples.json')).write_text(json.dumps(samples,ensure_ascii=False),encoding='utf8')
     print(json.dumps({'id':clip['id'],'completed':report['completed'],'elapsed_s':report['elapsed_s'],
@@ -124,7 +134,7 @@ def gallery(catalog,reports,out):
 <details><summary>作者与原视频说明</summary>{html.escape(re.sub(r'<[^>]+>', ' ', clip.get('artist_html','')))}<br>{html.escape(re.sub(r'<[^>]+>', ' ', clip.get('description_html','')))}</details></article>''')
     page='''<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>真实视频回放测试</title>
 <style>body{font:16px/1.6 system-ui;background:#f3f5f8;color:#17202a;margin:24px auto;max-width:1300px;padding:12px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:20px}article{background:white;padding:16px;border:1px solid #ccd4df;border-radius:8px}video{width:100%;background:black}h2{font-size:20px}details{margin:12px 0}p{overflow-wrap:anywhere}</style>
-<h1>真实视频回放：模型框与提醒事件</h1><p>__CLIP_COUNT__ 段真实连续视频，不是重复照片，不重置视频内部跟踪。使用 Pi 当前模型、判断规则及采样配置在电脑运行，未更改 Pi 实时服务。无声音输出。</p>
+<h1>真实视频回放：模型框与提醒事件</h1><p>__CLIP_COUNT__ 段真实连续视频，不是重复照片，不重置视频内部跟踪。使用指定配置和本地版本代码在电脑运行，模型权重保持不变，未更改 Pi 实时服务。无声音输出。</p>
 <p>视频是实际运行预览按源视频时间重采样的回看，可能重复最近一帧，并非每一原始帧都完成了推理。框表示模型结果，虚线表示分类观察区域；黄色 EVENT 行仅表示生成了提醒事件，不代表耳机发声。首次模型加载期间可能显示等待画面。</p>
 <p>真值在运行前按原视频人工抽帧检查冻结。未知类别和转换边界不计分；没有逐帧框标注，不报告 mAP 或总体准确率。模糊、车流遮挡及加速视频均明确保留，不能替代真实拐杖移动验收。</p><main>'''+''.join(cards)+'</main>'
     (out/'video-review.html').write_text(page.replace('__CLIP_COUNT__',str(len(reports))),encoding='utf8')
@@ -132,12 +142,15 @@ def gallery(catalog,reports,out):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--catalog',type=Path,required=True)
-    p.add_argument('--models-root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
+    p.add_argument('--models-root',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--timed-audio-dir',type=Path,help='Exercise the real queue with WAV durations; no sound device')
+    a=p.parse_args()
+    if a.timed_audio_dir and not a.timed_audio_dir.is_dir():p.error('Timed audio directory must exist')
     catalog=json.loads(a.catalog.read_text(encoding='utf8'));config=Path(catalog['config_file'])
     assert hashlib.sha256(config.read_bytes()).hexdigest()==catalog['config_sha256']
     a.out.mkdir(parents=True,exist_ok=True);reports=[]
     for clip in catalog['clips']:
-        reports.append(run_clip(clip,config,a.models_root,a.out))
+        reports.append(run_clip(clip,config,a.models_root,a.out,a.timed_audio_dir))
         (a.out/'all-results.json').write_text(json.dumps({'catalog_sha256':hashlib.sha256(a.catalog.read_bytes()).hexdigest(),
             'not_pi_performance':True,'audio_playback_tested':False,
             'completed':len(reports)==len(catalog['clips']) and all(r['completed'] for r in reports),'clips':reports},ensure_ascii=False,indent=2),encoding='utf8')

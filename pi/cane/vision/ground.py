@@ -1,6 +1,7 @@
 """Fixed ONNX adapters: RDD2022 damage and ADE20K semantic context, no training."""
 
 from pathlib import Path
+import time
 import json
 import cv2
 import numpy as np
@@ -176,9 +177,13 @@ class SemanticDetector:
         probability = 1/np.exp(logits-maxima[None]).sum(axis=0)
         ground = np.isin(classes, list(GROUND_LABELS)) & (probability >= self.confidence)
         detections=semantic_regions(classes,probability,w,h,self.confidence,self.labels)
-        result = {"detections": detections,
+        result = {"detections": detections, "candidates_observed_at":time.monotonic(),
                 "class_map": cv2.resize(classes, (w,h), interpolation=cv2.INTER_NEAREST),
                 "ground_mask": cv2.resize(ground.astype(np.uint8), (w,h), interpolation=cv2.INTER_NEAREST)}
+        for d in detections:d["candidate_observed_at"]=result["candidates_observed_at"]
         if self.stair_context is not None:
             result.update(self.stair_context.refine(image, detections))
+        result["verification_completed_at"]=time.monotonic()
+        for d in result["detections"]:
+            d.setdefault("candidate_observed_at",result["verification_completed_at"])
         return result

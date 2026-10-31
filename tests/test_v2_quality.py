@@ -61,7 +61,7 @@ def test_quality_loss_clears_visual_event_and_pending_audio_but_allows_generic_d
         visual_quality={'usable':True,'reasons':[]},log=lambda *_a,**_k:None,
         _request_valid=lambda req:policy.request_valid(req,now))
     assert V2._quality_results(app,np.zeros((480,640,3),np.uint8),3,{'puddle':{'frame_id':2}})=={}
-    assert sink.stops==1 and not arbiter.pending() and not policy.ground['puddle'].tracks
+    assert sink.stops==1 and not arbiter.pending() and policy.episodes.current['wet_surface'].episode_id==event['episode_id']
     assert not policy.request_valid(OutputRequest('stale',Priority.SAFETY,event_id=event['event_id']),now)
     # The proximity provider is independent; no visual category is fabricated.
     policy.gate.update(DistanceObservation('a','mock',.9,True,now+4),now+4)

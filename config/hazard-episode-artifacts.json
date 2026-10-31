@@ -1,0 +1,82 @@
+{
+  "purpose": "English audio checksums for the hazard-episode release deployed to Pi on 2026-11-01; physical playback not yet verified",
+  "model_weights": "Unchanged; models/* entries in config/vision-runtime-artifacts.json verified, 28 matched",
+  "generated_by": "tools/gen_camera_prompts.ps1",
+  "audio_files": {
+    "audio/en/backpack_ahead.wav": {
+      "bytes": 134292,
+      "sha256": "7e2f4cdc61a03c723c05c08033a3625ee18334174be605b4c98b45453fcde3f5",
+      "text": "Bag ahead. Please be careful."
+    },
+    "audio/en/bicycle_ahead.wav": {
+      "bytes": 68810,
+      "sha256": "13f48f9b317b520c95c04d450aa0ee23f2f1d5752cf39910f8a00a018596b7cb",
+      "text": "Bicycle ahead."
+    },
+    "audio/en/camera_unavailable.wav": {
+      "bytes": 76308,
+      "sha256": "97ecbf2931bf0eb7250c9cd03c8304e77f783d1aeffffe85bde3eac41025e497",
+      "text": "Camera unavailable."
+    },
+    "audio/en/chair_ahead.wav": {
+      "bytes": 132970,
+      "sha256": "a8fad12d9a117252b7f158b4d8675a3a102fc7b3f6bb6fab560757d858550de0",
+      "text": "Chair ahead. Please be careful."
+    },
+    "audio/en/damaged_pavement.wav": {
+      "bytes": 104524,
+      "sha256": "8fb074592f5d9fba7787ec45f518d2652af2c9145073d2d78295d91f87ab3ec9",
+      "text": "Possible damaged pavement ahead."
+    },
+    "audio/en/downstairs_ahead.wav": {
+      "bytes": 164270,
+      "sha256": "5fb25fe6bd4206ce713e85495fbc95fad9137baa2273707b736d2c9eb2d2e0ef",
+      "text": "Possible steps down ahead. Watch your step."
+    },
+    "audio/en/ground_unavailable.wav": {
+      "bytes": 94602,
+      "sha256": "27cf20f4153524cdac31e984a983b9dccdb4234c515c40043434d9b1b0fdf3f6",
+      "text": "Ground detection unavailable."
+    },
+    "audio/en/object_unavailable.wav": {
+      "bytes": 95926,
+      "sha256": "19937fca83fb0874a6bbe932eeb599bb5b31c2abc0aed40cae5c84879f6e64d3",
+      "text": "Object detection unavailable."
+    },
+    "audio/en/obstacle_ahead.wav": {
+      "bytes": 69916,
+      "sha256": "ffa6fafc38279f5f893c0cbbd10cb288887adcdb4e16d5d5a8c94c65d38f869b",
+      "text": "Obstacle ahead."
+    },
+    "audio/en/person_ahead.wav": {
+      "bytes": 139144,
+      "sha256": "6821ac0cf81a63724786f494d812689a045b5a4dc692274764346f75fdb48428",
+      "text": "Person ahead. Please be careful."
+    },
+    "audio/en/pothole_ahead.wav": {
+      "bytes": 88430,
+      "sha256": "c456d7044db964d635eede7ac9d1a355b6021b4c0b1bab0e9352a8df161fb84d",
+      "text": "Possible pothole ahead."
+    },
+    "audio/en/puddle_ahead.wav": {
+      "bytes": 94822,
+      "sha256": "65887bac8bb5a52fc48d3e0de618fc3f1d59597ffb4c85f9e322b6722b05ef8c",
+      "text": "Possible wet pavement ahead."
+    },
+    "audio/en/stairs_ahead.wav": {
+      "bytes": 84900,
+      "sha256": "cb7d28b1920b817a9453946e6e2070fec3bde53408530118c0028ede93b830ea",
+      "text": "Possible stairs ahead."
+    },
+    "audio/en/visual_ready.wav": {
+      "bytes": 86008,
+      "sha256": "fff2e4a0c30461a066af9f01a8ce88e2e593ef14dcc7a8e88d47916ca6b470dd",
+      "text": "Visual assistance ready."
+    },
+    "audio/en/visual_unavailable.wav": {
+      "bytes": 95264,
+      "sha256": "b7e66b94317b872493e5af8b50528b71adaa3189147e905c01f58766c9bf0b46",
+      "text": "Visual detection unavailable."
+    }
+  }
+}

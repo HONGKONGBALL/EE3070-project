@@ -2,7 +2,7 @@
 
 from collections import Counter
 
-from .association import ground_overlaps_region, iou
+from .association import ground_overlaps_region
 from .v2_policy import PHRASES, GROUND_TASK_LABELS
 
 
@@ -23,8 +23,6 @@ def ground_diagnostic(name, raw, filtered, policy, now, *, blocked_by=""):
     detected = {key(d) for d in raw["detections"]}
     retained = {key(d) for d in filtered["detections"]} if filtered is not None else set()
     unique = {key(d): d for d in raw.get("candidate_detections", []) + raw["detections"]}
-    bank = policy.ground.get(name)
-    tracks = bank.tracks if bank else []
     rows = []
     for identity, d in list(unique.items())[:20]:
         if d["label"] not in PHRASES:
@@ -38,21 +36,14 @@ def ground_diagnostic(name, raw, filtered, policy, now, *, blocked_by=""):
         elif identity not in retained:
             reason = blocked_by or "context_rejected"
         else:
-            track = next((t for t in tracks if t.present and t.frame_id == raw["frame_id"]
-                          and t.label == d["label"] and iou(t.bbox, d["bbox_normalized"]) >= .25), None)
-            if track is None or track.hits < 2:
-                reason = "awaiting_confirmation"
-            elif track.announced:
-                reason = "already_handled"
-            elif now-policy.last_emit.get(track.label, -100) < 8:
-                reason = "cooldown"
-            else:
-                reason = "eligible"
+            reason = policy.episodes.reason(name, d["label"], now)
         rows.append({"label": d["label"], "confidence": d["confidence"],
                      "localization": d.get("localization", "bbox"),
                      "bbox_normalized": d["bbox_normalized"], "reason": reason})
     return {"state": "observed", "frame_id": raw["frame_id"], "captured_at": raw["captured_at"],
             "model_id": raw.get("model_id", name), "raw_count": len(unique),
+            "candidate_observed_at":raw.get("candidates_observed_at"),
+            "verification_completed_at":raw.get("verification_completed_at"),
             "model_accepted_count": len(detected), "context_accepted_count": len(retained),
             "reason": "no_candidates" if not unique else "candidates_observed",
             "reason_counts": dict(Counter(d["reason"] for d in rows)), "candidates": rows}

@@ -170,7 +170,11 @@ class OutputArbiter:
     def cancel_pending(self, predicate=None) -> None:
         """Cancel queued requests, optionally only those selected by a caller."""
         with self._lock:
-            self._queue = [item for item in self._queue if predicate is not None and not predicate(item[1])]
+            keep = []
+            for item in self._queue:
+                if predicate is None or predicate(item[1]): self._log(self._clock(), "cancelled", item[1])
+                else: keep.append(item)
+            self._queue = keep
 
     @staticmethod
     def _sort_key(item: tuple[int, OutputRequest]) -> tuple[int, int]:

@@ -1,15 +1,11 @@
 """Ground events independently; object speech only for fresh proximity input."""
 
-from .association import OBJECT_LABELS, TrackBank, associate, in_region, ground_overlaps_region, iou
+from .association import OBJECT_LABELS, TrackBank, associate, in_region, ground_overlaps_region
 from .distance import ProximityGate
+from .episodes import HazardEpisodes
 
-PHRASES = {
-    "pothole": ("pothole_ahead", "Possible pothole ahead. Watch your step.", "CRITICAL"),
-    "damaged_pavement": ("damaged_pavement", "Damaged pavement ahead. Watch your step.", "SAFETY"),
-    "possible_puddle": ("puddle_ahead", "Possible puddle ahead.", "SAFETY"),
-    "stairs": ("stairs_ahead", "Possible stairs ahead.", "SAFETY"),
-    "downstairs": ("downstairs_ahead", "Possible steps down ahead. Watch your step.", "CRITICAL"),
-}
+# Export known labels for existing diagnostic consumers; spoken text comes from episode configuration.
+from .episodes import PHRASES
 
 # Each hazard has one prediction source. Context labels are not hazard decisions.
 GROUND_TASK_LABELS = {"road":{"damaged_pavement"}, "pothole":{"pothole"},
@@ -37,11 +33,11 @@ def support_potholes(result, semantic, context_valid, indoor_floor):
 
 
 class V2Policy:
-    def __init__(self, run_id, roi, calibration, enter=1.0, leave=1.2, ground_roi=None):
+    def __init__(self, run_id, roi, calibration, enter=1.0, leave=1.2, ground_roi=None, warning=None, record=None):
         self.run_id, self.roi, self.calibration = run_id, roi, calibration
         self.ground_roi = ground_roi if ground_roi is not None else roi
         self.objects = TrackBank("object")
-        self.ground = {}
+        self.episodes = HazardEpisodes(run_id, warning, record)
         self.gate = ProximityGate(enter, leave)
         self.sample = None
         self.last_emit = {}
@@ -57,48 +53,18 @@ class V2Policy:
         self.objects.model_id = result.get("model_id","objects")
         self.objects.update(candidates, result["frame_id"], result["captured_at"], now)
 
-    def observe_ground(self, name, result, now):
-        bank = self.ground.setdefault(name, TrackBank(name, window=2.0))
-        if result is None or now-result["captured_at"] > 1.5:
-            bank.clear()
-            return
-        candidates = [d for d in result["detections"] if d["label"] in PHRASES
-                      and ground_overlaps_region(d["bbox_normalized"], self.ground_roi)]
-        bank.model_id,bank.model_revision = result.get("model_id",name),result.get("model_revision")
-        bank.update(candidates, result["frame_id"], result["captured_at"], now)
+    def observe_ground(self, name, result, now, *, negative_reliable=True):
+        if result is not None:
+            result = {**result, "detections": [d for d in result["detections"]
+                      if d["label"] in PHRASES and ground_overlaps_region(d["bbox_normalized"], self.ground_roi)]}
+        self.episodes.observe(name, result, now, negative_reliable=negative_reliable)
 
     def step(self, sample, now):
         self.sample = sample
         self.gate.update(sample, now)
-        events = []
-        ground_tracks=[(bank,track) for bank in self.ground.values() for track in bank.tracks]
-        # Specific critical warnings precede generic ones in the same decision tick.
-        ground_tracks.sort(key=lambda pair:PHRASES[pair[1].label][2]!='CRITICAL')
-        for bank,track in ground_tracks:
-            if not (track.present and track.hits >= 2 and now-track.captured_at <= 1.5 and not track.announced):
-                continue
-            if track.label=='stairs' and any(
-                    other.label=='downstairs' and other.present and other.hits>=2
-                    and now-other.captured_at<=1.5 and iou(track.bbox,other.bbox)>=.25
-                    for _,other in ground_tracks):
-                track.announced=True
-                continue
-            phrase, text, priority = PHRASES[track.label]
-            if now-self.last_emit.get(track.label, -100) < 8:
-                continue
-            event = self._event(f"ground:{track.track_id}", "GROUND_HAZARD", phrase, text, priority, now)
-            event.update(object_class=track.label, track_id=track.track_id, frame_id=track.frame_id,
-                         confidence=track.confidence, bbox_normalized=track.bbox,
-                         captured_at=track.captured_at, source_model=bank.model_id,
-                         first_visible_captured_at=track.first_captured_at,first_observed_at=track.first_seen,
-                         confirmed_at=now,confirmation_latency_ms=round((now-track.first_captured_at)*1000,1),
-                         source_revision=bank.model_revision, raw_label=track.raw_label,
-                         evidence=track.evidence,
-                         source="vision", distance_m=None)
-            self.live_events[event["event_id"]] = ("ground", bank, track.track_id)
-            events.append(event)
-            track.announced = True
-            self.last_emit[track.label] = now
+        events = self.episodes.step(now)
+        for event in events:
+            self.live_events[event["event_id"]] = ("ground", event["event_id"])
         match=associate(sample,self.objects.tracks,self.calibration,now) if sample and sample.fresh(now) and self.gate.near else None
         # With a verified projection only, give an in-flight visual result one short render interval.
         # Expired/missing/ambiguous evidence still becomes generic; synchronization bounds never widen.
@@ -139,7 +105,7 @@ class V2Policy:
 
     def _valid(self, value, now):
         if value[0] == "ground":
-            return any(t.track_id == value[2] and t.present and now-t.captured_at <= 1.5 for t in value[1].tracks)
+            return self.episodes.valid(value[1], now)
         if not (self.sample and self.sample.fresh(now) and self.gate.near and value[1] == self.gate.episode):
             return False
         if value[2] is None:
@@ -150,6 +116,7 @@ class V2Policy:
     def request_valid(self, request, now):
         return not request.event_id or (request.event_id in self.live_events and self._valid(self.live_events[request.event_id], now))
 
-    def clear_visual(self):
+    def clear_visual(self, now=None):
+        import time
         self.objects.clear()
-        for bank in self.ground.values(): bank.clear()
+        self.episodes.suspend(time.monotonic() if now is None else now)

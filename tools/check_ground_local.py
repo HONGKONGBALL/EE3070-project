@@ -40,7 +40,7 @@ def main():
               "video": str(args.video.resolve()),
               "video_sha256": video_sha256,
               "runtime_source_sha256":{name:hashlib.sha256((ROOT/"pi/cane/vision"/name).read_bytes()).hexdigest()
-                  for name in ("v2.py","v2_policy.py","puddle.py","ground.py","stair_context.py")},
+                  for name in ("v2.py","v2_policy.py","episodes.py","speech.py","diagnostics.py","camera.py","puddle.py","ground.py","stair_context.py")},
               "config": settings, "completed": False, "cases": {}, "task_errors": {},
               "count_basis": "Distinct sampled task frames, including explicit image-quality skips; detections retain first observation per model/label. Not independent accuracy trials."}
     if args.timeline:

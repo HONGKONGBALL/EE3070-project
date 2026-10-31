@@ -61,7 +61,8 @@ class V2(Demo):
             raise ValueError("Vision mode must be balanced or ground")
         self.objects_enabled = self.vision_mode == "balanced"
         camera_factory = (lambda _device,w,h,fps: ReplayCamera(source,w,h,fps)) if source else None
-        super().__init__(config, audio_factory=Speech, camera_factory=camera_factory)
+        super().__init__(config, audio_factory=lambda *args: Speech(*args,
+                         ordinary_interval_s=config["audio"].get("ordinary_interval_s",1.5)), camera_factory=camera_factory)
         self.config, self.input_source = config, "replay" if source else "live_camera"
         distance = config["distance"]
         mode = distance["mode"]
@@ -76,8 +77,9 @@ class V2(Demo):
         else:
             raise ValueError("Distance mode must be none, mock, or pico")
         self.policy = V2Policy(self.run_id, config["warning"]["roi"], config.get("association",{}),
-                               distance["enter_m"],distance["leave_m"], config["warning"]["ground_roi"])
+                               distance["enter_m"],distance["leave_m"], config["warning"]["ground_roi"], config["warning"], self.log)
         self.audio.validator = self._request_valid
+        self.audio.on_delivery = lambda event_id,action,now: self.policy.episodes.delivery(event_id,action,now)
         self.results = {}
         self.ground_tasks={"road":RoadDetector,"pothole":RoadDetector,"semantic":SemanticDetector}
         if pothole_backend == 'yolox_onnx_research':
@@ -150,10 +152,13 @@ class V2(Demo):
             self.log("model_error",task=name,message=str(exc))
             return
         previous, last_error = 0, ""
+        sampled_count, unsampled_frames, quality_skips, stale_results = 0,0,0,0
         while not self.stopped.is_set():
             sample = self.camera.next_frame(previous)
             if sample is None: continue
             image,frame_id,captured = sample
+            unsampled_frames += max(0,frame_id-previous-1)
+            sampled_count += 1
             previous, started = frame_id,time.monotonic()
             try:
                 quality=assess_frame(image)
@@ -164,7 +169,12 @@ class V2(Demo):
                     output={'detections':[]}
                 output['visual_quality']=quality
                 finished = time.monotonic()
-                if finished-captured > 1.5: raise RuntimeError("Model result is stale")
+                # Slow results are missing evidence, not a failed model or a clear path.
+                stale = finished-captured > 1.5
+                stale_results += int(stale)
+                quality_skips += int(not quality["usable"])
+                output.setdefault("candidates_observed_at", finished)
+                output.setdefault("verification_completed_at", finished)
                 h,w = image.shape[:2]
                 for d in output["detections"]+output.get('candidate_detections',[]):
                     d["bbox_normalized"] = [float(v)/(w if i%2 == 0 else h) for i,v in enumerate(d["bbox"])]
@@ -177,9 +187,11 @@ class V2(Demo):
                 fps = (len(completions)-1)/(completions[-1]-completions[0]) if len(completions)>1 else 0
                 with self.condition:
                     self.results[name] = output
-                    self.task_states[name] = {"state":"ready","error":"","fps":round(fps,2) if quality['usable'] else 0,
+                    self.task_states[name] = {"state":"limited" if stale else "ready","error":"","stale_result":stale,"fps":round(fps,2) if quality['usable'] else 0,
                                              "inference_ms":round((finished-started)*1000,1) if quality['usable'] else None,
                                              "prediction_skipped":not quality['usable'],"visual_quality":quality,
+                                             "sampled_frames":sampled_count,"unsampled_capture_frames":unsampled_frames,
+                                             "quality_skips":quality_skips,"stale_results":stale_results,
                                              "latency_p95_ms":round(float(np.percentile(latencies,95)),1) if latencies else None,
                                              "model":detector.model_id,"frame_id":frame_id,"captured_at":captured}
                     if name == "objects":
@@ -213,6 +225,8 @@ class V2(Demo):
                     self.audio.tick()
                     continue
                 self.policy.clear_visual()
+                current=self.audio.arbiter.current
+                if current and not self._request_valid(current):self.audio.sink.stop()
                 self.visual_quality={'state':'unavailable','usable':False,'reasons':['no_fresh_frame']}
                 self.context_valid,self.pavement_detected,self.surface_labels = False,False,[]
                 self.indoor_floor_context = False
@@ -296,7 +310,9 @@ class V2(Demo):
                     result=None
                     blocked[name] = "ground_context_unavailable"
                 ground_inputs[name] = result
-                self.policy.observe_ground(name,result,now)
+                self.policy.observe_ground(name,result,now,
+                    negative_reliable=(self.context_valid or self.indoor_floor_context)
+                        if name=="semantic" else (name!="road" or self.context_valid))
             events = self.policy.step(self.sample,now)
             for event in events: self._emit(event)
             diagnostics = {name:ground_diagnostic(name,snapshots.get(name),ground_inputs.get(name),
@@ -332,7 +348,7 @@ class V2(Demo):
             self.audio.arbiter.cancel_pending()
             self.policy=V2Policy(self.run_id+':'+case['id'],self.config['warning']['roi'],
                 self.config.get('association',{}),self.config['distance']['enter_m'],self.config['distance']['leave_m'],
-                self.config['warning']['ground_roi'])
+                self.config['warning']['ground_roi'], self.config['warning'], self.log)
             self.log('simulation_scene',case_id=case['id'],source_file=case['source_file'],frame_id=frame_id,
                      observed_frame_captured_at=captured_at)
         return {k:v for k,v in snapshots.items() if v['frame_id']>=case['start_frame']} if case else snapshots
@@ -424,6 +440,9 @@ class V2(Demo):
                 for name,entry in self.ground_diagnostics.items()}
         status.update(version=2,input_source=self.input_source,tasks=tasks,visual_quality=dict(self.visual_quality),
                       vision_mode=self.vision_mode,ground_diagnostics=diagnostics,
+                      hazard_episodes=self.policy.episodes.status(now),
+                      episode_counters=dict(self.policy.episodes.counters),
+                      audio_delivery=self.audio.delivery_status(),
                       ground_candidates=candidates,ground_context_valid=self.context_valid,
                       indoor_floor_context=self.indoor_floor_context,
                       simulation_case={'id':self.scene['id'],'source_file':self.scene['source_file'],

@@ -1,6 +1,7 @@
 {
   "date": "2026-10-31",
-  "purpose": "Checksums for the model and English audio payload used by the current Pi vision baseline; binaries remain outside Git.",
+  "purpose": "Checksums for the 2026-10-31 model baseline and its original audio payload; binaries remain outside Git. Current audio overrides are in audio_override_manifest.",
+  "audio_override_manifest": "config/hazard-episode-artifacts.json",
   "package_name": "smart-cane-stairs-update-20261030.zip",
   "package_sha256": "aeb890f0ef276a920e1cc5583655555505ab4dbac0aabf358c38e4af20a6fcf9",
   "model_scope": {

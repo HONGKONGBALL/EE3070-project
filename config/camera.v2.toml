@@ -73,6 +73,57 @@ id = ""
 beam_roi = []
 
 [audio]
+ordinary_interval_s = 1.5
 enabled = true
 directory = "audio/en"
 target = ""
+
+# Independent admitted observations, not consecutive captures. No extra inference.
+[warning.confirmation.possible_puddle]
+hits = 2
+observations = 3
+window_s = 3.2
+min_span_s = 0.3
+[warning.confirmation.damaged_pavement]
+hits = 2
+observations = 3
+window_s = 3.2
+min_span_s = 0.3
+[warning.confirmation.pothole]
+hits = 2
+observations = 2
+window_s = 3.2
+min_span_s = 0.3
+[warning.confirmation.stairs]
+hits = 2
+observations = 3
+window_s = 3.2
+min_span_s = 0.3
+[warning.episodes.wet_surface]
+clear_hits = 6
+clear_span_s = 5.0
+missing_reset_s = 10.0
+[warning.episodes.damaged_pavement]
+clear_hits = 3
+clear_span_s = 1.5
+missing_reset_s = 6.0
+[warning.episodes.stairs]
+clear_hits = 4
+clear_span_s = 3.0
+missing_reset_s = 6.0
+[warning.pothole_urgency]
+confidence = 0.75
+image_area = 0.01
+# Image evidence thresholds do not measure physical depth or distance.
+[warning.phrases.possible_puddle]
+id = "puddle_ahead"
+text = "Possible wet pavement ahead."
+[warning.phrases.damaged_pavement]
+id = "damaged_pavement"
+text = "Possible damaged pavement ahead."
+[warning.phrases.pothole]
+id = "pothole_ahead"
+text = "Possible pothole ahead."
+[warning.phrases.stairs]
+id = "stairs_ahead"
+text = "Possible stairs ahead."

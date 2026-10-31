@@ -31,6 +31,7 @@ img{display:block;max-width:100%;max-height:90vh;margin:auto}p{margin:10px}a{col
  &nbsp; <a href=/snapshot.jpg target=_blank>Snapshot</a></p>
 <details id=diagnostics hidden><summary>Ground detection details</summary>
 <p>Counts show the latest observation, not accuracy. A handled alert does not confirm audible playback.</p>
+<p id=episodes></p>
 <table style="margin:10px auto;text-align:left;border-spacing:18px 6px">
 <thead><tr><th>Task</th><th>Candidates</th><th>Result</th></tr></thead><tbody id=ground></tbody></table></details>
 <script>
@@ -39,7 +40,7 @@ const details=document.getElementById('diagnostics'),ground=document.getElementB
 const reasons={outside_path:'Outside walking area',verifier_rejected:'Appearance check rejected',
  model_filtered:'Filtered by model',context_rejected:'Ground context rejected',
  ground_context_unavailable:'Waiting for ground context',awaiting_semantic_pair:'Waiting for matching stair view',
- awaiting_confirmation:'Waiting for another observation',already_handled:'Already handled',cooldown:'Repeat paused',
+ awaiting_confirmation:'Accumulating independent evidence',episode_announced:'Episode already announced / audio disabled',episode_pending_audio:'Fresh alert pending delivery',episode_retry_wait:'Waiting for fresh evidence to retry',already_handled:'Already handled',cooldown:'Repeat paused',
  eligible:'Ready for alert decision',unsupported_label:'Unsupported category'};
 Object.assign(reasons,{context_only:'Context label only',other_task_owns_category:'Handled by dedicated detector',
  indoor_context_rejected:'Indoor floor context',strong_pothole_evidence_required:'Stronger pothole evidence required'});
@@ -61,6 +62,7 @@ async function refresh(){
    for(const value of [task,d.raw_count??'-',result]){const cell=document.createElement('td');cell.textContent=value;row.appendChild(cell)}
    return row;
   });ground.replaceChildren(...rows);
+  document.getElementById('episodes').textContent=Object.entries(s.hazard_episodes||{}).map(([name,e])=>`${name}: ${e.state}, delivery ${e.delivery_status}`).join(' | ');
  }
  video.style.visibility=s.ready?'visible':'hidden';
  if(s.ready&&!attached){video.src='/stream?t='+Date.now();attached=true;}

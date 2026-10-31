@@ -23,7 +23,7 @@ def test_context_rejection_and_model_absence_are_distinct_and_do_not_emit_events
     blocked=ground_diagnostic('road',raw,None,policy,1,blocked_by='ground_context_unavailable')
     assert blocked['reason_counts']=={'ground_context_unavailable':1}
     assert ground_diagnostic('road',{**raw,'detections':[]},None,policy,1)['reason']=='no_candidates'
-    assert policy.step(None,1)==[] and not policy.ground
+    assert policy.step(None,1)==[] and all(e.state=="UNSEEN" for e in policy.episodes.current.values())
 
 
 def test_outside_path_and_verifier_rejections_are_visible_without_promoting_candidates():
@@ -47,9 +47,11 @@ def test_confirmation_and_handling_follow_distinct_policy_frames_without_claimin
     assert not policy.step(None,1.1)
     second=observation(2,1.5)
     policy.observe_ground('road',second,1.5)
-    assert policy.step(None,1.5)
+    event=policy.step(None,1.5)[0]
+    assert ground_diagnostic('road',second,second,policy,1.5)['reason_counts']=={'episode_pending_audio':1}
+    policy.episodes.delivery(event['event_id'],'disabled',1.5)
     result=ground_diagnostic('road',second,second,policy,1.5)
-    assert result['raw_count']==1 and result['reason_counts']=={'already_handled':1}
+    assert result['raw_count']==1 and result['reason_counts']=={'episode_announced':1}
     assert ground_diagnostic('road',second,second,policy,4)['reason']=='no_fresh_result'
 
 
