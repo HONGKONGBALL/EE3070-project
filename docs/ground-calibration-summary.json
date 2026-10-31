@@ -1,0 +1,226 @@
+{
+  "run_id": "298b84320b",
+  "not_outdoor_validation": true,
+  "audio_playback_tested": false,
+  "model_training_overlap": "unknown",
+  "split_counts": {
+    "development_after_round1": 57,
+    "possible_previous_material_overlap": 2,
+    "held_out_round2": 70
+  },
+  "timing_basis": "First replay frame seen by renderer to warning decision, not physical exposure or audible output",
+  "group_basis": "Puddle12 grouped by capture date, other images by source record; capture-site independence not established",
+  "splits": {
+    "development_after_round1": {
+      "photos": {
+        "puddle": {
+          "positive_cases": 13,
+          "positive_hits": 9,
+          "clear_positive_cases": 10,
+          "clear_positive_hits": 6,
+          "clear_timely_hits": 6,
+          "negative_cases": 33,
+          "false_warning_cases": 0,
+          "clear_misses": [
+            "195230196.jpg",
+            "189601050.jpg",
+            "194253138.jpg",
+            "191639845.jpg"
+          ],
+          "false_warnings": []
+        },
+        "pothole": {
+          "positive_cases": 14,
+          "positive_hits": 11,
+          "clear_positive_cases": 11,
+          "clear_positive_hits": 10,
+          "clear_timely_hits": 10,
+          "negative_cases": 37,
+          "false_warning_cases": 2,
+          "clear_misses": [
+            "hf-test-31.jpg"
+          ],
+          "false_warnings": [
+            "181669412.jpg",
+            "194253138.jpg"
+          ]
+        }
+      },
+      "first_photo_per_source_group": {
+        "puddle": {
+          "positive_cases": 13,
+          "positive_hits": 9,
+          "clear_positive_cases": 10,
+          "clear_positive_hits": 6,
+          "clear_timely_hits": 6,
+          "negative_cases": 32,
+          "false_warning_cases": 0,
+          "clear_misses": [
+            "195230196.jpg",
+            "189601050.jpg",
+            "194253138.jpg",
+            "191639845.jpg"
+          ],
+          "false_warnings": []
+        },
+        "pothole": {
+          "positive_cases": 14,
+          "positive_hits": 11,
+          "clear_positive_cases": 11,
+          "clear_positive_hits": 10,
+          "clear_timely_hits": 10,
+          "negative_cases": 36,
+          "false_warning_cases": 2,
+          "clear_misses": [
+            "hf-test-31.jpg"
+          ],
+          "false_warnings": [
+            "181669412.jpg",
+            "194253138.jpg"
+          ]
+        }
+      },
+      "blue_ground": {
+        "cases": 5,
+        "false_puddle_warnings": 0
+      }
+    },
+    "possible_previous_material_overlap": {
+      "photos": {
+        "puddle": {
+          "positive_cases": 1,
+          "positive_hits": 1,
+          "clear_positive_cases": 1,
+          "clear_positive_hits": 1,
+          "clear_timely_hits": 1,
+          "negative_cases": 0,
+          "false_warning_cases": 0,
+          "clear_misses": [],
+          "false_warnings": []
+        },
+        "pothole": {
+          "positive_cases": 1,
+          "positive_hits": 1,
+          "clear_positive_cases": 1,
+          "clear_positive_hits": 1,
+          "clear_timely_hits": 1,
+          "negative_cases": 0,
+          "false_warning_cases": 0,
+          "clear_misses": [],
+          "false_warnings": []
+        }
+      },
+      "first_photo_per_source_group": {
+        "puddle": {
+          "positive_cases": 1,
+          "positive_hits": 1,
+          "clear_positive_cases": 1,
+          "clear_positive_hits": 1,
+          "clear_timely_hits": 1,
+          "negative_cases": 0,
+          "false_warning_cases": 0,
+          "clear_misses": [],
+          "false_warnings": []
+        },
+        "pothole": {
+          "positive_cases": 1,
+          "positive_hits": 1,
+          "clear_positive_cases": 1,
+          "clear_positive_hits": 1,
+          "clear_timely_hits": 1,
+          "negative_cases": 0,
+          "false_warning_cases": 0,
+          "clear_misses": [],
+          "false_warnings": []
+        }
+      },
+      "blue_ground": {
+        "cases": 0,
+        "false_puddle_warnings": 0
+      }
+    },
+    "held_out_round2": {
+      "photos": {
+        "puddle": {
+          "positive_cases": 23,
+          "positive_hits": 16,
+          "clear_positive_cases": 21,
+          "clear_positive_hits": 14,
+          "clear_timely_hits": 14,
+          "negative_cases": 35,
+          "false_warning_cases": 1,
+          "clear_misses": [
+            "puddle12-valid-00.jpg",
+            "puddle12-valid-01.jpg",
+            "puddle12-valid-02.jpg",
+            "puddle12-valid-07.jpg",
+            "puddle12-valid-09.jpg",
+            "puddle12-valid-10.jpg",
+            "puddle12-valid-12.jpg"
+          ],
+          "false_warnings": [
+            "hf-test-52.jpg"
+          ]
+        },
+        "pothole": {
+          "positive_cases": 15,
+          "positive_hits": 13,
+          "clear_positive_cases": 11,
+          "clear_positive_hits": 10,
+          "clear_timely_hits": 10,
+          "negative_cases": 50,
+          "false_warning_cases": 3,
+          "clear_misses": [
+            "hf-test-66.jpg"
+          ],
+          "false_warnings": [
+            "puddle12-valid-00.jpg",
+            "puddle12-valid-10.jpg",
+            "puddle12-valid-18.jpg"
+          ]
+        }
+      },
+      "first_photo_per_source_group": {
+        "puddle": {
+          "positive_cases": 12,
+          "positive_hits": 9,
+          "clear_positive_cases": 11,
+          "clear_positive_hits": 8,
+          "clear_timely_hits": 8,
+          "negative_cases": 35,
+          "false_warning_cases": 1,
+          "clear_misses": [
+            "puddle12-valid-00.jpg",
+            "puddle12-valid-10.jpg",
+            "puddle12-valid-12.jpg"
+          ],
+          "false_warnings": [
+            "hf-test-52.jpg"
+          ]
+        },
+        "pothole": {
+          "positive_cases": 15,
+          "positive_hits": 13,
+          "clear_positive_cases": 11,
+          "clear_positive_hits": 10,
+          "clear_timely_hits": 10,
+          "negative_cases": 34,
+          "false_warning_cases": 2,
+          "clear_misses": [
+            "hf-test-66.jpg"
+          ],
+          "false_warnings": [
+            "puddle12-valid-00.jpg",
+            "puddle12-valid-10.jpg"
+          ]
+        }
+      },
+      "blue_ground": {
+        "cases": 0,
+        "false_puddle_warnings": 0
+      }
+    }
+  },
+  "task_errors": {},
+  "catalog_sha256": "beb75ba6863050513732844c6010e3c890903de5f949605017cb974ea11463dc"
+}

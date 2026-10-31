@@ -114,3 +114,29 @@ def test_vibration_sent_with_prompt(audio, clock):
 def test_no_public_way_to_clear_safety_hold():
     names = [n for n in dir(OutputArbiter) if not n.startswith("_")]
     assert not any("clear" in n or "override" in n or "veto" in n for n in names)
+
+
+def test_optional_ordinary_spacing_is_global_but_does_not_delay_critical(audio,clock):
+    arb=OutputArbiter(audio,clock=clock,ordinary_interval_s=3)
+    assert arb.submit(req('puddle',Priority.SAFETY))
+    audio.finish()
+    clock.advance(.2)
+    assert arb.submit(req('chair',Priority.SAFETY,ttl_s=5))
+    assert audio.played==[['puddle']]
+    clock.advance(2.8)
+    arb.tick()
+    assert audio.played[-1]==['chair']
+    clock.advance(.1)
+    assert arb.submit(req('drop',Priority.CRITICAL))
+    assert audio.played[-1]==['drop'] and audio.stopped==1
+
+
+def test_pending_ordinary_event_expires_in_spacing_window(audio,clock):
+    arb=OutputArbiter(audio,clock=clock,ordinary_interval_s=3)
+    arb.submit(req('puddle',Priority.SAFETY))
+    audio.finish()
+    clock.advance(.1)
+    arb.submit(req('chair',Priority.SAFETY,ttl_s=1.5))
+    clock.advance(3)
+    arb.tick()
+    assert audio.played==[['puddle']] and not arb.pending()

@@ -1,0 +1,316 @@
+{
+  "date": "2026-10-30",
+  "training_performed": false,
+  "labels_frozen_before_predictions": true,
+  "not_live_camera": true,
+  "grouping": "Six AI scenes are synthetic stress probes, not independent real sites. Four real object photos are new; four controls reuse known examples. Pretraining overlap unknown.",
+  "excluded_before_inference": {
+    "62052346.jpg": "Backpack with pineapple; indoor setting not established, excluded from indoor count."
+  },
+  "items": [
+    {
+      "file": "74491433.jpg",
+      "title": "File:Black Fioni high-heeled sandals on white carpet.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Black_Fioni_high-heeled_sandals_on_white_carpet.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Black_Fioni_high-heeled_sandals_on_white_carpet.jpg/960px-Black_Fioni_high-heeled_sandals_on_white_carpet.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "<a href=\"//commons.wikimedia.org/wiki/User:BD2412\" title=\"User:BD2412\">BD2412</a>",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "Black Fioni high-heeled sandals on white carpet.",
+      "sha256": "8f5f269d5fba731cda66a5964016cbd939d304b665b600380f0c5e7ffd934ba5",
+      "evaluation_split": "new_real_object_photos",
+      "scene_group": "commons-74491433.jpg",
+      "synthetic": false,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "实拍：浅色地毯上的黑色凉鞋。鞋带和开口不是坑洞。",
+      "confounders": [
+        "footwear",
+        "dark_object",
+        "object_shadow"
+      ],
+      "reviewer": "Visual review before predictions",
+      "blue_ground": false
+    },
+    {
+      "file": "95549323.jpg",
+      "title": "File:Black shoes and brief case on floor.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Black_shoes_and_brief_case_on_floor.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Black_shoes_and_brief_case_on_floor.jpg/960px-Black_shoes_and_brief_case_on_floor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Zimo101&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:Zimo101 (page does not exist)\">Zimo101</a>",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "This photo displays a standard bedroom with possessions spread on the floor.",
+      "sha256": "2853930bcb0a029c4c76acbf52b80b729ec4a5c553a77158abe79f0174f0fc12",
+      "evaluation_split": "new_real_object_photos",
+      "scene_group": "commons-95549323.jpg",
+      "synthetic": false,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "实拍：地毯上的脱下黑鞋、黑色公文包及阴影。物体不是地面坑洞。",
+      "confounders": [
+        "footwear",
+        "dark_object",
+        "object_shadow"
+      ],
+      "reviewer": "Visual review before predictions",
+      "blue_ground": false
+    },
+    {
+      "file": "22856191.jpg",
+      "title": "File:Floor mat with several pairs of shoes (DSC 0033 (6977516681)).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Floor_mat_with_several_pairs_of_shoes_(DSC_0033_(6977516681)).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Floor_mat_with_several_pairs_of_shoes_%28DSC_0033_%286977516681%29%29.jpg/960px-Floor_mat_with_several_pairs_of_shoes_%28DSC_0033_%286977516681%29%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/people/64518150@N00\">JoeInQueens</a> from Queens, USA",
+      "license": "CC BY 2.0",
+      "license_url": "https://creativecommons.org/licenses/by/2.0",
+      "description": "Taking off the shoes before you enter.",
+      "sha256": "be7cf24ceb985bfc03b12941f4830a18c0ff35a5353b9b88b031aff0f7cadc63",
+      "evaluation_split": "new_real_object_photos",
+      "scene_group": "commons-22856191.jpg",
+      "synthetic": false,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "实拍：地垫上的多双深色鞋、鞋口、密集边缘。非空旷行走视角。",
+      "confounders": [
+        "footwear",
+        "dark_object",
+        "object_shadow"
+      ],
+      "reviewer": "Visual review before predictions",
+      "blue_ground": false
+    },
+    {
+      "file": "70591504.jpg",
+      "title": "File:Running Shoes on hardwood floor (27833845501).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Running_Shoes_on_hardwood_floor_(27833845501).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Running_Shoes_on_hardwood_floor_%2827833845501%29.jpg/960px-Running_Shoes_on_hardwood_floor_%2827833845501%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/people/87296837@N00\">Tony Webster</a> from Minneapolis, Minnesota, United States",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "New Orleans, Louisiana",
+      "sha256": "76e27e3dcada826daf90f0fbd0c0386d5ee4863c0a5a910e70d32a864b0d418d",
+      "evaluation_split": "new_real_object_photos",
+      "scene_group": "commons-70591504.jpg",
+      "synthetic": false,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "实拍：木地板上的跑鞋与阴影，俯拍近景。",
+      "confounders": [
+        "footwear",
+        "dark_object",
+        "object_shadow"
+      ],
+      "reviewer": "Visual review before predictions",
+      "blue_ground": false
+    },
+    {
+      "file": "synthetic-cables-shadow.png",
+      "sha256": "16dcfacfefd71d8c3d133fcab9801b68330702ebe8e954a04ca395fa3a9f4fa3",
+      "source_page": "generation-prompts.json",
+      "license": "AI 生成模拟素材，非真实照片",
+      "evaluation_split": "new_ai_simulated_scenes",
+      "scene_group": "synthetic-cables-shadow",
+      "synthetic": true,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "AI 模拟，非实拍：地面黑色线圈、圆形卷线盘、椅子投影、拖鞋；没有实际坑洞。",
+      "reviewer": "Visual review before predictions",
+      "blue_ground": false
+    },
+    {
+      "file": "synthetic-dark-shoes.png",
+      "sha256": "2a61219f6a110d9b510266346b97ad2fc07539fb82b1e11b54dbd9fb5f553327",
+      "source_page": "generation-prompts.json",
+      "license": "AI 生成模拟素材，非真实照片",
+      "evaluation_split": "new_ai_simulated_scenes",
+      "scene_group": "synthetic-dark-shoes",
+      "synthetic": true,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "AI 模拟，非实拍：较暗灰地板上的黑皮鞋、深色鞋口、皱褶黑布袋；检查低对比度。",
+      "reviewer": "Visual review before predictions",
+      "blue_ground": false
+    },
+    {
+      "file": "synthetic-floor-circles.png",
+      "sha256": "d994b4c24d7101a851d8d858f69e5f5a99c4a5e63c2ddda5dc4424abc59a6a63",
+      "source_page": "generation-prompts.json",
+      "license": "AI 生成模拟素材，非真实照片",
+      "evaluation_split": "new_ai_simulated_scenes",
+      "scene_group": "synthetic-floor-circles",
+      "synthetic": true,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "AI 模拟，非实拍：地面黑色圆形装饰图案、远处黑地垫及垃圾桶，图案与地面齐平。",
+      "reviewer": "Visual review before predictions",
+      "blue_ground": false
+    },
+    {
+      "file": "synthetic-round-mat-jacket.png",
+      "sha256": "7eede024c24e3c22de6d6e08baaba7d93563bd5bafa08487446371eb49ef665d",
+      "source_page": "generation-prompts.json",
+      "license": "AI 生成模拟素材，非真实照片",
+      "evaluation_split": "new_ai_simulated_scenes",
+      "scene_group": "synthetic-round-mat-jacket",
+      "synthetic": true,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "AI 模拟，非实拍：浅色地板上的圆形黑垫、黑色外套、圆形椅轮。黑垫覆盖在完整地面上。",
+      "reviewer": "Visual review before predictions",
+      "blue_ground": false
+    },
+    {
+      "file": "synthetic-shoes-bag.png",
+      "sha256": "883f1fb8922f4858eb8f9853f6808984d7632aa447d3d2a868e84e809b5ddbb2",
+      "source_page": "generation-prompts.json",
+      "license": "AI 生成模拟素材，非真实照片",
+      "evaluation_split": "new_ai_simulated_scenes",
+      "scene_group": "synthetic-shoes-bag",
+      "synthetic": true,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "AI 模拟，非实拍：蓝灰色实验室地板上的脱下黑鞋、鞋口、黑色背包、椅脚和反光。",
+      "reviewer": "Visual review before predictions",
+      "blue_ground": true
+    },
+    {
+      "file": "synthetic-trash-umbrella.png",
+      "sha256": "2e67f0cde6a39e4c8ff9ffd88e0c98c0187abe7c158bb96c0f08102a0f38fbe3",
+      "source_page": "generation-prompts.json",
+      "license": "AI 生成模拟素材，非真实照片",
+      "evaluation_split": "new_ai_simulated_scenes",
+      "scene_group": "synthetic-trash-umbrella",
+      "synthetic": true,
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "review_notes": "AI 模拟，非实拍：黑垃圾袋、雨伞和小轮子，塑料褶皱与反光不是积水。",
+      "reviewer": "Visual review before predictions",
+      "blue_ground": false
+    },
+    {
+      "file": "hf-test-26.jpg",
+      "source_page": "https://huggingface.co/datasets/taroii/pothole-detection",
+      "source_split": "test",
+      "source_row": 26,
+      "source_label": 1,
+      "download_url": "https://datasets-server.huggingface.co/cached-assets/taroii/pothole-detection/--/930672a382fd1595efea309633e81d73166f1369/--/default/test/26/image/image.jpg?Expires=1793346490&Signature=sx2hAu4fYIp42n0bAcvvrohHnBV~5kJDfe4l2b7Y7r7IhSwDxrmUqARj0t9~Iz60pTG0nwEQwyusU7ffkzKcaMtXyJq5tCuNGwUw44hyNVnazfIbhzuVgw7USnYJihzZdkNvdIL1SQ4THmQEWKY-WgBCrD7oDgTSa-YUpXXiSfiQOAgtRYBf6LmWhj0gVO9R4QaNF8nxyUwL7lrI2~W-SbrZOQ-tEnI3CoOOrxuGf7DUNOJpkARwPzyZ87F0OLTMDlwgPjyhlT~VxWrBd8pAOVNmh5GBJNYFDhj9afUSm72SQmqxsDxoYuNBbW9762rfQb6MdwhwEGUuhyw~iebQkg__&Key-Pair-Id=K3C0L9WB6U5DUC",
+      "sha256": "bbf74188d5af01ac760f981c9ee856b5fbac747fc62f34c376731475b0111165",
+      "license": "No explicit license found in dataset card; local evaluation only",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pothole": true
+      },
+      "blue_ground": false,
+      "obvious_puddle": true,
+      "obvious_pothole": true,
+      "review_notes": "Clear water-filled pothole with exposed rim",
+      "reviewer": "Agent visual review before model inference",
+      "scene_group": "hf-test-26",
+      "evaluation_split": "existing_positive_and_blue_controls",
+      "previous_material_nearest_phash_distance": 20,
+      "original_evaluation_split": "development_after_round1",
+      "synthetic": false
+    },
+    {
+      "file": "hf-test-37.jpg",
+      "source_page": "https://huggingface.co/datasets/taroii/pothole-detection",
+      "source_split": "test",
+      "source_row": 37,
+      "source_label": 1,
+      "download_url": "https://datasets-server.huggingface.co/cached-assets/taroii/pothole-detection/--/930672a382fd1595efea309633e81d73166f1369/--/default/test/37/image/image.jpg?Expires=1793346490&Signature=Kb-52qyBDbsjdpfELh0jjByhmeZuQSUoeRyNqjlC7ms5GrczD3kyB8Aiq0Cmn4yfZDZsUUj6JkTrLK0s4bsfGOi~VgbGCBZ2PKAluRy2Mc3ts5P-N00o17tjCbXXrpQCADM~jSX7eDsH1QMXGLbxZUZ3Dyzk6pSTYRI99KOlqV5JSI1X0TAsdTEDpFgIrvHkRBjS10~TtUmo8toiAvt62XzS-IcmsLsx-EOahC329UqySZaGeKQzW4e-HBN69a4Fui7uQ4NBJrW9lsr48S9~VLoebvEwm34170HZsfguJQd1gokdScZ940bgVw9ID8vJWSqWvfsWsRyib5dHlBEMVg__&Key-Pair-Id=K3C0L9WB6U5DUC",
+      "sha256": "05089e13ed03b6f78e82b4f46aae3ca08528af87af59eff1f6775e7ff5236818",
+      "license": "No explicit license found in dataset card; local evaluation only",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": true
+      },
+      "blue_ground": false,
+      "obvious_puddle": false,
+      "obvious_pothole": true,
+      "review_notes": "Clearly bounded dry cavity",
+      "reviewer": "Agent visual review before model inference",
+      "scene_group": "hf-test-37",
+      "evaluation_split": "existing_positive_and_blue_controls",
+      "previous_material_nearest_phash_distance": 22,
+      "original_evaluation_split": "development_after_round1",
+      "synthetic": false
+    },
+    {
+      "file": "150099885.jpg",
+      "pageid": 150099885,
+      "title": "File:Interior of the Mița the Cyclist House, Bucharest (46).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Interior_of_the_Mi%C8%9Ba_the_Cyclist_House,_Bucharest_(46).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Interior_of_the_Mi%C8%9Ba_the_Cyclist_House%2C_Bucharest_%2846%29.jpg/960px-Interior_of_the_Mi%C8%9Ba_the_Cyclist_House%2C_Bucharest_%2846%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "31bcfd4e3b56925d5b68c4565648d56986124aab692498cf5b22bef81e4ca303",
+      "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Neoclassicism_Enthusiast\" title=\"User:Neoclassicism Enthusiast\">Neoclassicism Enthusiast</a>",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "Interior of the Mița the Cyclist House, Bucharest",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "blue_ground": true,
+      "review_notes": "Blue carpeted stairs: negative for puddle, stairs are present",
+      "reviewer": "Agent visual review before inference",
+      "scene_group": "150099885",
+      "evaluation_split": "existing_positive_and_blue_controls",
+      "difficulty": "clear",
+      "stairs_visible": true,
+      "obvious_puddle": false,
+      "obvious_pothole": false,
+      "previous_material_nearest_phash_distance": 18,
+      "original_evaluation_split": "development_after_round1",
+      "synthetic": false
+    },
+    {
+      "file": "122433233.jpg",
+      "pageid": 122433233,
+      "title": "File:Interior of the Great Mosque of Diyarbakır (1).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Interior_of_the_Great_Mosque_of_Diyarbak%C4%B1r_(1).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Interior_of_the_Great_Mosque_of_Diyarbak%C4%B1r_%281%29.jpg/960px-Interior_of_the_Great_Mosque_of_Diyarbak%C4%B1r_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "31594655399d1ba40179a1238d5ae2ea9e43058a4f845d718c552509f9e7fd7f",
+      "artist": "Radosław Botev",
+      "license": "CC BY 3.0 pl",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/pl/deed.en",
+      "description": "Interior of the Great Mosque of Diyarbakır, Turkey",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pothole": false
+      },
+      "blue_ground": true,
+      "review_notes": "Clearly blue dry mosque carpet",
+      "reviewer": "Agent visual review before inference",
+      "scene_group": "diyarbakir-mosque",
+      "evaluation_split": "existing_positive_and_blue_controls",
+      "difficulty": "clear",
+      "stairs_visible": false,
+      "obvious_puddle": false,
+      "obvious_pothole": false,
+      "previous_material_nearest_phash_distance": 16,
+      "original_evaluation_split": "development_after_round1",
+      "synthetic": false
+    }
+  ]
+}

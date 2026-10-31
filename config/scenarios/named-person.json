@@ -1,0 +1,13 @@
+{
+  "description": "SCRIPTED MOCK ONLY: fixed photo and simulated beam on its central person; not physical calibration.",
+  "segments": [
+    {"seconds": 3, "cm": 250, "direction": "front", "calibration_id": "photo-person-fixture"},
+    {"seconds": 3, "cm": 90, "direction": "front", "calibration_id": "photo-person-fixture"},
+    {"seconds": 1, "cm": 110, "direction": "front", "calibration_id": "photo-person-fixture"},
+    {"seconds": 1, "cm": 95, "direction": "front", "calibration_id": "photo-person-fixture"},
+    {"seconds": 1, "cm": 105, "direction": "front", "calibration_id": "photo-person-fixture"},
+    {"seconds": 2, "cm": 150, "direction": "front", "calibration_id": "photo-person-fixture"},
+    {"seconds": 3, "cm": 90, "direction": "front", "calibration_id": "photo-person-fixture"},
+    {"seconds": 2, "cm": 200, "direction": "front", "calibration_id": "photo-person-fixture"}
+  ]
+}

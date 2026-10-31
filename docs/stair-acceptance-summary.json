@@ -1,0 +1,2074 @@
+{
+  "kind": "local_stair_readiness_audit",
+  "run_id": "53dcfe89ff",
+  "current_runtime_direction_enabled": false,
+  "direction_acceptance_passed": false,
+  "field_acceptance_passed": false,
+  "audio_playback_tested": false,
+  "label_conflicts_excluded_after_freeze": [
+    "validation-1932.jpg"
+  ],
+  "decision_basis": "Current default emits generic stairs only. Direction candidates are not events. Historical/extreme views cannot replace representative field trials.",
+  "matrix": {
+    "indoor_upstairs": {
+      "all_reviewed_views": {
+        "photos": 11,
+        "ordinary_view_photos": 6,
+        "generic_stair_warning_cases": 6,
+        "generic_stair_warning_within_3s_cases": 6,
+        "direction_model_raw_hit_cases_not_events": 2,
+        "direction_model_opposite_candidates": 2,
+        "clip_top1_correct_cases_not_events": 8,
+        "clip_top1_opposite_cases": 3
+      },
+      "ordinary_views": {
+        "photos": 6,
+        "ordinary_view_photos": 6,
+        "generic_stair_warning_cases": 5,
+        "generic_stair_warning_within_3s_cases": 5,
+        "direction_model_raw_hit_cases_not_events": 1,
+        "direction_model_opposite_candidates": 1,
+        "clip_top1_correct_cases_not_events": 4,
+        "clip_top1_opposite_cases": 2
+      },
+      "new_photos": {
+        "photos": 5,
+        "ordinary_view_photos": 3,
+        "generic_stair_warning_cases": 4,
+        "generic_stair_warning_within_3s_cases": 4,
+        "direction_model_raw_hit_cases_not_events": 1,
+        "direction_model_opposite_candidates": 1,
+        "clip_top1_correct_cases_not_events": 5,
+        "clip_top1_opposite_cases": 0
+      }
+    },
+    "indoor_downstairs": {
+      "all_reviewed_views": {
+        "photos": 10,
+        "ordinary_view_photos": 2,
+        "generic_stair_warning_cases": 4,
+        "generic_stair_warning_within_3s_cases": 4,
+        "direction_model_raw_hit_cases_not_events": 4,
+        "direction_model_opposite_candidates": 2,
+        "clip_top1_correct_cases_not_events": 6,
+        "clip_top1_opposite_cases": 3
+      },
+      "ordinary_views": {
+        "photos": 2,
+        "ordinary_view_photos": 2,
+        "generic_stair_warning_cases": 1,
+        "generic_stair_warning_within_3s_cases": 1,
+        "direction_model_raw_hit_cases_not_events": 1,
+        "direction_model_opposite_candidates": 0,
+        "clip_top1_correct_cases_not_events": 2,
+        "clip_top1_opposite_cases": 0
+      },
+      "new_photos": {
+        "photos": 6,
+        "ordinary_view_photos": 2,
+        "generic_stair_warning_cases": 3,
+        "generic_stair_warning_within_3s_cases": 3,
+        "direction_model_raw_hit_cases_not_events": 3,
+        "direction_model_opposite_candidates": 0,
+        "clip_top1_correct_cases_not_events": 3,
+        "clip_top1_opposite_cases": 3
+      }
+    },
+    "outdoor_upstairs": {
+      "all_reviewed_views": {
+        "photos": 13,
+        "ordinary_view_photos": 12,
+        "generic_stair_warning_cases": 10,
+        "generic_stair_warning_within_3s_cases": 10,
+        "direction_model_raw_hit_cases_not_events": 6,
+        "direction_model_opposite_candidates": 0,
+        "clip_top1_correct_cases_not_events": 8,
+        "clip_top1_opposite_cases": 4
+      },
+      "ordinary_views": {
+        "photos": 12,
+        "ordinary_view_photos": 12,
+        "generic_stair_warning_cases": 10,
+        "generic_stair_warning_within_3s_cases": 10,
+        "direction_model_raw_hit_cases_not_events": 6,
+        "direction_model_opposite_candidates": 0,
+        "clip_top1_correct_cases_not_events": 7,
+        "clip_top1_opposite_cases": 4
+      },
+      "new_photos": {
+        "photos": 7,
+        "ordinary_view_photos": 7,
+        "generic_stair_warning_cases": 6,
+        "generic_stair_warning_within_3s_cases": 6,
+        "direction_model_raw_hit_cases_not_events": 4,
+        "direction_model_opposite_candidates": 0,
+        "clip_top1_correct_cases_not_events": 3,
+        "clip_top1_opposite_cases": 3
+      }
+    },
+    "outdoor_downstairs": {
+      "all_reviewed_views": {
+        "photos": 9,
+        "ordinary_view_photos": 9,
+        "generic_stair_warning_cases": 1,
+        "generic_stair_warning_within_3s_cases": 1,
+        "direction_model_raw_hit_cases_not_events": 2,
+        "direction_model_opposite_candidates": 1,
+        "clip_top1_correct_cases_not_events": 6,
+        "clip_top1_opposite_cases": 0
+      },
+      "ordinary_views": {
+        "photos": 9,
+        "ordinary_view_photos": 9,
+        "generic_stair_warning_cases": 1,
+        "generic_stair_warning_within_3s_cases": 1,
+        "direction_model_raw_hit_cases_not_events": 2,
+        "direction_model_opposite_candidates": 1,
+        "clip_top1_correct_cases_not_events": 6,
+        "clip_top1_opposite_cases": 0
+      },
+      "new_photos": {
+        "photos": 3,
+        "ordinary_view_photos": 3,
+        "generic_stair_warning_cases": 0,
+        "generic_stair_warning_within_3s_cases": 0,
+        "direction_model_raw_hit_cases_not_events": 0,
+        "direction_model_opposite_candidates": 0,
+        "clip_top1_correct_cases_not_events": 1,
+        "clip_top1_opposite_cases": 0
+      }
+    }
+  },
+  "nonstair_negative_photos": 9,
+  "nonstair_generic_stair_false_warning_cases": 1,
+  "nonstair_direction_raw_false_candidate_cases": 0,
+  "nonstair_clip_direction_top1_cases": 1,
+  "cases": [
+    {
+      "file": "stairs-00.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "other",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-01.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "other",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-02.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [
+        "downstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-03.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-04.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-05.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "existing_direction_development",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-06:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427865.781,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 104,
+          "confidence": 0.7113545536994934,
+          "bbox_normalized": [
+            0.2604166666666667,
+            0.09375,
+            0.59375,
+            0.53125
+          ],
+          "captured_at": 427865.265,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427864.75,
+          "first_observed_at": 427865.265,
+          "confirmed_at": 427865.781,
+          "confirmation_latency_ms": 1031.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-06"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-06.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-07.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": null,
+        "upstairs_visible": null,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [
+        "downstairs"
+      ],
+      "clip_top1": "other",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-08.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-09.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-10:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427886.031,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 183,
+          "confidence": 0.6602552533149719,
+          "bbox_normalized": [
+            0.4166666666666667,
+            0.625,
+            0.75,
+            1.0
+          ],
+          "captured_at": 427885.515,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427885.0,
+          "first_observed_at": 427885.515,
+          "confirmed_at": 427886.031,
+          "confirmation_latency_ms": 1031.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs, stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-10"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "downstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": true
+    },
+    {
+      "file": "stairs-10.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [
+        "downstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-11.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": null,
+        "upstairs_visible": null,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-12:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427897.062,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 226,
+          "confidence": 0.6901008486747742,
+          "bbox_normalized": [
+            0.3854166666666667,
+            0.5833333333333334,
+            0.625,
+            1.0
+          ],
+          "captured_at": 427896.546,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427895.781,
+          "first_observed_at": 427896.296,
+          "confirmed_at": 427897.062,
+          "confirmation_latency_ms": 1281.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-12"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-12.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-13:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427901.656,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 244,
+          "confidence": 0.6668462753295898,
+          "bbox_normalized": [
+            0.17708333333333334,
+            0.7708333333333334,
+            0.6666666666666666,
+            1.0
+          ],
+          "captured_at": 427901.14,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427900.375,
+          "first_observed_at": 427901.14,
+          "confirmed_at": 427901.656,
+          "confirmation_latency_ms": 1281.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs, stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-13"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-13.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-14:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427907.046,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 265,
+          "confidence": 0.8800271153450012,
+          "bbox_normalized": [
+            0.3541666666666667,
+            0.8125,
+            0.7291666666666666,
+            1.0
+          ],
+          "captured_at": 427906.531,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427905.765,
+          "first_observed_at": 427906.281,
+          "confirmed_at": 427907.046,
+          "confirmation_latency_ms": 1281.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-14"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-14.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-15:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427911.875,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 284,
+          "confidence": 0.7243820428848267,
+          "bbox_normalized": [
+            0.625,
+            0.3854166666666667,
+            0.7604166666666666,
+            0.6979166666666666
+          ],
+          "captured_at": 427911.359,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427910.625,
+          "first_observed_at": 427911.093,
+          "confirmed_at": 427911.875,
+          "confirmation_latency_ms": 1250.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-15"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-15.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-16.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-17.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-18:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427927.25,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 344,
+          "confidence": 0.9239808320999146,
+          "bbox_normalized": [
+            0.23958333333333334,
+            0.7395833333333334,
+            0.78125,
+            1.0
+          ],
+          "captured_at": 427926.734,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427926.0,
+          "first_observed_at": 427926.734,
+          "confirmed_at": 427927.25,
+          "confirmation_latency_ms": 1250.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-18"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "downstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": true
+    },
+    {
+      "file": "stairs-18.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-19:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427932.671,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 365,
+          "confidence": 0.7127333283424377,
+          "bbox_normalized": [
+            0.28125,
+            0.75,
+            0.78125,
+            1.0
+          ],
+          "captured_at": 427932.156,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427931.625,
+          "first_observed_at": 427932.156,
+          "confirmed_at": 427932.671,
+          "confirmation_latency_ms": 1046.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs, stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-19"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-19.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-20:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427937.312,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 384,
+          "confidence": 0.8862929344177246,
+          "bbox_normalized": [
+            0.3125,
+            0.8020833333333334,
+            0.6770833333333334,
+            1.0
+          ],
+          "captured_at": 427937.046,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427936.265,
+          "first_observed_at": 427936.781,
+          "confirmed_at": 427937.312,
+          "confirmation_latency_ms": 1047.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-20"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-20.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-21.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-22.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "stairs-23.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": true
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "existing_direction_development",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-44396969.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-51516505.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-26:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427968.64,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 505,
+          "confidence": 0.8919522762298584,
+          "bbox_normalized": [
+            0.22916666666666666,
+            0.25,
+            0.84375,
+            0.8333333333333334
+          ],
+          "captured_at": 427968.125,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427967.359,
+          "first_observed_at": 427967.875,
+          "confirmed_at": 427968.64,
+          "confirmation_latency_ms": 1281.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-26"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "downstairs"
+      ],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": true
+    },
+    {
+      "file": "new-114083190.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-27:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427974.062,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 525,
+          "confidence": 0.6439350843429565,
+          "bbox_normalized": [
+            0.4270833333333333,
+            0.46875,
+            0.6875,
+            0.75
+          ],
+          "captured_at": 427973.281,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427972.765,
+          "first_observed_at": 427973.281,
+          "confirmed_at": 427974.062,
+          "confirmation_latency_ms": 1297.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-27"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "downstairs"
+      ],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-35132162.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-28:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 427978.718,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 544,
+          "confidence": 0.6626655459403992,
+          "bbox_normalized": [
+            0.21875,
+            0.6354166666666666,
+            0.65625,
+            0.9270833333333334
+          ],
+          "captured_at": 427978.203,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 427977.421,
+          "first_observed_at": 427977.937,
+          "confirmed_at": 427978.718,
+          "confirmation_latency_ms": 1297.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-28"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "downstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-688573.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-83166486.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-202081527.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": null,
+        "downstairs_visible": null,
+        "upstairs_visible": null,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-12182203.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "other",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-33971059.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-33:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428004.937,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 646,
+          "confidence": 0.686041533946991,
+          "bbox_normalized": [
+            0.59375,
+            0.78125,
+            0.75,
+            0.9166666666666666
+          ],
+          "captured_at": 428004.421,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428003.656,
+          "first_observed_at": 428004.171,
+          "confirmed_at": 428004.937,
+          "confirmation_latency_ms": 1281.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-33"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-27552990.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-34:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428009.593,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 664,
+          "confidence": 0.9279636740684509,
+          "bbox_normalized": [
+            0.2708333333333333,
+            0.4375,
+            0.6041666666666666,
+            1.0
+          ],
+          "captured_at": 428009.078,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428008.296,
+          "first_observed_at": 428008.812,
+          "confirmed_at": 428009.593,
+          "confirmation_latency_ms": 1297.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-34"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-98949912.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-35:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428014.984,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 685,
+          "confidence": 0.6638354063034058,
+          "bbox_normalized": [
+            0.28125,
+            0.8541666666666666,
+            0.6458333333333334,
+            0.9166666666666666
+          ],
+          "captured_at": 428014.453,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428013.937,
+          "first_observed_at": 428014.453,
+          "confirmed_at": 428014.984,
+          "confirmation_latency_ms": 1047.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-35"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "downstairs",
+        "upstairs"
+      ],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-118089650.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-36:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428019.89,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 703,
+          "confidence": 0.8744167685508728,
+          "bbox_normalized": [
+            0.23958333333333334,
+            0.8333333333333334,
+            0.8854166666666666,
+            1.0
+          ],
+          "captured_at": 428019.109,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428018.578,
+          "first_observed_at": 428019.109,
+          "confirmed_at": 428019.89,
+          "confirmation_latency_ms": 1312.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-36"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-83164620.jpg",
+      "environment": "indoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": true,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-12779780.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-38:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428030.468,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 745,
+          "confidence": 0.8182792663574219,
+          "bbox_normalized": [
+            0.2604166666666667,
+            0.6666666666666666,
+            0.75,
+            1.0
+          ],
+          "captured_at": 428029.953,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428029.437,
+          "first_observed_at": 428029.953,
+          "confirmed_at": 428030.468,
+          "confirmation_latency_ms": 1031.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-38"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-9277569.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": null,
+        "downstairs_visible": null,
+        "upstairs_visible": null,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-39:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428035.343,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 764,
+          "confidence": 0.7624205946922302,
+          "bbox_normalized": [
+            0.20833333333333334,
+            0.65625,
+            0.71875,
+            1.0
+          ],
+          "captured_at": 428034.812,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428034.046,
+          "first_observed_at": 428034.562,
+          "confirmed_at": 428035.343,
+          "confirmation_latency_ms": 1297.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-39"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "other",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-114075470.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "level_ground",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-13942540.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "level_ground",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-17732977.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-42:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428050.984,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 825,
+          "confidence": 0.750057578086853,
+          "bbox_normalized": [
+            0.3333333333333333,
+            0.65625,
+            0.53125,
+            0.9166666666666666
+          ],
+          "captured_at": 428050.484,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428049.687,
+          "first_observed_at": 428050.203,
+          "confirmed_at": 428050.984,
+          "confirmation_latency_ms": 1297.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-42"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-119544102.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-13619707.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-44:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428060.984,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 864,
+          "confidence": 0.8163678646087646,
+          "bbox_normalized": [
+            0.3541666666666667,
+            0.3333333333333333,
+            0.5833333333333334,
+            0.9375
+          ],
+          "captured_at": 428060.484,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428059.703,
+          "first_observed_at": 428060.484,
+          "confirmed_at": 428060.984,
+          "confirmation_latency_ms": 1281.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-44"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-13980917.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": true,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-109171722.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-46:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428071.281,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 903,
+          "confidence": 0.8968156576156616,
+          "bbox_normalized": [
+            0.3020833333333333,
+            0.4895833333333333,
+            0.65625,
+            0.90625
+          ],
+          "captured_at": 428070.515,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428069.984,
+          "first_observed_at": 428070.515,
+          "confirmed_at": 428071.281,
+          "confirmation_latency_ms": 1297.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs, stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-46"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "upstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-106627041.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-47:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428076.421,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 924,
+          "confidence": 0.841762125492096,
+          "bbox_normalized": [
+            0.21875,
+            0.5625,
+            0.7916666666666666,
+            1.0
+          ],
+          "captured_at": 428075.906,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428075.39,
+          "first_observed_at": 428075.906,
+          "confirmed_at": 428076.421,
+          "confirmation_latency_ms": 1031.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairway",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-47"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-110278460.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": null,
+        "downstairs_visible": null,
+        "upstairs_visible": null,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "level_ground",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "new-106167083.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "stairs_visible": true,
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "new_real_stair_photos",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-49:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428086.687,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 964,
+          "confidence": 0.8261069059371948,
+          "bbox_normalized": [
+            0.11458333333333333,
+            0.3958333333333333,
+            0.7604166666666666,
+            1.0
+          ],
+          "captured_at": 428086.187,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428085.406,
+          "first_observed_at": 428085.921,
+          "confirmed_at": 428086.687,
+          "confirmation_latency_ms": 1281.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-49"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [
+        "upstairs"
+      ],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "16012204.jpg",
+      "environment": "indoor",
+      "truth": {
+        "visible_puddle": false,
+        "visible_pothole": false,
+        "stairs_visible": false,
+        "upstairs_visible": false,
+        "downstairs_visible": false
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "other",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "119576611.jpg",
+      "environment": "indoor",
+      "truth": {
+        "visible_puddle": false,
+        "visible_pothole": false,
+        "stairs_visible": false,
+        "upstairs_visible": false,
+        "downstairs_visible": false
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "downstairs",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "9937733.jpg",
+      "environment": "indoor",
+      "truth": {
+        "visible_puddle": false,
+        "visible_pothole": false,
+        "stairs_visible": false,
+        "upstairs_visible": false,
+        "downstairs_visible": false
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "other",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "130136590.jpg",
+      "environment": "indoor",
+      "truth": {
+        "visible_puddle": false,
+        "visible_pothole": false,
+        "stairs_visible": false,
+        "upstairs_visible": false,
+        "downstairs_visible": false
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "other",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "30348865.jpg",
+      "environment": "indoor",
+      "truth": {
+        "visible_puddle": false,
+        "visible_pothole": false,
+        "stairs_visible": false,
+        "upstairs_visible": false,
+        "downstairs_visible": false
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "level_ground",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "43193432.jpg",
+      "environment": "indoor",
+      "truth": {
+        "visible_puddle": false,
+        "visible_pothole": false,
+        "stairs_visible": false,
+        "upstairs_visible": false,
+        "downstairs_visible": false
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "other",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "validation-0000.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": false
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "level_ground",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "validation-0966.jpg",
+      "environment": "indoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": false
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "level_ground",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "validation-1932.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured",
+        "stairs_visible": false
+      },
+      "label_conflict_excluded": true,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [],
+      "timely_generic_stair_event": false,
+      "raw_direction_labels": [],
+      "clip_top1": "level_ground",
+      "existing_down_confirmation": false
+    },
+    {
+      "file": "validation-2898.jpg",
+      "environment": "outdoor",
+      "truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured",
+        "stairs_visible": false
+      },
+      "label_conflict_excluded": false,
+      "extreme_viewpoint": false,
+      "split": "existing_nonstair_regression",
+      "generic_stair_events": [
+        {
+          "schema_version": "2.0",
+          "event_id": "53dcfe89ff:case-59:ground:semantic-1",
+          "kind": "GROUND_HAZARD",
+          "phrase_id": "stairs_ahead",
+          "text": "Possible stairs ahead.",
+          "priority": "SAFETY",
+          "created_at": 428137.828,
+          "ttl_ms": 1500,
+          "object_class": "stairs",
+          "track_id": "semantic-1",
+          "frame_id": 1164,
+          "confidence": 0.7651611566543579,
+          "bbox_normalized": [
+            0.7708333333333334,
+            0.5208333333333334,
+            1.0,
+            0.84375
+          ],
+          "captured_at": 428137.312,
+          "source_model": "segformer-b0-ade20k-onnx",
+          "first_visible_captured_at": 428136.562,
+          "first_observed_at": 428137.312,
+          "confirmed_at": 428137.828,
+          "confirmation_latency_ms": 1266.0,
+          "source_revision": "d3e5499fa8701ff0453ca940a8dfeae39b2f1504",
+          "raw_label": "stairs",
+          "evidence": null,
+          "source": "vision",
+          "distance_m": null,
+          "input_source": "replay",
+          "simulation_case": "case-59"
+        }
+      ],
+      "timely_generic_stair_event": true,
+      "raw_direction_labels": [],
+      "clip_top1": "level_ground",
+      "existing_down_confirmation": false
+    }
+  ],
+  "catalog_sha256": "5380439140b7da292583f0cc0d4a21bd335b636db0e3abd982d106e6076cba8b"
+}

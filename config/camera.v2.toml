@@ -1,0 +1,78 @@
+[vision]
+# Ground skips the object model. Use --mode balanced to run the previous combined demo.
+mode = "ground"
+
+[server]
+host = "127.0.0.1"
+port = 8000
+preview_fps = 12
+
+[camera]
+device = "auto"
+width = 640
+height = 480
+fps = 15
+
+[model]
+directory = "models/yolo11n"
+size = 416
+confidence = 0.45
+threads = 1
+max_fps = 6
+
+[road]
+directory = "models/v2/road-distress"
+size = 416
+confidence = 0.4
+threads = 1
+max_fps = 1.5
+
+[pothole]
+backend = "yolox_ncnn_research"
+directory = "models/v2/pothole-yolox-research"
+size = 640
+confidence = 0.6
+threads = 1
+max_fps = 1.5
+
+[puddle]
+enabled = true
+directory = "models/v2/puddle-calibrated"
+size = 640
+confidence = 0.25
+threads = 1
+max_fps = 1.5
+
+[semantic]
+directory = "models/v2/segformer"
+stair_context_directory = "models/v2/stairs-context"
+size = 384
+confidence = 0.55
+threads = 1
+max_fps = 1.5
+
+[warning]
+roi = [[0.25,0.25],[0.75,0.25],[0.95,1.0],[0.05,1.0]]
+ground_roi = [[0.35,0.40],[0.65,0.40],[0.95,1.0],[0.05,1.0]]
+cooldown_s = 8.0
+
+[distance]
+mode = "none"
+enter_m = 1.0
+leave_m = 1.2
+script = "config/scenarios/approach.json"
+# Real Pico mode must explicitly configure its actual port and mounting direction.
+port = "/dev/serial/by-id/CONFIRM_PICO_DEVICE"
+direction = "unknown"
+calibration_id = ""
+
+[association]
+verified = false
+source = "none"
+id = ""
+beam_roi = []
+
+[audio]
+enabled = true
+directory = "audio/en"
+target = ""

@@ -14,6 +14,15 @@ $cameraPhrases = @{
     camera_unavailable = 'Camera unavailable.'
     visual_unavailable = 'Visual detection unavailable.'
     visual_ready = 'Visual assistance ready.'
+    bicycle_ahead = 'Bicycle ahead.'
+    obstacle_ahead = 'Obstacle ahead.'
+    pothole_ahead = 'Possible pothole ahead. Watch your step.'
+    damaged_pavement = 'Damaged pavement ahead. Watch your step.'
+    puddle_ahead = 'Possible puddle ahead.'
+    stairs_ahead = 'Possible stairs ahead.'
+    downstairs_ahead = 'Possible steps down ahead. Watch your step.'
+    object_unavailable = 'Object detection unavailable.'
+    ground_unavailable = 'Ground detection unavailable.'
 }
 try {
     foreach ($cameraPhrase in $cameraPhrases.GetEnumerator()) {

@@ -41,6 +41,7 @@ class ArbiterEvent:
     action: str  # played | preempted | dropped_orientation | dropped_cooldown | expired | queued
     prompt_id: str
     priority: str
+    event_id: str = ""
 
 
 class OutputArbiter:
@@ -53,12 +54,21 @@ class OutputArbiter:
         safety_hold_s: float = 2.0,
         repeat_cooldown_s: float = 3.0,
         clock: Callable[[], float] = time.monotonic,
+        max_pending: int | None = None,
+        valid_request: Callable[[OutputRequest], bool] | None = None,
+        record_event: Callable[[ArbiterEvent], None] | None = None,
+        ordinary_interval_s: float = 0.0,
     ) -> None:
         self._audio = audio
         self._haptic = haptic
         self._hold = safety_hold_s
         self._cooldown = repeat_cooldown_s
         self._clock = clock
+        self._max_pending = max_pending
+        self._valid_request = valid_request or (lambda req: True)
+        self._record_event = record_event
+        self._ordinary_interval = ordinary_interval_s
+        self._last_dispatch_t = -1e9
         self._lock = threading.RLock()
         self._queue: list[tuple[int, OutputRequest]] = []
         self._seq = 0
@@ -107,6 +117,9 @@ class OutputArbiter:
         if not req.created:
             req.created = now
         with self._lock:
+            if not self._valid_request(req):
+                self._log(now, "dropped_invalid", req)
+                return False
             if req.direction is not Direction.NONE and not self._orientation_ok:
                 self._log(now, "dropped_orientation", req)
                 # tell the user what to do instead of a left/right they cannot trust
@@ -121,6 +134,14 @@ class OutputArbiter:
                 return False
             if any(r.key == req.key for _, r in self._queue):
                 return False
+
+            if self._max_pending is not None and len(self._queue) >= self._max_pending:
+                worst = max(self._queue, key=self._sort_key)
+                if req.priority >= worst[1].priority:
+                    self._log(now, "dropped_full", req)
+                    return False
+                self._queue.remove(worst)
+                self._log(now, "replaced", worst[1])
 
             self._seq += 1
             self._queue.append((self._seq, req))
@@ -139,11 +160,18 @@ class OutputArbiter:
                 self._last_played.pop(cur.key, None)
                 self._seq += 1
                 self._queue.append((self._seq, cur))
+                if self._max_pending is not None and len(self._queue) > self._max_pending:
+                    self._queue.remove(max(self._queue, key=self._sort_key))
                 self._current = None
         self.tick()
         return True
 
     # ------------------------------------------------------------------- tick
+    def cancel_pending(self, predicate=None) -> None:
+        """Cancel queued requests, optionally only those selected by a caller."""
+        with self._lock:
+            self._queue = [item for item in self._queue if predicate is not None and not predicate(item[1])]
+
     @staticmethod
     def _sort_key(item: tuple[int, OutputRequest]) -> tuple[int, int]:
         seq, req = item
@@ -161,7 +189,9 @@ class OutputArbiter:
             self._current = None
             fresh = []
             for item in self._queue:
-                if now - item[1].created > item[1].ttl_s:
+                if not self._valid_request(item[1]):
+                    self._log(now, "dropped_invalid", item[1])
+                elif now - item[1].created > item[1].ttl_s:
                     self._log(now, "expired", item[1])
                 else:
                     fresh.append(item)
@@ -170,6 +200,8 @@ class OutputArbiter:
             for item in sorted(self._queue, key=self._sort_key):
                 req = item[1]
                 if hold and not req.priority.is_safety and req.priority is not Priority.SYSTEM:
+                    continue
+                if req.priority is Priority.SAFETY and now-self._last_dispatch_t < self._ordinary_interval:
                     continue
                 if req.direction is not Direction.NONE and not self._orientation_ok:
                     self._queue.remove(item)
@@ -182,6 +214,7 @@ class OutputArbiter:
 
     def _dispatch(self, now: float, req: OutputRequest) -> None:
         self._current = req
+        self._last_dispatch_t = now
         self._last_played[req.key] = now
         if req.priority.is_safety:
             self._last_safety_t = now
@@ -195,4 +228,7 @@ class OutputArbiter:
     def _log(self, now: float, action: str, req: OutputRequest) -> None:
         if action in self.QUIET_ACTIONS:
             return
-        self.history.append(ArbiterEvent(now, action, req.prompt_id, req.priority.name))
+        event=ArbiterEvent(now, action, req.prompt_id, req.priority.name, req.event_id)
+        self.history.append(event)
+        if self._record_event is not None:
+            self._record_event(event)

@@ -1,0 +1,227 @@
+{
+  "purpose": "Frozen supplementary scenes, not a complete independent acceptance set",
+  "labels_frozen_before_evaluation_hk": "2026-10-27T01:21:00+08:00",
+  "items": [
+    {
+      "file": "independent-00.jpg",
+      "title": "File:Asphalt and Puddle No. 11.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Asphalt_and_Puddle_No._11.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Asphalt_and_Puddle_No._11.jpg/960px-Asphalt_and_Puddle_No._11.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "BogTar201213",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Lublin, streets; Asphalt and Puddle",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "8ce4501221c2b2b20e7f52a44da9422bb64b9d1eabae257479f53681a6138ada",
+      "ground_truth": {
+        "visible_puddle": null,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Radial wet/frozen appearance: liquid standing water uncertain",
+      "scene_group": "lublin-asphalt",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-01.jpg",
+      "title": "File:Asphalt and puddle.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Asphalt_and_puddle.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Asphalt_and_puddle.jpg/960px-Asphalt_and_puddle.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "BogTar201213",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Lublin, streets; Asphalt and puddle",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "eb397fa4d42599efcf65d3c4f06fb43012027dbc42ae1277010b457225684fa1",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water with reflection or ripples",
+      "scene_group": "lublin-asphalt",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-02.jpg",
+      "title": "File:A puddle after rain on a damaged asphalt surface, a storm drain grate on.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:A_puddle_after_rain_on_a_damaged_asphalt_surface,_a_storm_drain_grate_on.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/A_puddle_after_rain_on_a_damaged_asphalt_surface%2C_a_storm_drain_grate_on.jpg/960px-A_puddle_after_rain_on_a_damaged_asphalt_surface%2C_a_storm_drain_grate_on.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Tarasna0922",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Poland; A puddle after rain on a damaged asphalt surface, a storm drain grate on.",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "b7aff70c52c6342521280aa1e791beaa4183df3eb72bf7abf571c41ea5560134",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water with reflection or ripples",
+      "scene_group": "independent-02.jpg",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-03.jpg",
+      "title": "File:Muddy Puddle on a asphalt road.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Muddy_Puddle_on_a_asphalt_road.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/Muddy_Puddle_on_a_asphalt_road.jpg/960px-Muddy_Puddle_on_a_asphalt_road.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Adeyinka Ekundayo",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Heavy use or weather causes the packed asphalt to split, creating those jagged cracks around the edge where the water has pooled into a muddy puddle.",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "ed7ea1ee107d83baf909d1d41b787c2158c86897cc6a8b230373f179e5afbd3d",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water with reflection or ripples",
+      "scene_group": "independent-03.jpg",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-04.jpg",
+      "title": "File:BTV DepotSt 0022 Puddle 20060102.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:BTV_DepotSt_0022_Puddle_20060102.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/BTV_DepotSt_0022_Puddle_20060102.jpg/960px-BTV_DepotSt_0022_Puddle_20060102.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Niranjan Arminius",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Frozen puddle over asphalt in Burlington, Vermont",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "5287d7f3a37047c8b297f8d9cc0febd95e6dc3e886b528ac1c068caae24e7c2b",
+      "ground_truth": {
+        "visible_puddle": null,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Source explicitly describes frozen puddle; outside liquid-water scoring",
+      "scene_group": "independent-04.jpg",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-06.jpg",
+      "title": "File:Rain on a puddle in Tuntorp 3.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Rain_on_a_puddle_in_Tuntorp_3.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Rain_on_a_puddle_in_Tuntorp_3.jpg/960px-Rain_on_a_puddle_in_Tuntorp_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "W.carter",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Rain on a puddle in the asphalt  in Tuntorp, Brastad, Lysekil Municipality, Sweden.",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "92d56a84c2cd1977f947d88f6eb49c996a08f7b5bdab8b079d3847e648f90a27",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water with reflection or ripples",
+      "scene_group": "tuntorp-rain-series",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-07.jpg",
+      "title": "File:Rain on a puddle in Tuntorp 4.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Rain_on_a_puddle_in_Tuntorp_4.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Rain_on_a_puddle_in_Tuntorp_4.jpg/960px-Rain_on_a_puddle_in_Tuntorp_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "W.carter",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Rain on a puddle in the asphalt  in Tuntorp, Brastad, Lysekil Municipality, Sweden.",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "a51f31686c6a1de299684c5f692c1daa81efb489598c4a85ab2793fe125e000f",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water with reflection or ripples",
+      "scene_group": "tuntorp-rain-series",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-08.jpg",
+      "title": "File:Rain on a puddle in Tuntorp 2.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Rain_on_a_puddle_in_Tuntorp_2.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Rain_on_a_puddle_in_Tuntorp_2.jpg/960px-Rain_on_a_puddle_in_Tuntorp_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "W.carter",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Rain on a puddle in the asphalt  in Tuntorp, Brastad, Lysekil Municipality, Sweden.",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "318ce6b9ec5042fe9c3d55becbea33c4cb6f18f50c9d776d0a0aa6ee11d2eca3",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water with reflection or ripples",
+      "scene_group": "tuntorp-rain-series",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-09.jpg",
+      "title": "File:Rain on a puddle in Tuntorp 5.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Rain_on_a_puddle_in_Tuntorp_5.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Rain_on_a_puddle_in_Tuntorp_5.jpg/960px-Rain_on_a_puddle_in_Tuntorp_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "W.carter",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Rain on a puddle in the asphalt  in Tuntorp, Brastad, Lysekil Municipality, Sweden.",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "0cf2ad488241e1de7effbb008c80cd2caf66c87388900a82d5317a2102fc8244",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water with reflection or ripples",
+      "scene_group": "tuntorp-rain-series",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-10.jpg",
+      "title": "File:Rain on a puddle in Tuntorp 1.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Rain_on_a_puddle_in_Tuntorp_1.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Rain_on_a_puddle_in_Tuntorp_1.jpg/960px-Rain_on_a_puddle_in_Tuntorp_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "W.carter",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Rain on a puddle in the asphalt  in Tuntorp, Brastad, Lysekil Municipality, Sweden.",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "063dbef13786b6afba6488b861d7e5bffc3d17beabdb86750122734ec48aa8b8",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water with reflection or ripples",
+      "scene_group": "tuntorp-rain-series",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    },
+    {
+      "file": "independent-11.jpg",
+      "title": "File:D\u00fclmen, Merfeld, Feldweg am M\u00fchlenbach -- 2021 -- 4278-80.jpg",
+      "query": "puddle asphalt",
+      "source_page": "https://commons.wikimedia.org/wiki/File:D%C3%BClmen,_Merfeld,_Feldweg_am_M%C3%BChlenbach_--_2021_--_4278-80.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/D%C3%BClmen%2C_Merfeld%2C_Feldweg_am_M%C3%BChlenbach_--_2021_--_4278-80.jpg/960px-D%C3%BClmen%2C_Merfeld%2C_Feldweg_am_M%C3%BChlenbach_--_2021_--_4278-80.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Dietmar Rabich",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Farm road at M\u00fchlenbach in the hamlet in Merfeld, D\u00fclmen, North Rhine-Westphalia, Germany",
+      "review_label": "visually_reviewed_before_frozen_puddle_pipeline_evaluation",
+      "sha256": "62c4412d23db36020c8a937e1e1aa74204897454b1fa41323fad99e818c6e102",
+      "ground_truth": {
+        "visible_puddle": null,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Wet roadway with small edge pools; path relevance uncertain",
+      "scene_group": "independent-11.jpg",
+      "model_training_overlap": "unknown; not used in our earlier puddle engineering development set"
+    }
+  ],
+  "positive_scene_groups": 4
+}

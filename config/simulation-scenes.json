@@ -1,0 +1,386 @@
+{
+  "purpose": "public real photo replay simulation; no training",
+  "items": [
+    {
+      "file": "puddles-0.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Road and a puddle in Akamas Peninsula, Cyprus.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Road_and_a_puddle_in_Akamas_Peninsula,_Cyprus.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Road_and_a_puddle_in_Akamas_Peninsula%2C_Cyprus.jpg/960px-Road_and_a_puddle_in_Akamas_Peninsula%2C_Cyprus.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "bc77a95fdfe9d5871094831d8761f92bbf1eb30f10affbe54985ce54707f39af",
+      "artist": "Michal Klajban",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Road and a puddle in Akamas Peninsula, Cyprus",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "cyprus-road"
+    },
+    {
+      "file": "puddles-1.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Muddy road in Akamas Peninsula, Cyprus 02.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Muddy_road_in_Akamas_Peninsula,_Cyprus_02.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Muddy_road_in_Akamas_Peninsula%2C_Cyprus_02.jpg/960px-Muddy_road_in_Akamas_Peninsula%2C_Cyprus_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "db99b008c7e21709e48e002a5443ea3094429f6955362feef91780d38034dcbd",
+      "artist": "Podzemnik",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "cyprus-road"
+    },
+    {
+      "file": "puddles-2.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Turners Puddle, farm road - geograph.org.uk - 5680888.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Turners_Puddle,_farm_road_-_geograph.org.uk_-_5680888.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Turners_Puddle%2C_farm_road_-_geograph.org.uk_-_5680888.jpg/960px-Turners_Puddle%2C_farm_road_-_geograph.org.uk_-_5680888.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "f6d08f6f029eea5bedf308f25b539b3acd07df1840df3b9e77774d18a10659e4",
+      "artist": "Mike Faherty\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Turners Puddle, farm road\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-2.jpg"
+    },
+    {
+      "file": "puddles-3.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Puddle, Hospital Road, Omagh - geograph.org.uk - 628843.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle,_Hospital_Road,_Omagh_-_geograph.org.uk_-_628843.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Puddle%2C_Hospital_Road%2C_Omagh_-_geograph.org.uk_-_628843.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "sha256": "b6c75e89110ca58e6d3f6718de76a3d34cf9ec42fa25977402feb5360cebe7bd",
+      "artist": "Kenneth Allen",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle, Hospital Road, Omagh. A good spot for a splash!",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-3.jpg"
+    },
+    {
+      "file": "puddles-4.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Puddle by road - geograph.org.uk - 657605.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_by_road_-_geograph.org.uk_-_657605.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Puddle_by_road_-_geograph.org.uk_-_657605.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "sha256": "9284ea468f3c3ef865de9358e0e10348ff3c51ebb6d65db0b2f678734710eb91",
+      "artist": "Mark Lange",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle by road It has been very wet the last couple of weeks.  This large puddle is on the corner of the road to Meifod, with a track leading down to the W.",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-4.jpg"
+    },
+    {
+      "file": "puddles-6.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Puddle Road - geograph.org.uk - 3314928.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_Road_-_geograph.org.uk_-_3314928.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/Puddle_Road_-_geograph.org.uk_-_3314928.jpg/960px-Puddle_Road_-_geograph.org.uk_-_3314928.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "d80637298dbe8cf22e3886d3a6e16dfb499bcf8d02252979a5fea8cc077e1350",
+      "artist": "David Liddle\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle Road\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-6.jpg"
+    },
+    {
+      "file": "puddles-11.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Puddle by Teignmouth Road, Torquay - geograph.org.uk - 4731096.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_by_Teignmouth_Road,_Torquay_-_geograph.org.uk_-_4731096.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Puddle_by_Teignmouth_Road%2C_Torquay_-_geograph.org.uk_-_4731096.jpg/960px-Puddle_by_Teignmouth_Road%2C_Torquay_-_geograph.org.uk_-_4731096.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "5c97aa2d46c572161ac42f45030e826522eb6ca923e3637a4e8a3adc15526c0b",
+      "artist": "Derek Harper\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle by Teignmouth Road, Torquay\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-11.jpg"
+    },
+    {
+      "file": "dry-road-0.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 2.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_2.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Damaged_asphalt_surface_2.jpg/960px-Damaged_asphalt_surface_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "ffaa7882529068a1c931fba951a076f4753c9da4598fd62ced2286eca8caee32",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "damaged asphalt surface 2\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-1.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 5.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_5.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Damaged_asphalt_surface_5.jpg/960px-Damaged_asphalt_surface_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "d12ba505e564f7fe9d776de71e23d4f3d3bc8057aa6d8c724b485baa8f527cb7",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "damaged asphalt surface 6\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-2.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 1.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_1.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Damaged_asphalt_surface_1.jpg/960px-Damaged_asphalt_surface_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "884b47f25cedc2d3f8acc3a1c9e3e420b164f7caeed95d11ca6d9697c4b58853",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "destroyed asphalt surface 1\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-3.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 4.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_4.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Damaged_asphalt_surface_4.jpg/960px-Damaged_asphalt_surface_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "5265a123d9dfe193cb7a63cefd39f7f5687d1ae9aa91c64d38270386b580def8",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "damaged asphalt surface 4\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-4.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Intermediate asphald road surface near Krate\u010dko.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Intermediate_asphald_road_surface_near_Krate%C4%8Dko.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Intermediate_asphald_road_surface_near_Krate%C4%8Dko.jpg/960px-Intermediate_asphald_road_surface_near_Krate%C4%8Dko.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "d860b07e6537b58fb5c28de52e9cbc5629dafafaf6181c7b4d31b3e4a62d7629",
+      "artist": "Mnalis",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Intermediate asphald road surface near Krate\u010dko\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-4.jpg"
+    },
+    {
+      "file": "dry-road-5.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:002 Damaged road surface background - cracked asphalt blacktop in Spain.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:002_Damaged_road_surface_background_-_cracked_asphalt_blacktop_in_Spain.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/002_Damaged_road_surface_background_-_cracked_asphalt_blacktop_in_Spain.jpg/960px-002_Damaged_road_surface_background_-_cracked_asphalt_blacktop_in_Spain.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "471f684a270dd18f52eb2d7b1097e790f1adc0f23c24ca1ced413a2fc1766886",
+      "artist": "Marek \u015alusarczyk (Tupungato) Photo portfolio",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "description": "Damaged road surface background - cracked asphalt blacktop in Spain.",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-5.jpg"
+    },
+    {
+      "file": "dry-road-6.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Asphalt road surface (Unsplash).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Asphalt_road_surface_(Unsplash).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Asphalt_road_surface_%28Unsplash%29.jpg/960px-Asphalt_road_surface_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "e1590094ed9d0cecc2a2902327d06b4be429503dddff5ea24c4e314b7e33973c",
+      "artist": "marius sebastian mariodesign",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "Gurghiu, Romania",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-6.jpg"
+    },
+    {
+      "file": "dry-road-7.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 3.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_3.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Damaged_asphalt_surface_3.jpg/960px-Damaged_asphalt_surface_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "562d036a2a4e8c2e7aee861ce7a0ae540e3cb25430353c0eb7c08e85dda392b5",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "damaged asphalt surface 3\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-8.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Surface-asphalt-excellent-thusis-schweiz.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Surface-asphalt-excellent-thusis-schweiz.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Surface-asphalt-excellent-thusis-schweiz.jpg/960px-Surface-asphalt-excellent-thusis-schweiz.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "9ca47300c697576b0be484bf66567e278c75dea815dcf6b7e2fdde87e9cee853",
+      "artist": "Mcliquid",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Surface-asphalt-excellent-thusis-schweiz",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-8.jpg"
+    },
+    {
+      "file": "dry-road-9.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Surface-asphalt-smoothness-bad-horrible.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Surface-asphalt-smoothness-bad-horrible.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Surface-asphalt-smoothness-bad-horrible.jpg/960px-Surface-asphalt-smoothness-bad-horrible.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "681d6bd1f90b2b548a734afa66f7f797b3e560d1b8a3074b65f937c0983c4ee0",
+      "artist": "Mcliquid",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Surface-asphalt-smoothness-bad-horrible",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-9.jpg"
+    },
+    {
+      "file": "dry-road-10.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Surface-asphalt-horrible-rongellen-schweiz.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Surface-asphalt-horrible-rongellen-schweiz.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Surface-asphalt-horrible-rongellen-schweiz.jpg/960px-Surface-asphalt-horrible-rongellen-schweiz.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "48490b63faf077bc1403a8e2b390fda1af0dd3533b954a988f46e726b93a34cd",
+      "artist": "Mcliquid",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Surface-asphalt-horrible-rongellen-schweiz",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-10.jpg"
+    },
+    {
+      "file": "dry-road-11.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Surface-asphalt-rock-ebenalp-schweiz.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Surface-asphalt-rock-ebenalp-schweiz.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Surface-asphalt-rock-ebenalp-schweiz.jpg/960px-Surface-asphalt-rock-ebenalp-schweiz.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "2eeeabf5062dc6ca13d0227f7cd41726f510235eb0a8f77b8068ff227dcb1ea1",
+      "artist": "Mcliquid",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Surface-asphalt-rock-ebenalp-schweiz",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-11.jpg"
+    }
+  ],
+  "description": "Public real photos for explicit replay simulation, not live-camera or physical safety validation."
+}

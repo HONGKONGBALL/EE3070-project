@@ -1,0 +1,31 @@
+{
+  "generator": "built-in image_gen",
+  "synthetic": true,
+  "not_live_validation": true,
+  "images": [
+    {
+      "file": "synthetic-shoes-bag.png",
+      "prompt": "Use case: photorealistic-natural. Create ONE single candid photograph for testing an indoor smart cane ground hazard detector. NOT a collage. Viewpoint camera 70 cm above the floor, pointing forward and downward along an ordinary university electronics laboratory aisle. Most of image is clearly intact dry pale blue-grey vinyl floor with ordinary scuffs. In the center foreground 1 metre ahead is a pair of taken-off matte black low-top sneakers, one upright and one lying on its side with dark open shoe interior visible. A soft black backpack rests a little farther along the floor near a desk leg. Realistically sized everyday objects, not giant. Natural overhead fluorescent lighting, realistic mild object shadows, imperfect webcam-like photo. Floor remains continuous under objects; no actual pothole, no water, no hole, no stairs. Do not add bounding boxes, labels, annotations, letters, text, or decorative border. Landscape 4:3 composition."
+    },
+    {
+      "file": "synthetic-round-mat-jacket.png",
+      "prompt": "Use case: photorealistic-natural. Create ONE single candid photograph for testing an indoor smart cane ground hazard detector. NOT a collage. Camera about 65 cm above intact beige classroom tile floor, facing forward and downward from a cane-like viewpoint. In the front center is a flat round black rubber floor mat about 45cm across, with subtle ribbed texture and slightly raised edge, resting ON top of continuous dry floor. Further to one side are black circular rolling office chair casters and a dark crumpled jacket on the floor. Unremarkable classroom desk legs, no dramatic architecture. Clearly physical mat not a hole. Soft ordinary indoor light, realistic low-cost USB webcam appearance. No actual cavity, no puddle, no damaged floor, no stairs. No labels, text, bounding boxes, annotations or border. Landscape 4:3 composition."
+    },
+    {
+      "file": "synthetic-cables-shadow.png",
+      "prompt": "Use case: photorealistic-natural. Create ONE single candid photograph for testing an indoor smart cane ground hazard detector. NOT a collage. Cane-height viewpoint camera 70cm above continuous dry pale grey linoleum laboratory corridor floor, tilted forward and downward. A black electrical extension cable is loosely coiled on the floor in the central lower part; black round cable reel sits on floor to one side. There is a strong but natural oval dark SHADOW cast by a nearby lab stool onto intact floor in front of viewer, with visible floor texture continuing through the shadow. A pair of grey slippers is left near the wall. Everyday fluorescent and window lighting, realistic ordinary webcam photograph. No actual hole or water, no stairs or broken floor. No text, labels, bounding boxes, annotations, collage or border. Landscape 4:3 composition."
+    },
+    {
+      "file": "synthetic-dark-shoes.png",
+      "prompt": "Use case: photorealistic-natural. One candid landscape 4:3 webcam photograph, no collage. Smart cane camera at 60cm height tilted forward-downward in a dim ordinary university lab aisle with continuous DRY dark grey vinyl floor. A pair of removed black leather shoes lies centered on the floor 1 metre ahead, with one shoe pointing away and its open dark oval interior facing camera. A black cloth tote bag is crumpled alongside. Modest overhead fluorescent light, mild sensor noise, realistic dark but still visible floor texture; no cinematic lighting. Intact floor underneath; no real cavity, no standing water, no stairs. No labels, lettering, boxes or annotations."
+    },
+    {
+      "file": "synthetic-floor-circles.png",
+      "prompt": "Use case: photorealistic-natural. One candid landscape 4:3 webcam photo from a cane-mounted camera 70cm above floor tilted forward-downward. An ordinary modern indoor school entrance with intact light beige terrazzo floor. Several dark charcoal circular terrazzo decorative inlays, about 25cm across, are flush within the light floor in the center walking path, with pale aggregate texture visible inside their dark material. A rectangular black rubber entrance mat lies at the far end, with a small black cylindrical waste bin near the wall and a few chair legs. Everyday soft daylight. The circles are flat decorative floor patterns, absolutely no real holes, no water, no broken flooring. No people, text, labels, boxes, annotation or collage."
+    },
+    {
+      "file": "synthetic-trash-umbrella.png",
+      "prompt": "Use case: photorealistic-natural. One candid landscape 4:3 low-cost USB webcam photograph from 60cm above continuous dry light-grey ceramic tile floor, tilted forward downward along a normal laboratory classroom aisle. In the lower middle of the walking path lies a tied black plastic trash bag, soft irregular folds and realistic specular plastic highlights; next to it a closed black umbrella lies horizontally with curved handle and a single small black rubber wheel from a trolley just at frame edge. Mild chair and desk shadows and normal fluorescent room lighting. Objects lie ON TOP of intact flat floor. No actual hole, no standing water, no stairs, no cracks. No text, boxes, labels, border, diagrams or collage."
+    }
+  ]
+}

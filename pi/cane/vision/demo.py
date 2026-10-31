@@ -29,13 +29,39 @@ PAGE = b"""<!doctype html><meta charset=utf-8><meta name=viewport content="width
 img{display:block;max-width:100%;max-height:90vh;margin:auto}p{margin:10px}a{color:#9ddcff}</style>
 <img id=video alt="Waiting for live camera"><p><span id=status>Starting...</span>
  &nbsp; <a href=/snapshot.jpg target=_blank>Snapshot</a></p>
+<details id=diagnostics hidden><summary>Ground detection details</summary>
+<p>Counts show the latest observation, not accuracy. A handled alert does not confirm audible playback.</p>
+<table style="margin:10px auto;text-align:left;border-spacing:18px 6px">
+<thead><tr><th>Task</th><th>Candidates</th><th>Result</th></tr></thead><tbody id=ground></tbody></table></details>
 <script>
 const video=document.getElementById('video'),status=document.getElementById('status');
+const details=document.getElementById('diagnostics'),ground=document.getElementById('ground');
+const reasons={outside_path:'Outside walking area',verifier_rejected:'Appearance check rejected',
+ model_filtered:'Filtered by model',context_rejected:'Ground context rejected',
+ ground_context_unavailable:'Waiting for ground context',awaiting_semantic_pair:'Waiting for matching stair view',
+ awaiting_confirmation:'Waiting for another observation',already_handled:'Already handled',cooldown:'Repeat paused',
+ eligible:'Ready for alert decision',unsupported_label:'Unsupported category'};
+Object.assign(reasons,{context_only:'Context label only',other_task_owns_category:'Handled by dedicated detector',
+ indoor_context_rejected:'Indoor floor context',strong_pothole_evidence_required:'Stronger pothole evidence required'});
 let attached=false;
 video.onerror=()=>{attached=false;video.removeAttribute('src')};
 async function refresh(){
  try{const s=await(await fetch('/status',{cache:'no-store'})).json();
  status.textContent=s.ready?`${s.fps} FPS | ${s.inference_ms} ms inference | Audio: ${s.audio.state}`:s.error;
+ if(s.version===2&&s.ready){
+  const tasks=Object.entries(s.tasks).filter(([,v])=>v.state!=='disabled').map(([k,v])=>`${k}: ${v.state==='ready'?v.fps+' Hz':v.state+' '+v.error}`).join(' | ');
+  status.textContent=`${s.vision_mode==='ground'?'Ground mode':'Combined mode'} | ${s.input_source} | ${s.fps} preview FPS | ${tasks} | Audio: ${s.audio.state}`;
+ }
+ details.hidden=s.version!==2;
+ if(details.open){
+  const rows=Object.entries(s.ground_diagnostics||{}).map(([task,d])=>{
+   const row=document.createElement('tr');
+   const result=d.state!=='observed'?'No usable recent result':d.raw_count===0?'No candidates detected':
+    Object.entries(d.reason_counts||{}).map(([reason,n])=>`${reasons[reason]||reason}: ${n}`).join('; ');
+   for(const value of [task,d.raw_count??'-',result]){const cell=document.createElement('td');cell.textContent=value;row.appendChild(cell)}
+   return row;
+  });ground.replaceChildren(...rows);
+ }
  video.style.visibility=s.ready?'visible':'hidden';
  if(s.ready&&!attached){video.src='/stream?t='+Date.now();attached=true;}
  }catch(e){status.textContent='Connection lost';video.style.visibility='hidden';}
@@ -45,14 +71,14 @@ async function refresh(){
 
 
 class Demo:
-    def __init__(self, config):
+    def __init__(self, config, audio_factory=None, camera_factory=None):
         cam, model, audio = config["camera"], config["model"], config["audio"]
         device = cam["device"]
         if device == "auto":
             devices = sorted(glob.glob("/dev/v4l/by-id/*video-index0"))
             device = devices[0] if devices else "/dev/video0"
         cv2.setNumThreads(1)
-        self.camera = Camera(device, cam["width"], cam["height"], cam["fps"])
+        self.camera = (camera_factory or Camera)(device, cam["width"], cam["height"], cam["fps"])
         self.model_config = model
         self.frame_period = 1 / model.get("max_fps", 8)
         self.detector = None
@@ -76,7 +102,7 @@ class Demo:
         self.log_path.parent.mkdir(exist_ok=True)
         self.logfile = self.log_path.open("a", buffering=1)
         self.log_lock = threading.Lock()
-        self.audio = Audio(ROOT / audio["directory"], audio["enabled"], audio.get("target", ""), self.log)
+        self.audio = (audio_factory or Audio)(ROOT / audio["directory"], audio["enabled"], audio.get("target", ""), self.log)
         self.thread = threading.Thread(target=self._run, daemon=True, name="detect")
 
     def log(self, record_type, **fields):

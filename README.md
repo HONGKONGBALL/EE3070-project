@@ -1,6 +1,11 @@
 # EE3070 智能盲杖
 
-> **2026-10-24 当前样品：单摄像头优先。** 独立入口与说明见
+> **Pi 路况视觉基线（2026-10-31）**：默认 ground 模式，整合积水、坑洞、可见裂损和通用楼梯提醒；balanced 模式保留普通物体检测。
+> [当前进度](docs/pi-current-progress-20261031.md) · [Pi 部署记录](docs/pi-deployment-20261031.md) · [正常步行视频测试](docs/pi-walking-video-validation-20261031.md) · [综合压力测试](docs/pi-comprehensive-stress-20261031.md)。
+> 最新模型基线已部署到 Pi，实机预览约 12 FPS；本次按用户选择关闭音频。移动跟踪、重复提醒和误报仍有待改进，不代表全部路况已验收，也未启用上下楼梯方向判定。
+> 运行与模型准备见 [地面优先模式](docs/pi-ground-local.md)；[运行文件清单](config/vision-runtime-artifacts.json)记录权重／语音的校验值，模型二进制、视频和原始日志留在本地，不包含在 Git 提交中。
+
+> **早期单摄像头演示（2026-10-24）。** 独立入口与说明见
 > [单摄像头样品](docs/camera-sample.md)。它使用现成 YOLO11n NCNN 权重，
 > 不要求 Pico、双目标定、导航或焊接音响；HyperX USB 耳机可播放英语提示。
 > 下文是原整机方案，坡度/麦克风等不自动成为本次样品要求。

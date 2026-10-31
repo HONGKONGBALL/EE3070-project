@@ -1,0 +1,15 @@
+{
+  "catalog_sha256": "f681b956e9fcdf8bddd8beb74d1468b3379767e5f90312de382e07eac899bfac",
+  "report_sha256": "f16bf563731dc1285ceeb01480411a1284561da3ae3e8694203cb46a5912d40a",
+  "reviewed_at_utc": "2026-10-27T02:20:59.045098+00:00",
+  "edits": [
+    {
+      "file": "road-33.jpg",
+      "truth_key": "visible_pavement_damage",
+      "before": false,
+      "after": true,
+      "reason": "Serialized positive-list omission; full-resolution review shows a visible longitudinal crack in foreground pavement; correction after model outputs is disclosed",
+      "reviewed_after_predictions": true
+    }
+  ]
+}
