@@ -1,0 +1,52 @@
+{
+  "generated": "2026-10-27T05:32:48.264Z",
+  "sections": [
+    {
+      "id": "mockups",
+      "label": "设计方案",
+      "groups": [
+        {
+          "slug": "comparison",
+          "files": [
+            {
+              "label": "三套方案 · 并排比较",
+              "path": "mockups/comparison/index.html"
+            }
+          ]
+        },
+        {
+          "slug": "a-precision-lab",
+          "files": [
+            {
+              "label": "A · 精密实验仪器",
+              "path": "mockups/a-precision-lab/index.html"
+            }
+          ]
+        },
+        {
+          "slug": "b-control-room",
+          "files": [
+            {
+              "label": "B · 测量控制台",
+              "path": "mockups/b-control-room/index.html"
+            }
+          ]
+        },
+        {
+          "slug": "c-spatial-compass",
+          "files": [
+            {
+              "label": "C · 空间方向",
+              "path": "mockups/c-spatial-compass/index.html"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "design-systems",
+      "label": "Design Systems",
+      "groups": []
+    }
+  ]
+}

@@ -1,0 +1,2362 @@
+{
+  "version": 1,
+  "option": "C",
+  "name": "方位 / Spatial Compass",
+  "description": "Space and direction first; pine green on warm neutral, generous space, static orthogonal orientation diagram, compact independently updated readouts and a low-profile 30-second trend.",
+  "frame": {
+    "width": 1440,
+    "height": 1000,
+    "background": "#F3F2EB"
+  },
+  "mobile": {
+    "width": 390,
+    "height": 1552,
+    "breakpoint": 760,
+    "layout": "Single vertical scroll. Main padding 20. Hero badge hidden. Toolbar USB status above a four-column action grid. Direction panel 350x360. Readout below, then 30s trend and diagnostics. No horizontal scrolling.",
+    "touchTargets": "All mobile action buttons, unit buttons and curve labels have minimum 44px hit targets."
+  },
+  "groups": [
+    {
+      "id": "header",
+      "x": 48,
+      "y": 24,
+      "w": 1344,
+      "h": 40
+    },
+    {
+      "id": "hero",
+      "x": 48,
+      "y": 84,
+      "w": 1344,
+      "h": 64
+    },
+    {
+      "id": "toolbar",
+      "x": 48,
+      "y": 168,
+      "w": 1344,
+      "h": 60
+    },
+    {
+      "id": "context",
+      "x": 48,
+      "y": 240,
+      "w": 1344,
+      "h": 16
+    },
+    {
+      "id": "space",
+      "x": 48,
+      "y": 272,
+      "w": 843,
+      "h": 416
+    },
+    {
+      "id": "readout",
+      "x": 915,
+      "y": 272,
+      "w": 477,
+      "h": 416
+    },
+    {
+      "id": "trend",
+      "x": 48,
+      "y": 704,
+      "w": 1344,
+      "h": 186
+    },
+    {
+      "id": "diagnostics",
+      "x": 48,
+      "y": 904,
+      "w": 1344,
+      "h": 46
+    },
+    {
+      "id": "footer",
+      "x": 48,
+      "y": 966,
+      "w": 1344,
+      "h": 15
+    }
+  ],
+  "tokens": {
+    "colors": {
+      "paper": "#F3F2EB",
+      "white": "#FCFCF8",
+      "ink": "#213C31",
+      "muted": "#737B70",
+      "line": "#DADDD1",
+      "pine": "#2C624E",
+      "pineLight": "#E4EBDF",
+      "amber": "#B77B37",
+      "upper": "#899587",
+      "ring": "#E2E5DA"
+    },
+    "fonts": {
+      "display": "Sora",
+      "chinese": "Noto Sans SC",
+      "numeric": "IBM Plex Mono"
+    },
+    "radii": {
+      "panel": 8,
+      "toolbar": 7,
+      "button": 5
+    },
+    "spacing": [
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      48
+    ]
+  },
+  "state": {
+    "source": "演示数据",
+    "connection": "演示连接·Pico USB",
+    "singlePico": true,
+    "tf": {
+      "distanceCm": 128.4,
+      "status": "正常",
+      "ageMs": 32,
+      "strength": 864,
+      "raw": 1284,
+      "rawUnit": "mm",
+      "parsingIntervalMs": 16
+    },
+    "front": {
+      "distanceCm": 46.2,
+      "status": "正常",
+      "ageMs": 124
+    },
+    "upper": {
+      "distanceCm": null,
+      "status": "超时",
+      "ageMs": 124
+    },
+    "curves": {
+      "tf": true,
+      "front": true,
+      "upper": true
+    },
+    "diagnosticsExpanded": false
+  },
+  "interactions": [
+    {
+      "target": "connect / disconnect / demo / csv",
+      "behavior": "Preview toast only. No serial access, no network, no file export."
+    },
+    {
+      "target": "unit-mm / unit-cm",
+      "behavior": "Local preview: mm maps raw1284 to128.4cm; cm maps to1284cm, outside 10–1200cm validity range, so current laser reading becomes em dash and laser curve clears. Ultrasound unchanged."
+    },
+    {
+      "target": "legend-tf / legend-front / legend-upper",
+      "behavior": "Toggle corresponding curve only; upper also toggles timeout shading."
+    },
+    {
+      "target": "diagnostics",
+      "behavior": "Native details disclosure shows clearly labelled demo log."
+    }
+  ],
+  "scientificBoundaries": [
+    "传感器朝向静态示意；距离刻度非等比；非地图、雷达扫描或3D重建。",
+    "三路独立更新时间和状态；三路测量不同步。",
+    "激光解析间隔不代表真实采样间隔。",
+    "TF原始单位只影响激光显示换算，不修改传感器配置。",
+    "演示数据不代表实物测距验证。"
+  ],
+  "fontAssets": [
+    "assets/Sora-Variable.ttf",
+    "assets/NotoSansSC-Variable.ttf",
+    "assets/IBMPlexMono-Regular.ttf"
+  ],
+  "elements": [
+    {
+      "id": "background",
+      "type": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1000,
+      "fill": "#F3F2EB",
+      "stroke": null,
+      "radius": 0,
+      "group": "page"
+    },
+    {
+      "id": "topbar-rule",
+      "type": "line",
+      "x": 48,
+      "y": 63,
+      "w": 1344,
+      "h": 0,
+      "stroke": "#DADDD1",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "page"
+    },
+    {
+      "id": "brand-mark",
+      "type": "ellipse",
+      "x": 48,
+      "y": 25,
+      "w": 23,
+      "h": 23,
+      "fill": null,
+      "stroke": "#2C624E",
+      "group": "header"
+    },
+    {
+      "id": "brand-h",
+      "type": "line",
+      "x": 54,
+      "y": 36,
+      "w": 11,
+      "h": 0,
+      "stroke": "#2C624E",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "header"
+    },
+    {
+      "id": "brand-v",
+      "type": "line",
+      "x": 59,
+      "y": 31,
+      "w": 0,
+      "h": 11,
+      "stroke": "#2C624E",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "header"
+    },
+    {
+      "id": "brand",
+      "type": "text",
+      "x": 82,
+      "y": 27,
+      "w": 260,
+      "h": 20,
+      "text": "方位 / SENSOR FIELD",
+      "fontFamily": "Sora",
+      "fontSize": 12,
+      "fontWeight": 600,
+      "color": "#213C31",
+      "group": "header"
+    },
+    {
+      "id": "device-model",
+      "type": "text",
+      "x": 1010,
+      "y": 29,
+      "w": 270,
+      "h": 15,
+      "text": "EE3070 · TFmini-S + HC-SR04 × 2",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "header"
+    },
+    {
+      "id": "concept-label",
+      "type": "text",
+      "x": 1290,
+      "y": 29,
+      "w": 110,
+      "h": 15,
+      "text": "CONCEPT C / 03",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#2C624E",
+      "group": "header"
+    },
+    {
+      "id": "hero-index",
+      "type": "text",
+      "x": 48,
+      "y": 96,
+      "w": 44,
+      "h": 45,
+      "text": "03",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 38,
+      "fontWeight": 400,
+      "color": "#A2AA99",
+      "group": "hero"
+    },
+    {
+      "id": "hero-rule",
+      "type": "line",
+      "x": 93,
+      "y": 94,
+      "w": 0,
+      "h": 42,
+      "stroke": "#DADDD1",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "hero"
+    },
+    {
+      "id": "hero-title",
+      "type": "text",
+      "x": 114,
+      "y": 87,
+      "w": 660,
+      "h": 40,
+      "text": "三路测距，方向先行。",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 30,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "group": "hero"
+    },
+    {
+      "id": "hero-description",
+      "type": "text",
+      "x": 114,
+      "y": 131,
+      "w": 660,
+      "h": 18,
+      "text": "以传感器朝向组织信息，从空间关系回到每一路读数。",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 12,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "hero"
+    },
+    {
+      "id": "demo-badge",
+      "type": "rect",
+      "x": 1195,
+      "y": 101,
+      "w": 197,
+      "h": 30,
+      "fill": "#E8EDDF",
+      "stroke": "#CDD8C8",
+      "radius": 15,
+      "group": "hero"
+    },
+    {
+      "id": "demo-dot",
+      "type": "ellipse",
+      "x": 1208,
+      "y": 113,
+      "w": 6,
+      "h": 6,
+      "fill": "#2C624E",
+      "stroke": null,
+      "group": "hero"
+    },
+    {
+      "id": "demo-badge-text",
+      "type": "text",
+      "x": 1221,
+      "y": 107,
+      "w": 164,
+      "h": 18,
+      "text": "演示数据 · 界面设计预览",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#52664B",
+      "group": "hero"
+    },
+    {
+      "id": "toolbar-bg",
+      "type": "rect",
+      "x": 48,
+      "y": 168,
+      "w": 1344,
+      "h": 60,
+      "fill": "#FCFCF8",
+      "stroke": "#DADDD1",
+      "radius": 7,
+      "group": "toolbar"
+    },
+    {
+      "id": "connect",
+      "type": "button",
+      "x": 61,
+      "y": 176,
+      "w": 101,
+      "h": 44,
+      "text": "连接 Pico",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 12,
+      "fontWeight": 500,
+      "color": "#FCFCF8",
+      "fill": "#2C624E",
+      "stroke": "#2C624E",
+      "radius": 5,
+      "group": "toolbar"
+    },
+    {
+      "id": "disconnect",
+      "type": "button",
+      "x": 170,
+      "y": 176,
+      "w": 70,
+      "h": 44,
+      "text": "断开",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 12,
+      "fontWeight": 500,
+      "color": "#737B70",
+      "fill": "#FCFCF8",
+      "stroke": null,
+      "radius": 5,
+      "group": "toolbar"
+    },
+    {
+      "id": "toolbar-separator",
+      "type": "line",
+      "x": 255,
+      "y": 187,
+      "w": 0,
+      "h": 23,
+      "stroke": "#DADDD1",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "toolbar"
+    },
+    {
+      "id": "demo",
+      "type": "button",
+      "x": 271,
+      "y": 176,
+      "w": 67,
+      "h": 44,
+      "text": "演示",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 12,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "fill": "#FCFCF8",
+      "stroke": "#DADDD1",
+      "radius": 5,
+      "group": "toolbar"
+    },
+    {
+      "id": "csv",
+      "type": "button",
+      "x": 346,
+      "y": 176,
+      "w": 80,
+      "h": 44,
+      "text": "CSV ↗",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 12,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "fill": "#FCFCF8",
+      "stroke": "#DADDD1",
+      "radius": 5,
+      "group": "toolbar"
+    },
+    {
+      "id": "usb-icon",
+      "type": "rect",
+      "x": 1086,
+      "y": 189,
+      "w": 17,
+      "h": 17,
+      "fill": null,
+      "stroke": "#2C624E",
+      "radius": 3,
+      "group": "toolbar"
+    },
+    {
+      "id": "usb-icon-line",
+      "type": "line",
+      "x": 1091,
+      "y": 197,
+      "w": 7,
+      "h": 0,
+      "stroke": "#2C624E",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "toolbar"
+    },
+    {
+      "id": "usb-connection",
+      "type": "text",
+      "x": 1114,
+      "y": 190,
+      "w": 165,
+      "h": 20,
+      "text": "演示连接·Pico USB",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 12,
+      "fontWeight": 400,
+      "color": "#213C31",
+      "group": "toolbar"
+    },
+    {
+      "id": "usb-format",
+      "type": "text",
+      "x": 1280,
+      "y": 192,
+      "w": 99,
+      "h": 15,
+      "text": "115200 / 8N1",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "toolbar"
+    },
+    {
+      "id": "context",
+      "type": "text",
+      "x": 48,
+      "y": 240,
+      "w": 850,
+      "h": 16,
+      "text": "一个 Pico，一个连接。三路独立更新；激光与两路超声波不同步。",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "context"
+    },
+    {
+      "id": "preview-context",
+      "type": "text",
+      "x": 1110,
+      "y": 240,
+      "w": 282,
+      "h": 16,
+      "text": "所有操作仅为界面预览，不读取 USB。",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "context"
+    },
+    {
+      "id": "space-panel",
+      "type": "rect",
+      "x": 48,
+      "y": 272,
+      "w": 843,
+      "h": 416,
+      "fill": "#FCFCF8",
+      "stroke": "#DADDD1",
+      "radius": 8,
+      "group": "space"
+    },
+    {
+      "id": "space-kicker",
+      "type": "text",
+      "x": 73,
+      "y": 293,
+      "w": 300,
+      "h": 14,
+      "text": "01 / SENSOR ORIENTATION",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "space"
+    },
+    {
+      "id": "space-title",
+      "type": "text",
+      "x": 73,
+      "y": 311,
+      "w": 300,
+      "h": 24,
+      "text": "传感器朝向示意",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 15,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "group": "space"
+    },
+    {
+      "id": "space-scale-note",
+      "type": "text",
+      "x": 714,
+      "y": 296,
+      "w": 155,
+      "h": 15,
+      "text": "距离刻度示意 · 非等比",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "space"
+    },
+    {
+      "id": "ruler-150",
+      "type": "ellipse",
+      "x": 301,
+      "y": 368,
+      "w": 270,
+      "h": 270,
+      "fill": null,
+      "stroke": "#E2E5DA",
+      "group": "space"
+    },
+    {
+      "id": "ruler-100",
+      "type": "ellipse",
+      "x": 346,
+      "y": 413,
+      "w": 180,
+      "h": 180,
+      "fill": null,
+      "stroke": "#E2E5DA",
+      "group": "space"
+    },
+    {
+      "id": "ruler-50",
+      "type": "ellipse",
+      "x": 391,
+      "y": 458,
+      "w": 90,
+      "h": 90,
+      "fill": null,
+      "stroke": "#E2E5DA",
+      "group": "space"
+    },
+    {
+      "id": "axis-horizontal",
+      "type": "line",
+      "x": 103,
+      "y": 503,
+      "w": 733,
+      "h": 0,
+      "stroke": "#DFE4D8",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "axis-vertical",
+      "type": "line",
+      "x": 436,
+      "y": 352,
+      "w": 0,
+      "h": 255,
+      "stroke": "#DFE4D8",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "tick50",
+      "type": "text",
+      "x": 481,
+      "y": 512,
+      "w": 32,
+      "h": 14,
+      "text": "50",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#9AA393",
+      "group": "space"
+    },
+    {
+      "id": "tick100",
+      "type": "text",
+      "x": 526,
+      "y": 512,
+      "w": 32,
+      "h": 14,
+      "text": "100",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#9AA393",
+      "group": "space"
+    },
+    {
+      "id": "tick150",
+      "type": "text",
+      "x": 571,
+      "y": 512,
+      "w": 60,
+      "h": 14,
+      "text": "150 cm",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#9AA393",
+      "group": "space"
+    },
+    {
+      "id": "tf-direction",
+      "type": "line",
+      "x": 436,
+      "y": 503,
+      "w": 261,
+      "h": 0,
+      "stroke": "#2C624E",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "tf-arrow-up",
+      "type": "line",
+      "x": 692,
+      "y": 499,
+      "w": 5,
+      "h": 4,
+      "stroke": "#2C624E",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "tf-arrow-down",
+      "type": "line",
+      "x": 692,
+      "y": 507,
+      "w": 5,
+      "h": -4,
+      "stroke": "#2C624E",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "front-direction",
+      "type": "line",
+      "x": 436,
+      "y": 530,
+      "w": 160,
+      "h": 0,
+      "stroke": "#B77B37",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "front-arrow-up",
+      "type": "line",
+      "x": 591,
+      "y": 526,
+      "w": 5,
+      "h": 4,
+      "stroke": "#B77B37",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "front-arrow-down",
+      "type": "line",
+      "x": 591,
+      "y": 534,
+      "w": 5,
+      "h": -4,
+      "stroke": "#B77B37",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "upper-direction",
+      "type": "line",
+      "x": 436,
+      "y": 390,
+      "w": 0,
+      "h": 113,
+      "stroke": "#899587",
+      "strokeWidth": 1,
+      "strokeDash": [
+        4,
+        4
+      ],
+      "group": "space"
+    },
+    {
+      "id": "upper-arrow-left",
+      "type": "line",
+      "x": 432,
+      "y": 395,
+      "w": 4,
+      "h": -5,
+      "stroke": "#899587",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "upper-arrow-right",
+      "type": "line",
+      "x": 440,
+      "y": 395,
+      "w": -4,
+      "h": -5,
+      "stroke": "#899587",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "space"
+    },
+    {
+      "id": "pico-outer",
+      "type": "ellipse",
+      "x": 406,
+      "y": 473,
+      "w": 60,
+      "h": 60,
+      "fill": null,
+      "stroke": "#E0E7D9",
+      "group": "space"
+    },
+    {
+      "id": "pico-origin",
+      "type": "ellipse",
+      "x": 412,
+      "y": 479,
+      "w": 48,
+      "h": 48,
+      "fill": "#F0F4EA",
+      "stroke": "#C4D4BE",
+      "group": "space"
+    },
+    {
+      "id": "pico-label",
+      "type": "text",
+      "x": 423,
+      "y": 496,
+      "w": 35,
+      "h": 15,
+      "text": "PICO",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#213C31",
+      "group": "space"
+    },
+    {
+      "id": "up-direction-label",
+      "type": "text",
+      "x": 417,
+      "y": 335,
+      "w": 60,
+      "h": 16,
+      "text": "上方 ↑",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#9CA594",
+      "group": "space"
+    },
+    {
+      "id": "front-direction-label",
+      "type": "text",
+      "x": 807,
+      "y": 510,
+      "w": 60,
+      "h": 16,
+      "text": "前方 →",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#9CA594",
+      "group": "space"
+    },
+    {
+      "id": "tf-caption",
+      "type": "text",
+      "x": 693,
+      "y": 455,
+      "w": 120,
+      "h": 17,
+      "text": "激光  TF",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#2C624E",
+      "group": "space"
+    },
+    {
+      "id": "tf-diagram-reading",
+      "type": "text",
+      "x": 693,
+      "y": 475,
+      "w": 140,
+      "h": 21,
+      "text": "128.4 cm",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 15,
+      "fontWeight": 400,
+      "color": "#2C624E",
+      "group": "space"
+    },
+    {
+      "id": "front-caption",
+      "type": "text",
+      "x": 596,
+      "y": 548,
+      "w": 140,
+      "h": 17,
+      "text": "前方超声波",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#B77B37",
+      "group": "space"
+    },
+    {
+      "id": "front-diagram-reading",
+      "type": "text",
+      "x": 596,
+      "y": 568,
+      "w": 140,
+      "h": 21,
+      "text": "46.2 cm",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 15,
+      "fontWeight": 400,
+      "color": "#B77B37",
+      "group": "space"
+    },
+    {
+      "id": "upper-caption",
+      "type": "text",
+      "x": 456,
+      "y": 360,
+      "w": 140,
+      "h": 17,
+      "text": "上方超声波",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#899587",
+      "group": "space"
+    },
+    {
+      "id": "upper-diagram-state",
+      "type": "text",
+      "x": 456,
+      "y": 380,
+      "w": 180,
+      "h": 18,
+      "text": "— 等待回波超时",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#899587",
+      "group": "space"
+    },
+    {
+      "id": "space-info-circle",
+      "type": "ellipse",
+      "x": 73,
+      "y": 655,
+      "w": 14,
+      "h": 14,
+      "fill": null,
+      "stroke": "#AAB39F",
+      "group": "space"
+    },
+    {
+      "id": "space-info-i",
+      "type": "text",
+      "x": 78,
+      "y": 656,
+      "w": 8,
+      "h": 12,
+      "text": "i",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "space"
+    },
+    {
+      "id": "space-note",
+      "type": "text",
+      "x": 96,
+      "y": 653,
+      "w": 760,
+      "h": 18,
+      "text": "仅表示传感器朝向，非地图、雷达扫描或 3D 重建。",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "space"
+    },
+    {
+      "id": "readout-top",
+      "type": "line",
+      "x": 915,
+      "y": 272,
+      "w": 477,
+      "h": 0,
+      "stroke": "#213C31",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "readout"
+    },
+    {
+      "id": "readout-title",
+      "type": "text",
+      "x": 915,
+      "y": 287,
+      "w": 200,
+      "h": 24,
+      "text": "当前读数",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 15,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "group": "readout"
+    },
+    {
+      "id": "readout-mode",
+      "type": "text",
+      "x": 1271,
+      "y": 290,
+      "w": 121,
+      "h": 15,
+      "text": "演示数据 / cm",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "tf-dot",
+      "type": "ellipse",
+      "x": 915,
+      "y": 340,
+      "w": 8,
+      "h": 8,
+      "fill": "#213C31",
+      "stroke": null,
+      "group": "readout"
+    },
+    {
+      "id": "tf-name",
+      "type": "text",
+      "x": 932,
+      "y": 333,
+      "w": 245,
+      "h": 20,
+      "text": "激光距离",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 13,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "group": "readout"
+    },
+    {
+      "id": "tf-model",
+      "type": "text",
+      "x": 932,
+      "y": 356,
+      "w": 245,
+      "h": 14,
+      "text": "TFmini-S · UART1",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "tf-value",
+      "type": "text",
+      "x": 1230,
+      "y": 332,
+      "w": 125,
+      "h": 44,
+      "text": "128.4",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 34,
+      "fontWeight": 400,
+      "color": "#213C31",
+      "group": "readout"
+    },
+    {
+      "id": "tf-unit",
+      "type": "text",
+      "x": 1369,
+      "y": 353,
+      "w": 23,
+      "h": 17,
+      "text": "cm",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "tf-status",
+      "type": "text",
+      "x": 932,
+      "y": 381,
+      "w": 230,
+      "h": 15,
+      "text": "正常",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#2C624E",
+      "group": "readout"
+    },
+    {
+      "id": "tf-age",
+      "type": "text",
+      "x": 1260,
+      "y": 382,
+      "w": 132,
+      "h": 14,
+      "text": "更新于 32 ms 前",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "tf-divider",
+      "type": "line",
+      "x": 915,
+      "y": 466,
+      "w": 477,
+      "h": 0,
+      "stroke": "#DADDD1",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "readout"
+    },
+    {
+      "id": "strength-label",
+      "type": "text",
+      "x": 932,
+      "y": 409,
+      "w": 60,
+      "h": 14,
+      "text": "强度",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "strength-value",
+      "type": "text",
+      "x": 961,
+      "y": 407,
+      "w": 42,
+      "h": 18,
+      "text": "864",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#213C31",
+      "group": "readout"
+    },
+    {
+      "id": "raw-label",
+      "type": "text",
+      "x": 1023,
+      "y": 409,
+      "w": 60,
+      "h": 14,
+      "text": "原始值",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "raw-value",
+      "type": "text",
+      "x": 1063,
+      "y": 407,
+      "w": 50,
+      "h": 18,
+      "text": "1284",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#213C31",
+      "group": "readout"
+    },
+    {
+      "id": "unit-label",
+      "type": "text",
+      "x": 1250,
+      "y": 409,
+      "w": 63,
+      "h": 14,
+      "text": "原始单位",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "unit-switch-bg",
+      "type": "rect",
+      "x": 1317,
+      "y": 399,
+      "w": 75,
+      "h": 28,
+      "fill": "#EAEDE3",
+      "stroke": null,
+      "radius": 4,
+      "group": "readout"
+    },
+    {
+      "id": "unit-cm",
+      "type": "button",
+      "x": 1319,
+      "y": 401,
+      "w": 35,
+      "h": 24,
+      "text": "cm",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 12,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "fill": "#EAEDE3",
+      "stroke": null,
+      "radius": 5,
+      "group": "readout"
+    },
+    {
+      "id": "unit-mm",
+      "type": "button",
+      "x": 1354,
+      "y": 401,
+      "w": 36,
+      "h": 24,
+      "text": "mm",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 12,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "fill": "#FCFCF8",
+      "stroke": null,
+      "radius": 5,
+      "group": "readout"
+    },
+    {
+      "id": "unit-note",
+      "type": "text",
+      "x": 932,
+      "y": 443,
+      "w": 440,
+      "h": 16,
+      "text": "原始单位只影响激光；不修改传感器配置。",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "front-dot",
+      "type": "ellipse",
+      "x": 915,
+      "y": 486,
+      "w": 8,
+      "h": 8,
+      "fill": "#B77B37",
+      "stroke": null,
+      "group": "readout"
+    },
+    {
+      "id": "front-name",
+      "type": "text",
+      "x": 932,
+      "y": 479,
+      "w": 245,
+      "h": 20,
+      "text": "前方超声波",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 13,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "group": "readout"
+    },
+    {
+      "id": "front-model",
+      "type": "text",
+      "x": 932,
+      "y": 502,
+      "w": 245,
+      "h": 14,
+      "text": "HC-SR04 · FRONT",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "front-value",
+      "type": "text",
+      "x": 1230,
+      "y": 478,
+      "w": 125,
+      "h": 44,
+      "text": "46.2",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 34,
+      "fontWeight": 400,
+      "color": "#B77B37",
+      "group": "readout"
+    },
+    {
+      "id": "front-unit",
+      "type": "text",
+      "x": 1369,
+      "y": 499,
+      "w": 23,
+      "h": 17,
+      "text": "cm",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "front-status",
+      "type": "text",
+      "x": 932,
+      "y": 527,
+      "w": 230,
+      "h": 15,
+      "text": "正常",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#2C624E",
+      "group": "readout"
+    },
+    {
+      "id": "front-age",
+      "type": "text",
+      "x": 1260,
+      "y": 528,
+      "w": 132,
+      "h": 14,
+      "text": "更新于 124 ms 前",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "front-divider",
+      "type": "line",
+      "x": 915,
+      "y": 553,
+      "w": 477,
+      "h": 0,
+      "stroke": "#DADDD1",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "readout"
+    },
+    {
+      "id": "upper-dot",
+      "type": "ellipse",
+      "x": 915,
+      "y": 573,
+      "w": 8,
+      "h": 8,
+      "fill": null,
+      "stroke": "#899587",
+      "group": "readout"
+    },
+    {
+      "id": "upper-name",
+      "type": "text",
+      "x": 932,
+      "y": 566,
+      "w": 245,
+      "h": 20,
+      "text": "上方超声波",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 13,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "group": "readout"
+    },
+    {
+      "id": "upper-model",
+      "type": "text",
+      "x": 932,
+      "y": 589,
+      "w": 245,
+      "h": 14,
+      "text": "HC-SR04 · UPPER",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "upper-value",
+      "type": "text",
+      "x": 1230,
+      "y": 565,
+      "w": 125,
+      "h": 44,
+      "text": "—",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 34,
+      "fontWeight": 400,
+      "color": "#899587",
+      "group": "readout"
+    },
+    {
+      "id": "upper-unit",
+      "type": "text",
+      "x": 1369,
+      "y": 586,
+      "w": 23,
+      "h": 17,
+      "text": "cm",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "upper-status",
+      "type": "text",
+      "x": 932,
+      "y": 614,
+      "w": 230,
+      "h": 15,
+      "text": "超时 · 本路暂无有效回波",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#B77B37",
+      "group": "readout"
+    },
+    {
+      "id": "upper-age",
+      "type": "text",
+      "x": 1260,
+      "y": 615,
+      "w": 132,
+      "h": 14,
+      "text": "更新于 124 ms 前",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "upper-divider",
+      "type": "line",
+      "x": 915,
+      "y": 639,
+      "w": 477,
+      "h": 0,
+      "stroke": "#DADDD1",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "readout"
+    },
+    {
+      "id": "parse-interval",
+      "type": "text",
+      "x": 915,
+      "y": 653,
+      "w": 250,
+      "h": 15,
+      "text": "激光解析间隔 16.0 ms",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "interval-warning",
+      "type": "text",
+      "x": 1205,
+      "y": 653,
+      "w": 190,
+      "h": 15,
+      "text": "不代表真实采样间隔",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "readout"
+    },
+    {
+      "id": "trend-rule",
+      "type": "line",
+      "x": 48,
+      "y": 704,
+      "w": 1344,
+      "h": 0,
+      "stroke": "#213C31",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "trend"
+    },
+    {
+      "id": "trend-title",
+      "type": "text",
+      "x": 48,
+      "y": 719,
+      "w": 180,
+      "h": 24,
+      "text": "距离随时间变化",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 15,
+      "fontWeight": 500,
+      "color": "#213C31",
+      "group": "trend"
+    },
+    {
+      "id": "trend-subtitle",
+      "type": "text",
+      "x": 220,
+      "y": 723,
+      "w": 250,
+      "h": 16,
+      "text": "最近 30 秒 · 演示数据",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "trend"
+    },
+    {
+      "id": "legend-tf",
+      "type": "rect",
+      "x": 1171,
+      "y": 724,
+      "w": 12,
+      "h": 12,
+      "fill": "#2C624E",
+      "stroke": null,
+      "radius": 2,
+      "group": "trend"
+    },
+    {
+      "id": "legend-check-tf",
+      "type": "text",
+      "x": 1173,
+      "y": 721,
+      "w": 10,
+      "h": 13,
+      "text": "✓",
+      "fontFamily": "Sora",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#FCFCF8",
+      "group": "trend"
+    },
+    {
+      "id": "legend-label-tf",
+      "type": "text",
+      "x": 1189,
+      "y": 721,
+      "w": 45,
+      "h": 17,
+      "text": "激光",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "trend"
+    },
+    {
+      "id": "legend-front",
+      "type": "rect",
+      "x": 1249,
+      "y": 724,
+      "w": 12,
+      "h": 12,
+      "fill": "#B77B37",
+      "stroke": null,
+      "radius": 2,
+      "group": "trend"
+    },
+    {
+      "id": "legend-check-front",
+      "type": "text",
+      "x": 1251,
+      "y": 721,
+      "w": 10,
+      "h": 13,
+      "text": "✓",
+      "fontFamily": "Sora",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#FCFCF8",
+      "group": "trend"
+    },
+    {
+      "id": "legend-label-front",
+      "type": "text",
+      "x": 1267,
+      "y": 721,
+      "w": 45,
+      "h": 17,
+      "text": "前方",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "trend"
+    },
+    {
+      "id": "legend-upper",
+      "type": "rect",
+      "x": 1327,
+      "y": 724,
+      "w": 12,
+      "h": 12,
+      "fill": "#899587",
+      "stroke": null,
+      "radius": 2,
+      "group": "trend"
+    },
+    {
+      "id": "legend-check-upper",
+      "type": "text",
+      "x": 1329,
+      "y": 721,
+      "w": 10,
+      "h": 13,
+      "text": "✓",
+      "fontFamily": "Sora",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#FCFCF8",
+      "group": "trend"
+    },
+    {
+      "id": "legend-label-upper",
+      "type": "text",
+      "x": 1345,
+      "y": 721,
+      "w": 45,
+      "h": 17,
+      "text": "上方",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 10,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "trend"
+    },
+    {
+      "id": "y150",
+      "type": "text",
+      "x": 48,
+      "y": 758,
+      "w": 28,
+      "h": 14,
+      "text": "150",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#8C9685",
+      "group": "trend"
+    },
+    {
+      "id": "y75",
+      "type": "text",
+      "x": 48,
+      "y": 793,
+      "w": 28,
+      "h": 14,
+      "text": "75",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#8C9685",
+      "group": "trend"
+    },
+    {
+      "id": "y0",
+      "type": "text",
+      "x": 48,
+      "y": 828,
+      "w": 40,
+      "h": 14,
+      "text": "0 cm",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#8C9685",
+      "group": "trend"
+    },
+    {
+      "id": "grid-top",
+      "type": "line",
+      "x": 88,
+      "y": 759,
+      "w": 1304,
+      "h": 0,
+      "stroke": "#DADDD1",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "trend"
+    },
+    {
+      "id": "grid-middle",
+      "type": "line",
+      "x": 88,
+      "y": 795,
+      "w": 1304,
+      "h": 0,
+      "stroke": "#DADDD1",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "trend"
+    },
+    {
+      "id": "grid-bottom",
+      "type": "line",
+      "x": 88,
+      "y": 831,
+      "w": 1304,
+      "h": 0,
+      "stroke": "#DADDD1",
+      "strokeWidth": 1,
+      "strokeDash": [],
+      "group": "trend"
+    },
+    {
+      "id": "curve-tf",
+      "type": "polyline",
+      "x": 88,
+      "y": 758,
+      "w": 1304,
+      "h": 74,
+      "points": [
+        [
+          0,
+          15
+        ],
+        [
+          43.32911392405063,
+          16
+        ],
+        [
+          86.65822784810126,
+          14
+        ],
+        [
+          129.9873417721519,
+          17
+        ],
+        [
+          173.31645569620252,
+          13
+        ],
+        [
+          216.64556962025316,
+          15
+        ],
+        [
+          259.9746835443038,
+          19
+        ],
+        [
+          303.30379746835445,
+          18
+        ],
+        [
+          346.63291139240505,
+          13
+        ],
+        [
+          389.9620253164557,
+          11
+        ],
+        [
+          433.2911392405063,
+          12
+        ],
+        [
+          476.62025316455697,
+          16
+        ],
+        [
+          519.9493670886076,
+          19
+        ],
+        [
+          563.2784810126582,
+          15
+        ],
+        [
+          606.6075949367089,
+          14
+        ],
+        [
+          649.9367088607595,
+          18
+        ],
+        [
+          693.2658227848101,
+          15
+        ],
+        [
+          736.5949367088608,
+          12
+        ],
+        [
+          779.9240506329114,
+          14
+        ],
+        [
+          823.253164556962,
+          17
+        ],
+        [
+          866.5822784810126,
+          14
+        ],
+        [
+          909.9113924050633,
+          11
+        ],
+        [
+          953.2405063291139,
+          14
+        ],
+        [
+          996.5696202531645,
+          17
+        ],
+        [
+          1039.8987341772151,
+          18
+        ],
+        [
+          1083.2278481012659,
+          16
+        ],
+        [
+          1126.5569620253164,
+          17
+        ],
+        [
+          1169.886075949367,
+          13
+        ],
+        [
+          1213.2151898734178,
+          15
+        ],
+        [
+          1256.5443037974683,
+          12
+        ],
+        [
+          1304,
+          12
+        ]
+      ],
+      "stroke": "#2C624E",
+      "strokeWidth": 2,
+      "strokeDash": [],
+      "fill": null,
+      "group": "trend"
+    },
+    {
+      "id": "curve-front",
+      "type": "polyline",
+      "x": 88,
+      "y": 758,
+      "w": 1304,
+      "h": 74,
+      "points": [
+        [
+          0,
+          55
+        ],
+        [
+          43.32911392405063,
+          53
+        ],
+        [
+          86.65822784810126,
+          56
+        ],
+        [
+          129.9873417721519,
+          56
+        ],
+        [
+          173.31645569620252,
+          54
+        ],
+        [
+          216.64556962025316,
+          51
+        ],
+        [
+          259.9746835443038,
+          52
+        ],
+        [
+          303.30379746835445,
+          54
+        ],
+        [
+          346.63291139240505,
+          53
+        ],
+        [
+          389.9620253164557,
+          55
+        ],
+        [
+          433.2911392405063,
+          56
+        ],
+        [
+          476.62025316455697,
+          54
+        ],
+        [
+          519.9493670886076,
+          53
+        ],
+        [
+          563.2784810126582,
+          54
+        ],
+        [
+          606.6075949367089,
+          53
+        ],
+        [
+          649.9367088607595,
+          51
+        ],
+        [
+          693.2658227848101,
+          52
+        ],
+        [
+          736.5949367088608,
+          55
+        ],
+        [
+          779.9240506329114,
+          53
+        ],
+        [
+          823.253164556962,
+          54
+        ],
+        [
+          866.5822784810126,
+          52
+        ],
+        [
+          909.9113924050633,
+          53
+        ],
+        [
+          953.2405063291139,
+          55
+        ],
+        [
+          996.5696202531645,
+          55
+        ],
+        [
+          1039.8987341772151,
+          52
+        ],
+        [
+          1083.2278481012659,
+          51
+        ],
+        [
+          1126.5569620253164,
+          53
+        ],
+        [
+          1169.886075949367,
+          53
+        ],
+        [
+          1213.2151898734178,
+          55
+        ],
+        [
+          1256.5443037974683,
+          51
+        ],
+        [
+          1304,
+          51
+        ]
+      ],
+      "stroke": "#B77B37",
+      "strokeWidth": 2,
+      "strokeDash": [],
+      "fill": null,
+      "group": "trend"
+    },
+    {
+      "id": "curve-upper",
+      "type": "polyline",
+      "x": 88,
+      "y": 758,
+      "w": 1304,
+      "h": 74,
+      "points": [
+        [
+          0,
+          34
+        ],
+        [
+          43.32911392405063,
+          36
+        ],
+        [
+          86.65822784810126,
+          34
+        ],
+        [
+          129.9873417721519,
+          35
+        ],
+        [
+          173.31645569620252,
+          32
+        ],
+        [
+          216.64556962025316,
+          35
+        ],
+        [
+          259.9746835443038,
+          34
+        ],
+        [
+          303.30379746835445,
+          31
+        ],
+        [
+          346.63291139240505,
+          33
+        ],
+        [
+          389.9620253164557,
+          35
+        ],
+        [
+          433.2911392405063,
+          32
+        ],
+        [
+          476.62025316455697,
+          33
+        ],
+        [
+          519.9493670886076,
+          30
+        ],
+        [
+          563.2784810126582,
+          33
+        ],
+        [
+          606.6075949367089,
+          31
+        ],
+        [
+          649.9367088607595,
+          33
+        ],
+        [
+          693.2658227848101,
+          35
+        ],
+        [
+          736.5949367088608,
+          33
+        ],
+        [
+          779.9240506329114,
+          34
+        ],
+        [
+          823.253164556962,
+          32
+        ],
+        [
+          866.5822784810126,
+          34
+        ],
+        [
+          909.9113924050633,
+          33
+        ],
+        [
+          953.2405063291139,
+          35
+        ],
+        [
+          996.5696202531645,
+          33
+        ],
+        [
+          1039.8987341772151,
+          35
+        ],
+        [
+          1083.2278481012659,
+          32
+        ],
+        [
+          1126.5569620253164,
+          33
+        ]
+      ],
+      "stroke": "#899587",
+      "strokeWidth": 2,
+      "strokeDash": [
+        4,
+        5
+      ],
+      "fill": null,
+      "group": "trend"
+    },
+    {
+      "id": "timeout-gap",
+      "type": "rect",
+      "x": 1222,
+      "y": 762,
+      "w": 170,
+      "h": 66,
+      "fill": null,
+      "stroke": null,
+      "radius": 0,
+      "group": "trend",
+      "opacity": 0.25
+    },
+    {
+      "id": "timeout-gap-start",
+      "type": "line",
+      "x": 1222,
+      "y": 762,
+      "w": 0,
+      "h": 66,
+      "stroke": "#C5CABC",
+      "strokeWidth": 1,
+      "strokeDash": [
+        3,
+        3
+      ],
+      "group": "trend"
+    },
+    {
+      "id": "timeout-label",
+      "type": "text",
+      "x": 1240,
+      "y": 788,
+      "w": 145,
+      "h": 17,
+      "text": "上方超时 · 留空",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#949D8B",
+      "group": "trend"
+    },
+    {
+      "id": "x30",
+      "type": "text",
+      "x": 88,
+      "y": 837,
+      "w": 80,
+      "h": 14,
+      "text": "−30s",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#8C9685",
+      "group": "trend"
+    },
+    {
+      "id": "x20",
+      "type": "text",
+      "x": 515,
+      "y": 837,
+      "w": 80,
+      "h": 14,
+      "text": "−20s",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#8C9685",
+      "group": "trend"
+    },
+    {
+      "id": "x10",
+      "type": "text",
+      "x": 948,
+      "y": 837,
+      "w": 80,
+      "h": 14,
+      "text": "−10s",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#8C9685",
+      "group": "trend"
+    },
+    {
+      "id": "xnow",
+      "type": "text",
+      "x": 1355,
+      "y": 837,
+      "w": 40,
+      "h": 14,
+      "text": "现在",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#8C9685",
+      "group": "trend"
+    },
+    {
+      "id": "trend-note",
+      "type": "text",
+      "x": 48,
+      "y": 863,
+      "w": 1040,
+      "h": 15,
+      "text": "无效读数与断流处留空；三路按各自时间记录，不拼接为同步测量。",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "trend"
+    },
+    {
+      "id": "csv-retention",
+      "type": "text",
+      "x": 1150,
+      "y": 863,
+      "w": 242,
+      "h": 15,
+      "text": "CSV · 最近 10,000 条原始记录",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "trend"
+    },
+    {
+      "id": "diagnostics-bg",
+      "type": "rect",
+      "x": 48,
+      "y": 904,
+      "w": 1344,
+      "h": 46,
+      "fill": "#EFEEE5",
+      "stroke": "#DADDD1",
+      "radius": 6,
+      "group": "diagnostics"
+    },
+    {
+      "id": "diagnostics-chevron",
+      "type": "text",
+      "x": 64,
+      "y": 915,
+      "w": 14,
+      "h": 20,
+      "text": "⌄",
+      "fontFamily": "Sora",
+      "fontSize": 12,
+      "fontWeight": 400,
+      "color": "#213C31",
+      "group": "diagnostics"
+    },
+    {
+      "id": "diagnostics-title",
+      "type": "text",
+      "x": 85,
+      "y": 917,
+      "w": 250,
+      "h": 18,
+      "text": "串口诊断",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 11,
+      "fontWeight": 400,
+      "color": "#213C31",
+      "group": "diagnostics"
+    },
+    {
+      "id": "diagnostics-meta",
+      "type": "text",
+      "x": 1182,
+      "y": 919,
+      "w": 198,
+      "h": 15,
+      "text": "演示记录 · 仅界面预览",
+      "fontFamily": "IBM Plex Mono",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#737B70",
+      "group": "diagnostics"
+    },
+    {
+      "id": "footer-brand",
+      "type": "text",
+      "x": 48,
+      "y": 966,
+      "w": 600,
+      "h": 15,
+      "text": "EE3070 / 三通道测距 · 方位工作台",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#8A9382",
+      "group": "footer"
+    },
+    {
+      "id": "footer-preview",
+      "type": "text",
+      "x": 1100,
+      "y": 966,
+      "w": 300,
+      "h": 15,
+      "text": "设计预览 C · 演示数据不代表实物测距验证",
+      "fontFamily": "Noto Sans SC",
+      "fontSize": 9,
+      "fontWeight": 400,
+      "color": "#8A9382",
+      "group": "footer"
+    }
+  ]
+}

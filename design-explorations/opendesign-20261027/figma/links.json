@@ -1,0 +1,20 @@
+{
+  "A": {
+    "desktopId": "4:101",
+    "mobileId": "4:299",
+    "desktopUrl": "https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU?node-id=4-101",
+    "mobileUrl": "https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU?node-id=4-299"
+  },
+  "B": {
+    "desktopId": "4:1162",
+    "mobileId": "4:1446",
+    "desktopUrl": "https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU?node-id=4-1162",
+    "mobileUrl": "https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU?node-id=4-1446"
+  },
+  "C": {
+    "desktopId": "4:650",
+    "mobileId": "4:856",
+    "desktopUrl": "https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU?node-id=4-650",
+    "mobileUrl": "https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU?node-id=4-856"
+  }
+}

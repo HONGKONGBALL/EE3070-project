@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EE3070 · 三套设计比较</title>
+  <link rel="icon" href="data:,">
+  <style>
+    @font-face{font-family:"Noto Sans SC";src:url("../c-spatial-compass/assets/NotoSansSC-Variable.ttf") format("truetype");font-weight:100 900;font-display:swap}
+    *{box-sizing:border-box}body{margin:0;background:#eeeeeb;color:#252927;font:14px/1.6 "Noto Sans SC",sans-serif}main{max-width:1800px;margin:auto;padding:36px 36px 42px}header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:25px}h1{font-size:27px;letter-spacing:-.03em;font-weight:600;margin:0 0 5px}header p{font-size:12px;color:#747b76;margin:0}.toolbar{display:flex;gap:6px;background:#e1e4df;padding:4px;border-radius:7px}button{font:inherit;font-size:12px;border:0;min-height:44px;padding:0 15px;background:none;border-radius:4px;color:#68726c;cursor:pointer}button[aria-pressed="true"]{background:white;color:#28312b;box-shadow:0 1px 3px #0000000c}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.concept{min-width:0}h2{font-size:20px;font-weight:550;margin:0 0 4px}.label{font-size:10px;letter-spacing:.13em;color:#7b827d;margin-bottom:8px}.description{font-size:12px;color:#6b746e;margin:0 0 17px;min-height:40px}.image-shell{border:1px solid #d8dcd6;border-radius:5px;background:#dfE3dd;overflow:hidden;display:flex;justify-content:center;align-items:flex-start}.image-shell img{display:block;width:100%;height:auto}.links{display:flex;gap:16px;align-items:center;margin-top:13px;flex-wrap:wrap}a{color:#3c5547;text-decoration:none;font-size:12px;text-underline-offset:3px}a:hover{text-decoration:underline}.links .primary{font-weight:600}.source-note{display:flex;justify-content:space-between;gap:14px;font-size:11px;color:#7b827d;border-top:1px solid #d8dcd6;margin-top:30px;padding-top:18px}.mobile .image-shell{min-height:600px;padding:20px}.mobile .image-shell img{max-width:280px}.mobile .description{min-height:40px}a:focus-visible,button:focus-visible{outline:2px solid #5b8d70;outline-offset:4px}
+    @media(max-width:1000px){main{padding:24px}.grid{gap:15px}h2{font-size:17px}.description{min-height:58px}header{align-items:flex-start}.source-note{flex-wrap:wrap}}
+    @media(max-width:700px){main{padding:22px 17px}header{display:block}h1{font-size:24px}.toolbar{margin-top:18px;display:inline-flex}.grid{grid-template-columns:1fr;gap:30px}.description{min-height:0}.mobile .image-shell img{max-width:320px}.source-note{display:block}.source-note span{display:block;margin-bottom:8px}}
+  </style>
+</head>
+<body>
+<main>
+  <header><div><h1>EE3070 · 三套设计比较</h1><p>TFmini-S 激光 + 两路 HC-SR04 · 全部为演示数据，仅用于选择界面方案。</p></div><div class="toolbar" aria-label="预览尺寸"><button id="desktop" aria-pressed="true">桌面效果</button><button id="mobile" aria-pressed="false">手机效果</button></div></header>
+  <section class="grid" aria-label="三套方案并排预览">
+    <article class="concept"><div class="label">A / PRECISION LAB</div><h2>精密实验仪器</h2><p class="description">主读数优先，横向通道行配大幅曲线。浅色、克制，便于日常核对数值。</p><a class="image-shell" href="../a-precision-lab/index.html" target="_blank"><img data-slug="a-precision-lab" src="../../../previews/a-precision-lab-desktop.png" alt="A 精密实验仪器桌面设计，演示数据"></a><div class="links"><a class="primary" data-figma="A" href="https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU" target="_blank">打开可编辑 Figma ↗</a><a href="../a-precision-lab/index.html" target="_blank">交互预览</a></div></article>
+    <article class="concept"><div class="label">B / CONTROL ROOM</div><h2>测量控制台</h2><p class="description">曲线占据主工作区，侧栏控制、右侧遥测和记录表支持密集观察。</p><a class="image-shell" href="../b-control-room/index.html" target="_blank"><img data-slug="b-control-room" src="../../../previews/b-control-room-desktop.png" alt="B 深色测量控制台桌面设计，演示数据"></a><div class="links"><a class="primary" data-figma="B" href="https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU" target="_blank">打开可编辑 Figma ↗</a><a href="../b-control-room/index.html" target="_blank">交互预览</a></div></article>
+    <article class="concept"><div class="label">C / SPATIAL COMPASS</div><h2>空间方向</h2><p class="description">先看传感器朝向，再看独立读数。示意图不是地图、扫描或三维重建。</p><a class="image-shell" href="../c-spatial-compass/index.html" target="_blank"><img data-slug="c-spatial-compass" src="../../../previews/c-spatial-compass-desktop.png" alt="C 空间方向可视化桌面设计，演示数据"></a><div class="links"><a class="primary" data-figma="C" href="https://www.figma.com/design/gRakiEjVhFartJGVOWtVsU" target="_blank">打开可编辑 Figma ↗</a><a href="../c-spatial-compass/index.html" target="_blank">交互预览</a></div></article>
+  </section>
+  <div class="source-note"><span>共用一个 Pico USB；三路独立显示状态与更新时间，测量并非严格同步。</span><span>选定方向后再进行实现；此预览不连接设备。</span></div>
+</main>
+<script>
+  let figmaLinks = null;
+  function updateFigmaLinks(mode) {
+    if (figmaLinks) for (const anchor of document.querySelectorAll("[data-figma]")) anchor.href = figmaLinks[anchor.dataset.figma][mode + "Url"];
+  }
+  for (const mode of ["desktop", "mobile"]) document.getElementById(mode).addEventListener("click", () => {
+    document.body.classList.toggle("mobile", mode === "mobile");
+    for (const button of document.querySelectorAll(".toolbar button")) button.setAttribute("aria-pressed", String(button.id === mode));
+    for (const image of document.querySelectorAll("img[data-slug]")) { image.src = "../../../previews/" + image.dataset.slug + "-" + mode + ".png"; image.alt = image.alt.replace(/桌面|手机/, mode === "mobile" ? "手机" : "桌面"); }
+    updateFigmaLinks(mode);
+  });
+  fetch("../../../figma/links.json").then(response => response.ok ? response.json() : null).then(links => {
+    figmaLinks = links;
+    updateFigmaLinks(document.body.classList.contains("mobile") ? "mobile" : "desktop");
+  }).catch(() => {});
+</script>
+</body>
+</html>
