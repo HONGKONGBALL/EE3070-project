@@ -112,7 +112,9 @@ class Speech:
         context = self.contexts.get(req.event_id, {}) if req else {}
         self.sink.play(clips, text, context=context)
 
-    def stop(self): self.sink.stop()
+    def stop(self) -> None:
+        with self.control_lock:
+            self.sink.stop()
     def busy(self): return self.sink.busy()
 
     def _delivery(self, event_id, action, now):
@@ -194,5 +196,5 @@ class Speech:
     def clear_pending(self):
         self.arbiter.cancel_pending(lambda req: bool(req.event_id))
 
-    def close(self):
-        self.sink.stop()
+    def close(self) -> None:
+        self.stop()

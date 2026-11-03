@@ -272,7 +272,7 @@ class V2(Demo):
                 self.policy.clear_visual()
                 if self.crowd:self.crowd.invalidate(now)
                 current=self.audio.arbiter.current
-                if current and not self._request_valid(current):self.audio.sink.stop()
+                if current and not self._request_valid(current):self.audio.stop()
                 self.visual_quality={'state':'unavailable','usable':False,'reasons':['no_fresh_frame']}
                 self.context_valid,self.pavement_detected,self.surface_labels = False,False,[]
                 self.indoor_floor_context = False
@@ -394,7 +394,7 @@ class V2(Demo):
         if case and (self.scene is None or case['id']!=self.scene['id']):
             self.scene=case
             self.scene_first_observed_at=captured_at
-            self.audio.sink.stop()
+            self.audio.stop()
             self.audio.arbiter.cancel_pending()
             self.policy=V2Policy(self.run_id+':'+case['id'],self.config['warning']['roi'],
                 self.config.get('association',{}),self.config['distance']['enter_m'],self.config['distance']['leave_m'],
@@ -417,7 +417,7 @@ class V2(Demo):
             # A valid unassociated distance warning remains independent of image quality.
             self.audio.arbiter.cancel_pending(lambda req:not self._request_valid(req))
             current=self.audio.arbiter.current
-            if current and not self._request_valid(current):self.audio.sink.stop()
+            if current and not self._request_valid(current):self.audio.stop()
             return {}
         return {name:result for name,result in snapshots.items()
                 if result.get('visual_quality',{}).get('usable',True)
@@ -446,7 +446,7 @@ class V2(Demo):
         if self.crowd and ':crowd-' in event_id:
             self.crowd.delivery(event_id,action,now)
         else:
-            self.policy.episodes.delivery(event_id,action,now)
+            self.policy.delivery(event_id,action,now)
 
     def _request_valid(self,request):
         if getattr(self,'crowd',None) and ':crowd-' in request.event_id:

@@ -77,7 +77,7 @@ def test_scene_cut_expires_old_result_track_and_queued_speech():
     old.observe_ground('road',observed(2,1.5,'pothole'),1.5)
     event=old.step(None,1.5)[0]
     app=SimpleNamespace(timeline=[{'id':'second','start_frame':11,'end_frame':20,'source_file':'second.jpg'}],
-        scene=None,audio=SimpleNamespace(sink=sink,arbiter=arbiter),policy=old,run_id='fixture',
+        scene=None,audio=SimpleNamespace(sink=sink,arbiter=arbiter,stop=sink.stop),policy=old,run_id='fixture',
         config={'warning':{'roi':ROI,'ground_roi':ROI},'distance':{'enter_m':1,'leave_m':1.2}},log=lambda *_a,**_k:None)
     results=V2._scene_results(app,11,{'road':{'frame_id':10},'semantic':{'frame_id':11}},2.0)
     assert app.scene_first_observed_at==2.0

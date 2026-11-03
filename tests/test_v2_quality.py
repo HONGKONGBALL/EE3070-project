@@ -57,7 +57,7 @@ def test_quality_loss_clears_visual_event_and_pending_audio_but_allows_generic_d
     arbiter=OutputArbiter(sink,valid_request=lambda req:policy.request_valid(req,now))
     arbiter.submit(OutputRequest(event['phrase_id'],Priority.SAFETY,event_id=event['event_id']))
     arbiter.submit(OutputRequest('pending',Priority.SAFETY,event_id=event['event_id']))
-    app=SimpleNamespace(policy=policy,audio=SimpleNamespace(sink=sink,arbiter=arbiter),
+    app=SimpleNamespace(policy=policy,audio=SimpleNamespace(sink=sink,arbiter=arbiter,stop=sink.stop),
         visual_quality={'usable':True,'reasons':[]},log=lambda *_a,**_k:None,
         _request_valid=lambda req:policy.request_valid(req,now))
     assert V2._quality_results(app,np.zeros((480,640,3),np.uint8),3,{'puddle':{'frame_id':2}})=={}
