@@ -1,0 +1,205 @@
+{
+  "date": "2026-10-31",
+  "purpose": "Checksums for the 2026-10-31 model baseline and its original audio payload; binaries remain outside Git. Current audio overrides are in audio_override_manifest.",
+  "audio_override_manifest": "config/hazard-episode-artifacts.json",
+  "package_name": "smart-cane-stairs-update-20261030.zip",
+  "package_sha256": "aeb890f0ef276a920e1cc5583655555505ab4dbac0aabf358c38e4af20a6fcf9",
+  "model_scope": {
+    "models/yolo11n": "Optional balanced-mode objects; ground mode skips this model.",
+    "models/v2/road-distress": "Visible pavement cracks/fragmentation.",
+    "models/v2/pothole-yolox-research": "Dedicated pothole detector.",
+    "models/v2/segformer": "Ground semantics.",
+    "models/v2/puddle-calibrated": "Puddle candidates and frozen image-context verification.",
+    "models/v2/stairs-context": "Stair scene refinement; generic stairs only, not up/down speech."
+  },
+  "model_preparation_docs": [
+    "docs/pi-ground-local.md",
+    "docs/pi-ground-calibration.md",
+    "docs/pi-stair-debug-20261030.md"
+  ],
+  "files": {
+    "models/v2/road-distress/manifest.json": {
+      "bytes": 1568,
+      "sha256": "9e65af82513df47f9c80b5591eeda2d32f69bbe2ca12bb0c4b720dd5129a04d9"
+    },
+    "models/v2/pothole-yolox-research/manifest.json": {
+      "bytes": 1429,
+      "sha256": "d55725b3020778413c88f813519bc944986b984f75d05e40a6cdc5ac3ea5f03f"
+    },
+    "models/v2/segformer/manifest.json": {
+      "bytes": 1099,
+      "sha256": "4b599f7061ecce0e2ef3b663d9906e527fc55f376ef0fe54141c150f209dcc3f"
+    },
+    "models/v2/puddle-calibrated/manifest.json": {
+      "bytes": 2797,
+      "sha256": "5ce5b1906befc1bc4183bceca8f108b9e77cc0377ae2640f3760dae331520b23"
+    },
+    "models/v2/road-distress/best_ncnn_model/model.ncnn.param": {
+      "bytes": 16611,
+      "sha256": "17548ebf0e4fb1f368d645e5b89795a9086cc668a864093131558acfba3b0d15"
+    },
+    "models/v2/road-distress/best_ncnn_model/model.ncnn.bin": {
+      "bytes": 44552920,
+      "sha256": "dfe8c484d5a16dc70138314a1151cddfa0ee2ae3057008e7d57419f79b056bb4"
+    },
+    "models/v2/pothole-yolox-research/pothole_yolox_focused.ncnn.param": {
+      "bytes": 19318,
+      "sha256": "cafe805b0dc10e94225e62e55445d7726a97ff7d6ca27294769e3ea293beea0c"
+    },
+    "models/v2/pothole-yolox-research/pothole_yolox_focused.ncnn.bin": {
+      "bytes": 35704852,
+      "sha256": "ddaf698e36293afcd047c5b6f504e73c79f252e66a5425db87934e7a3ded5a43"
+    },
+    "models/v2/pothole-yolox-research/README.source.md": {
+      "bytes": 1348,
+      "sha256": "e7d515266d4ccaf95457a154d609f77a7b9ef17d84898f2df9d87d158e8e9003"
+    },
+    "models/v2/pothole-yolox-research/preprocessing-source.json": {
+      "bytes": 291,
+      "sha256": "1f311f7dbf579e6b4e640eab65ba1052ff21adab2ed8c4a5819220e43cc9a934"
+    },
+    "models/v2/segformer/model.onnx": {
+      "bytes": 15335446,
+      "sha256": "3e5c18a4be395f16646438d54c42377ddc202edfa33d5eced0c9506de75c44c2"
+    },
+    "models/v2/segformer/config.json": {
+      "bytes": 6957,
+      "sha256": "435799652b2b64c3e422dea20fed4c59651dae9f0e291fd885e9e067fee0ce2a"
+    },
+    "models/v2/segformer/preprocessor_config.json": {
+      "bytes": 373,
+      "sha256": "dbabd93c735c8a5c39ef207c6c4459bf2d261a5dcc55e1ba1c1b982e5947f518"
+    },
+    "models/v2/puddle-calibrated/best_ncnn_model/model.ncnn.param": {
+      "bytes": 16550,
+      "sha256": "6f85d49b5af2e70c149df4d8cf9b3ede667a95b3e546c2bb66f70ed81d505c0d"
+    },
+    "models/v2/puddle-calibrated/best_ncnn_model/model.ncnn.bin": {
+      "bytes": 12124428,
+      "sha256": "628e17aa55ae5da3a1f96d3285b14ad3cb6b4471dbb87702d1709054f3e44aee"
+    },
+    "models/v2/puddle-calibrated/verifier/visual.onnx": {
+      "bytes": 1216604,
+      "sha256": "7f8232fa8fd99cbf6ff4c9da11a24c39c3ec4fe0af2ef9db2856f84c7335876e"
+    },
+    "models/v2/puddle-calibrated/verifier/visual.onnx.data": {
+      "bytes": 45416448,
+      "sha256": "0090fa77264217b1993ae9de50068f151f7efea2fc19412441605b22e12c6342"
+    },
+    "models/v2/puddle-calibrated/verifier/puddle-text-prototypes.npy": {
+      "bytes": 12416,
+      "sha256": "54fcdcd10ff58cc73b0a491d6a3b7c32349a1bd3e1f375c201b7440b250d4dbe"
+    },
+    "models/v2/puddle-calibrated/verifier/puddle-prompts.json": {
+      "bytes": 1055,
+      "sha256": "28bb4df60e40056f331407faa922b0da370bae2dd53cb541d48b94abcf91b8be"
+    },
+    "models/v2/puddle-calibrated/verifier/author_open_clip_config.json": {
+      "bytes": 725,
+      "sha256": "43e7162c531e845155dbf47e8fef8fe5718b0eab3d6beefb8d615a2c55b4c1e5"
+    },
+    "models/v2/puddle-calibrated/verifier/MODEL_CARD.md": {
+      "bytes": 7516,
+      "sha256": "c538418a9ae7adabeb168445ebdc463f97c74394aff6732a77b7299943af77eb"
+    },
+    "audio/en/backpack_ahead.wav": {
+      "bytes": 134292,
+      "sha256": "7e2f4cdc61a03c723c05c08033a3625ee18334174be605b4c98b45453fcde3f5"
+    },
+    "audio/en/bicycle_ahead.wav": {
+      "bytes": 68810,
+      "sha256": "13f48f9b317b520c95c04d450aa0ee23f2f1d5752cf39910f8a00a018596b7cb"
+    },
+    "audio/en/camera_unavailable.wav": {
+      "bytes": 76308,
+      "sha256": "97ecbf2931bf0eb7250c9cd03c8304e77f783d1aeffffe85bde3eac41025e497"
+    },
+    "audio/en/chair_ahead.wav": {
+      "bytes": 132970,
+      "sha256": "a8fad12d9a117252b7f158b4d8675a3a102fc7b3f6bb6fab560757d858550de0"
+    },
+    "audio/en/damaged_pavement.wav": {
+      "bytes": 151264,
+      "sha256": "73a2a19fcf9b7269047409e082723167db10d734b17a52d073e51c5a7f218d35"
+    },
+    "audio/en/ground_unavailable.wav": {
+      "bytes": 94602,
+      "sha256": "27cf20f4153524cdac31e984a983b9dccdb4234c515c40043434d9b1b0fdf3f6"
+    },
+    "audio/en/object_unavailable.wav": {
+      "bytes": 95926,
+      "sha256": "19937fca83fb0874a6bbe932eeb599bb5b31c2abc0aed40cae5c84879f6e64d3"
+    },
+    "audio/en/obstacle_ahead.wav": {
+      "bytes": 69916,
+      "sha256": "ffa6fafc38279f5f893c0cbbd10cb288887adcdb4e16d5d5a8c94c65d38f869b"
+    },
+    "audio/en/person_ahead.wav": {
+      "bytes": 139144,
+      "sha256": "6821ac0cf81a63724786f494d812689a045b5a4dc692274764346f75fdb48428"
+    },
+    "audio/en/pothole_ahead.wav": {
+      "bytes": 157878,
+      "sha256": "e6a53e098f9f311ca21af3d3ffcb3b9c11970d584cdb1fbffd2ebe2a267a6904"
+    },
+    "audio/en/puddle_ahead.wav": {
+      "bytes": 82918,
+      "sha256": "36b0f324fa903746dada4ea034971396a2e0376dad0662fd11fc07dafa6031a9"
+    },
+    "audio/en/stairs_ahead.wav": {
+      "bytes": 84900,
+      "sha256": "cb7d28b1920b817a9453946e6e2070fec3bde53408530118c0028ede93b830ea"
+    },
+    "audio/en/visual_ready.wav": {
+      "bytes": 86008,
+      "sha256": "fff2e4a0c30461a066af9f01a8ce88e2e593ef14dcc7a8e88d47916ca6b470dd"
+    },
+    "audio/en/visual_unavailable.wav": {
+      "bytes": 95264,
+      "sha256": "b7e66b94317b872493e5af8b50528b71adaa3189147e905c01f58766c9bf0b46"
+    },
+    "models/v2/stairs-context/author_open_clip_config.json": {
+      "bytes": 725,
+      "sha256": "43e7162c531e845155dbf47e8fef8fe5718b0eab3d6beefb8d615a2c55b4c1e5"
+    },
+    "models/v2/stairs-context/manifest.json": {
+      "bytes": 1287,
+      "sha256": "ebd22a498304a56c8b34cc5e994d74b7b766debdd3c35935a8e7da613e600edd"
+    },
+    "models/v2/stairs-context/MODEL_CARD.md": {
+      "bytes": 7516,
+      "sha256": "c538418a9ae7adabeb168445ebdc463f97c74394aff6732a77b7299943af77eb"
+    },
+    "models/v2/stairs-context/stair-context-prompts.json": {
+      "bytes": 1661,
+      "sha256": "88297b0a47fc733defe5fa5551d69da362ad3efb0f4f896df956f470fc505ea4"
+    },
+    "models/v2/stairs-context/stair-context-prototypes.npy": {
+      "bytes": 12416,
+      "sha256": "bc9af1279f77cb37710100a36e3f688258463c14b8e1ad36088b4ed7662df8fc"
+    },
+    "models/v2/stairs-context/visual.onnx": {
+      "bytes": 1216604,
+      "sha256": "7f8232fa8fd99cbf6ff4c9da11a24c39c3ec4fe0af2ef9db2856f84c7335876e"
+    },
+    "models/v2/stairs-context/visual.onnx.data": {
+      "bytes": 45416448,
+      "sha256": "0090fa77264217b1993ae9de50068f151f7efea2fc19412441605b22e12c6342"
+    }
+  },
+  "existing_project_optional_files": {
+    "models/yolo11n/manifest.json": {
+      "bytes": 671,
+      "sha256": "ad17040e187ca1dfec7656e3d0d8a8c7004be252c54a729c319c4e7fdbb556d0"
+    },
+    "models/yolo11n/yolo11n.ncnn.bin": {
+      "bytes": 5249340,
+      "sha256": "2e1b06fa4210739a71d0bf3132e2f6560e46281e8e071292f2857b3bda726285"
+    },
+    "models/yolo11n/yolo11n.ncnn.param": {
+      "bytes": 21413,
+      "sha256": "3e928cc8b0718835af46d04c01266705c8a430159d0e48739549a873e7294ec1"
+    }
+  },
+  "existing_project_optional_note": "YOLO11n belongs to the existing camera project and is not carried in the update ZIP; prepare with tools/prepare_camera_model.py if balanced mode is needed."
+}

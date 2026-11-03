@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import threading
 import time
+from collections import deque
 
 import cv2
 
@@ -17,6 +18,7 @@ class Camera:
         self.sequence = 0
         self.captured_at = 0.0
         self.error = "Starting camera"
+        self.delivered = deque(maxlen=60)
         self.thread = threading.Thread(target=self._run, daemon=True, name="camera")
 
     def start(self):
@@ -28,10 +30,10 @@ class Camera:
             self.condition.notify_all()
         self.thread.join(timeout=3)
 
-    def next_frame(self, after: int):
+    def next_frame(self, after: int, timeout=1):
         with self.condition:
             self.condition.wait_for(
-                lambda: self.sequence > after or self.stopped.is_set(), timeout=1
+                lambda: self.sequence > after or self.stopped.is_set(), timeout=timeout
             )
             if self.frame is None or self.sequence <= after:
                 return None
@@ -48,6 +50,8 @@ class Camera:
                 "frame_id": self.sequence,
                 "frame_age_ms": round(age * 1000) if age is not None else None,
                 "device": self.device,
+                "capture_fps": round((len(self.delivered)-1)/(self.delivered[-1]-self.delivered[0]),1)
+                if len(self.delivered)>1 and self.delivered[-1]>self.delivered[0] else 0,
             }
 
     def _run(self):
@@ -71,6 +75,7 @@ class Camera:
                         self.frame = frame
                         self.sequence += 1
                         self.captured_at = time.monotonic()
+                        self.delivered.append(self.captured_at)
                         self.error = ""
                         self.condition.notify_all()
             except (RuntimeError, cv2.error) as exc:
@@ -81,3 +86,31 @@ class Camera:
             finally:
                 cap.release()
             self.stopped.wait(2)
+
+
+class ReplayCamera(Camera):
+    """Explicit finite video replay. Decode timestamps are not physical exposure times."""
+    def _run(self):
+        cap = cv2.VideoCapture(str(self.device))
+        try:
+            if not cap.isOpened(): raise RuntimeError("Replay video could not be opened")
+            fps = cap.get(cv2.CAP_PROP_FPS) or self.fps
+            self.media_fps=fps
+            while not self.stopped.is_set():
+                started = time.monotonic()
+                ok,image = cap.read()
+                if not ok:
+                    self.error = "Replay finished"
+                    break
+                with self.condition:
+                    self.frame = cv2.resize(image,(self.width,self.height))
+                    self.sequence += 1
+                    self.captured_at = time.monotonic()
+                    self.delivered.append(self.captured_at)
+                    self.error = ""
+                    self.condition.notify_all()
+                self.stopped.wait(max(0,1/fps-(time.monotonic()-started)))
+        except (RuntimeError,cv2.error) as exc:
+            self.error = str(exc)
+        finally:
+            cap.release()

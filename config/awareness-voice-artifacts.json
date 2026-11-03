@@ -1,0 +1,51 @@
+{
+  "runtime_network_tts": false,
+  "offline_generator": "tools/gen_camera_prompts.ps1 -AwarenessOnly",
+  "files": {
+    "audio/en/damaged_pavement.wav": {
+      "sha256": "fa3996c505a370dec15fe3f3ec603e2909b58b28659f4a49b528ae5153ab4cc8",
+      "bytes": 169782,
+      "duration_s": 3.848888888888889
+    },
+    "audio/en/puddle_ahead.wav": {
+      "sha256": "c639187eb9654ed6ccd34dbe99fe501f6ede0da7b26afcce0defc110f8082cbe",
+      "bytes": 149288,
+      "duration_s": 3.384172335600907
+    },
+    "audio/en/crowd_ahead.wav": {
+      "sha256": "a4a3fb6851c24a8c4e452d6afea1b76698517c93497d95a6f9abe366264e9deb",
+      "bytes": 142008,
+      "duration_s": 3.219092970521542
+    },
+    "audio/en/stairs_ahead.wav": {
+      "sha256": "43a973296422ae23dbe755e8dfc2415222cc307e5b323ba3d78cc790f49c2290",
+      "bytes": 120618,
+      "duration_s": 2.7340589569161
+    }
+  },
+  "voice_categories": {
+    "PUDDLE": {
+      "phrase_id": "puddle_ahead",
+      "text": "Looks like there's a puddle ahead. Take care!"
+    },
+    "DAMAGED_PAVEMENT": {
+      "phrase_id": "damaged_pavement",
+      "text": "The pavement ahead looks damaged. Watch your step!"
+    },
+    "STAIRS": {
+      "phrase_id": "stairs_ahead",
+      "text": "Careful, there might be stairs ahead."
+    },
+    "CROWD": {
+      "phrase_id": "crowd_ahead",
+      "text": "Looks a bit crowded ahead. Take care!"
+    }
+  },
+  "internal_category_map": {
+    "possible_puddle": "PUDDLE",
+    "pothole": "DAMAGED_PAVEMENT",
+    "damaged_pavement": "DAMAGED_PAVEMENT",
+    "stairs": "STAIRS",
+    "downstairs": "STAIRS"
+  }
+}

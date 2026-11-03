@@ -1,0 +1,168 @@
+[vision]
+# Ground skips the object model. Use --mode balanced to run the previous combined demo.
+mode = "ground"
+
+[server]
+host = "127.0.0.1"
+port = 8000
+preview_fps = 12
+
+[camera]
+device = "auto"
+width = 640
+height = 480
+fps = 15
+
+[model]
+directory = "models/yolo11n"
+size = 416
+confidence = 0.45
+threads = 1
+max_fps = 6
+
+[road]
+directory = "models/v2/road-distress"
+size = 416
+confidence = 0.4
+threads = 1
+max_fps = 1.5
+
+[pothole]
+backend = "yolox_ncnn_research"
+directory = "models/v2/pothole-yolox-research"
+size = 640
+confidence = 0.6
+threads = 1
+max_fps = 1.5
+
+[puddle]
+enabled = true
+directory = "models/v2/puddle-calibrated"
+size = 640
+confidence = 0.25
+threads = 1
+max_fps = 1.5
+
+[semantic]
+directory = "models/v2/segformer"
+stair_context_directory = "models/v2/stairs-context"
+size = 384
+confidence = 0.55
+threads = 1
+max_fps = 1.5
+
+[warning]
+roi = [[0.25,0.25],[0.75,0.25],[0.95,1.0],[0.05,1.0]]
+ground_roi = [[0.35,0.40],[0.65,0.40],[0.95,1.0],[0.05,1.0]]
+cooldown_s = 8.0
+
+[distance]
+mode = "none"
+enter_m = 1.0
+leave_m = 1.2
+script = "config/scenarios/approach.json"
+# Real Pico mode must explicitly configure its actual port and mounting direction.
+port = "/dev/serial/by-id/CONFIRM_PICO_DEVICE"
+direction = "unknown"
+calibration_id = ""
+
+[association]
+verified = false
+source = "none"
+id = ""
+beam_roi = []
+
+[audio]
+ordinary_interval_s = 1.5
+enabled = true
+directory = "audio/en"
+# Empty uses the Pi default. The preview page can save a Bluetooth or USB node name.
+target = ""
+
+# Independent admitted observations, not consecutive captures. No extra inference.
+[warning.confirmation.possible_puddle]
+hits = 2
+observations = 3
+window_s = 3.2
+min_span_s = 0.3
+[warning.confirmation.damaged_pavement]
+hits = 2
+observations = 3
+window_s = 3.2
+min_span_s = 0.3
+[warning.confirmation.pothole]
+hits = 2
+observations = 2
+window_s = 3.2
+min_span_s = 0.3
+[warning.confirmation.stairs]
+hits = 2
+observations = 3
+window_s = 3.2
+min_span_s = 0.3
+[warning.episodes.wet_surface]
+clear_hits = 6
+clear_span_s = 5.0
+missing_reset_s = 10.0
+[warning.episodes.damaged_pavement]
+clear_hits = 3
+clear_span_s = 1.5
+missing_reset_s = 6.0
+[warning.episodes.stairs]
+clear_hits = 4
+clear_span_s = 3.0
+missing_reset_s = 6.0
+[warning.pothole_urgency]
+confidence = 0.75
+image_area = 0.01
+# Image evidence thresholds do not measure physical depth or distance.
+[warning.phrases.possible_puddle]
+id = "puddle_ahead"
+text = "Looks like there's a puddle ahead. Take care!"
+[warning.phrases.damaged_pavement]
+id = "damaged_pavement"
+text = "The pavement ahead looks damaged. Watch your step!"
+[warning.phrases.pothole]
+id = "damaged_pavement"
+text = "The pavement ahead looks damaged. Watch your step!"
+[warning.phrases.stairs]
+id = "stairs_ahead"
+text = "Careful, there might be stairs ahead."
+
+# Used only with --mode awareness; no change to ground/balanced model scheduling.
+[crowd]
+enabled = true
+interval_s = 0.75
+ground_max_age_s = 1.3
+person_size = 640
+min_people = 8
+confidence = 0.20
+min_height = 0.12
+min_median_height = 0.22
+link_gap_width = 0.95
+link_gap_height = 0.15
+min_occupancy = 0.18
+min_cluster_fill = 0.48
+min_horizontal_coverage = 0.45
+min_semantic_person_fraction = 0.70
+max_visible_ground_fraction = 0.15
+# Large, broad groups have background/gaps inside their bounding rectangle.
+# Only those groups may use the relaxed semantic cross-check. These image-size
+# cues do not measure distance; eight-person/packing/temporal gates still apply.
+large_group_median_height = 0.45
+large_group_occupancy = 0.50
+large_group_width = 0.75
+large_group_semantic_fraction = 0.40
+large_group_max_ground = 0.25
+semantic_pair_s = 0.75
+hits = 3
+observations = 4
+window_s = 4.5
+min_span_s = 1.2
+clear_hits = 5
+clear_span_s = 4.0
+missing_reset_s = 20.0
+freshness_s = 2.0
+event_ttl_s = 2.0
+retry_s = 0.8
+show_person_boxes = false

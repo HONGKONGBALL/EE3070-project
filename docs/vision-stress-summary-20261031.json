@@ -1,0 +1,220 @@
+{
+  "date": "2026-10-31",
+  "config_and_weights_unchanged": true,
+  "changed_existing_runtime_sources": [],
+  "changed_existing_weights": [],
+  "changed_existing_qa_helpers": [
+    "tools\\build_ground_review.py"
+  ],
+  "photo_cases": 125,
+  "real_photos": 119,
+  "ai_confounds": 6,
+  "photo_replay_aggregate_seconds": 558.82,
+  "continuity_seconds": 86.83,
+  "balanced_seconds": 44.67,
+  "categories": {
+    "possible_puddle": {
+      "tp": 12,
+      "fn": 11,
+      "fp": 1,
+      "tn": 41,
+      "unscored": 60,
+      "misses": [
+        "8779fe487863-puddle12-valid-12.jpg",
+        "2f82986d363f-puddle12-valid-10.jpg",
+        "04d51db9a56b-puddle12-valid-07.jpg",
+        "0b7116340d04-194253138.jpg",
+        "a15f77cbff69-puddle12-valid-09.jpg",
+        "50887e65ecc4-puddle12-valid-02.jpg",
+        "27cec4af5722-puddle12-valid-01.jpg",
+        "8fe97aa60d45-189601050.jpg",
+        "4009b50d3c16-191639845.jpg",
+        "51f413e920a8-195230196.jpg",
+        "22ad8974c8ba-puddle12-valid-00.jpg"
+      ],
+      "false_alerts": [
+        "cbfc7ba06af5-hf-test-52.jpg"
+      ],
+      "recall": 0.5217,
+      "precision": 0.9231
+    },
+    "pothole": {
+      "tp": 17,
+      "fn": 6,
+      "fp": 5,
+      "tn": 61,
+      "unscored": 36,
+      "misses": [
+        "023c2c635e7c-hf-test-68.jpg",
+        "49b3357f097b-road-12.jpg",
+        "013fd1da3d10-hf-test-66.jpg",
+        "26698afac3c7-hf-test-31.jpg",
+        "46a57292f208-hf-test-33.jpg",
+        "40ff439a3b87-hf-test-27.jpg"
+      ],
+      "false_alerts": [
+        "2f82986d363f-puddle12-valid-10.jpg",
+        "eaabc7b377be-181669412.jpg",
+        "0b7116340d04-194253138.jpg",
+        "22ad8974c8ba-puddle12-valid-00.jpg",
+        "ba4357883b28-puddle12-valid-18.jpg"
+      ],
+      "recall": 0.7391,
+      "precision": 0.7727
+    },
+    "damaged_pavement": {
+      "tp": 2,
+      "fn": 10,
+      "fp": 0,
+      "tn": 10,
+      "unscored": 103,
+      "misses": [
+        "703c08139d7f-road-54.jpg",
+        "b04dcef47b92-road-00.jpg",
+        "13b18882c402-road-14.jpg",
+        "49b3357f097b-road-12.jpg",
+        "066a8c4a7750-road-57.jpg",
+        "8c0b88d28e8d-road-01.jpg",
+        "c59a19534477-road-11.jpg",
+        "1d4727eda335-road-09.jpg",
+        "8f59d9b507ca-road-65.jpg",
+        "e1dd6f01ce96-road-06.jpg"
+      ],
+      "false_alerts": [],
+      "recall": 0.1667,
+      "precision": 1.0
+    },
+    "stairs": {
+      "tp": 26,
+      "fn": 3,
+      "fp": 0,
+      "tn": 14,
+      "unscored": 82,
+      "misses": [
+        "0491badd2ad2-fresh-177311494.jpg",
+        "35274400c0b8-fresh-117547738.jpg",
+        "84d1aec9d726-new-12182203.jpg"
+      ],
+      "false_alerts": [],
+      "recall": 0.8966,
+      "precision": 1.0
+    }
+  },
+  "cases_with_false_alert": 6,
+  "cases_with_miss": 29,
+  "unscored_events": [
+    {
+      "file": "8c0b88d28e8d-road-01.jpg",
+      "category": "possible_puddle"
+    },
+    {
+      "file": "c59a19534477-road-11.jpg",
+      "category": "possible_puddle"
+    },
+    {
+      "file": "167d00385bfd-hf-test-63.jpg",
+      "category": "possible_puddle"
+    },
+    {
+      "file": "b04dcef47b92-road-00.jpg",
+      "category": "pothole"
+    },
+    {
+      "file": "7b6d6b3e2a3d-hfvision-val-02.jpg",
+      "category": "pothole"
+    },
+    {
+      "file": "08141c803d4e-hf-test-70.jpg",
+      "category": "damaged_pavement"
+    },
+    {
+      "file": "013fd1da3d10-hf-test-66.jpg",
+      "category": "damaged_pavement"
+    },
+    {
+      "file": "27cec4af5722-puddle12-valid-01.jpg",
+      "category": "damaged_pavement"
+    },
+    {
+      "file": "ba4357883b28-puddle12-valid-18.jpg",
+      "category": "damaged_pavement"
+    },
+    {
+      "file": "167d00385bfd-hf-test-63.jpg",
+      "category": "damaged_pavement"
+    },
+    {
+      "file": "31bcfd4e3b56-150099885.jpg",
+      "category": "stairs"
+    },
+    {
+      "file": "780f8796e0c3-119576615.jpg",
+      "category": "stairs"
+    },
+    {
+      "file": "d7c158b679aa-road-51.jpg",
+      "category": "stairs"
+    },
+    {
+      "file": "ce999a07ff4f-119576610.jpg",
+      "category": "stairs"
+    },
+    {
+      "file": "bd7541bdd1c5-119576612.jpg",
+      "category": "stairs"
+    }
+  ],
+  "http_requests": 2979,
+  "http_exceptions": [],
+  "preview_fps": {
+    "continuity": {
+      "median": 11.0,
+      "p10": 8.3,
+      "max": 11.2
+    },
+    "balanced": {
+      "median": 11.0,
+      "p10": 10.9,
+      "max": 11.1
+    }
+  },
+  "ground_continuity_passed": true,
+  "balanced_integration_passed": true,
+  "audio_delivery_dry_run": {
+    "possible_puddle": {
+      "emitted_events": 16,
+      "dry_run_arbiter_played": 13,
+      "arbiter_actions": {
+        "played": 13,
+        "expired": 3
+      }
+    },
+    "pothole": {
+      "emitted_events": 24,
+      "dry_run_arbiter_played": 24,
+      "arbiter_actions": {
+        "played": 24
+      }
+    },
+    "damaged_pavement": {
+      "emitted_events": 7,
+      "dry_run_arbiter_played": 5,
+      "arbiter_actions": {
+        "expired": 2,
+        "played": 5
+      }
+    },
+    "stairs": {
+      "emitted_events": 31,
+      "dry_run_arbiter_played": 31,
+      "arbiter_actions": {
+        "played": 31
+      }
+    }
+  },
+  "not_pi_or_live_validation": true,
+  "physical_audio_tested": false,
+  "category_truth_note": "Boolean labels describe visible objects in the image, not measured path occupancy. Unlabelled categories excluded. No training; known-failure-enriched regression set, not overall model accuracy.",
+  "tests": "29 passed in 1.86s",
+  "follow_up": "Prioritize missed water candidates rejected by context verifier and weak damaged-pavement detection. Do not lower thresholds indiscriminately; retain false-positive probes."
+}

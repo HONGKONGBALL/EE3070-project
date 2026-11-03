@@ -1,0 +1,1025 @@
+{
+  "purpose": "Public photo development replay, actual model predictions, no training; not independent outdoor validation",
+  "items": [
+    {
+      "file": "puddles-0.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Road and a puddle in Akamas Peninsula, Cyprus.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Road_and_a_puddle_in_Akamas_Peninsula,_Cyprus.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Road_and_a_puddle_in_Akamas_Peninsula%2C_Cyprus.jpg/960px-Road_and_a_puddle_in_Akamas_Peninsula%2C_Cyprus.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "bc77a95fdfe9d5871094831d8761f92bbf1eb30f10affbe54985ce54707f39af",
+      "artist": "Michal Klajban",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Road and a puddle in Akamas Peninsula, Cyprus",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "cyprus-road"
+    },
+    {
+      "file": "puddles-1.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Muddy road in Akamas Peninsula, Cyprus 02.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Muddy_road_in_Akamas_Peninsula,_Cyprus_02.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Muddy_road_in_Akamas_Peninsula%2C_Cyprus_02.jpg/960px-Muddy_road_in_Akamas_Peninsula%2C_Cyprus_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "db99b008c7e21709e48e002a5443ea3094429f6955362feef91780d38034dcbd",
+      "artist": "",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "cyprus-road"
+    },
+    {
+      "file": "puddles-2.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Turners Puddle, farm road - geograph.org.uk - 5680888.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Turners_Puddle,_farm_road_-_geograph.org.uk_-_5680888.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Turners_Puddle%2C_farm_road_-_geograph.org.uk_-_5680888.jpg/960px-Turners_Puddle%2C_farm_road_-_geograph.org.uk_-_5680888.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "f6d08f6f029eea5bedf308f25b539b3acd07df1840df3b9e77774d18a10659e4",
+      "artist": "Mike Faherty\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Turners Puddle, farm road\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-2.jpg"
+    },
+    {
+      "file": "puddles-3.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Puddle, Hospital Road, Omagh - geograph.org.uk - 628843.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle,_Hospital_Road,_Omagh_-_geograph.org.uk_-_628843.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Puddle%2C_Hospital_Road%2C_Omagh_-_geograph.org.uk_-_628843.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "sha256": "b6c75e89110ca58e6d3f6718de76a3d34cf9ec42fa25977402feb5360cebe7bd",
+      "artist": "Kenneth Allen",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle, Hospital Road, Omagh. A good spot for a splash!",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-3.jpg"
+    },
+    {
+      "file": "puddles-4.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Puddle by road - geograph.org.uk - 657605.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_by_road_-_geograph.org.uk_-_657605.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Puddle_by_road_-_geograph.org.uk_-_657605.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "sha256": "9284ea468f3c3ef865de9358e0e10348ff3c51ebb6d65db0b2f678734710eb91",
+      "artist": "Mark Lange",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle by road It has been very wet the last couple of weeks.  This large puddle is on the corner of the road to Meifod, with a track leading down to the W.",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-4.jpg"
+    },
+    {
+      "file": "puddles-6.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Puddle Road - geograph.org.uk - 3314928.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_Road_-_geograph.org.uk_-_3314928.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/Puddle_Road_-_geograph.org.uk_-_3314928.jpg/960px-Puddle_Road_-_geograph.org.uk_-_3314928.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "d80637298dbe8cf22e3886d3a6e16dfb499bcf8d02252979a5fea8cc077e1350",
+      "artist": "David Liddle\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle Road\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-6.jpg"
+    },
+    {
+      "file": "puddles-11.jpg",
+      "candidate_group": "puddles",
+      "title": "File:Puddle by Teignmouth Road, Torquay - geograph.org.uk - 4731096.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_by_Teignmouth_Road,_Torquay_-_geograph.org.uk_-_4731096.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Puddle_by_Teignmouth_Road%2C_Torquay_-_geograph.org.uk_-_4731096.jpg/960px-Puddle_by_Teignmouth_Road%2C_Torquay_-_geograph.org.uk_-_4731096.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "5c97aa2d46c572161ac42f45030e826522eb6ca923e3637a4e8a3adc15526c0b",
+      "artist": "Derek Harper\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle by Teignmouth Road, Torquay\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": true,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "puddles-11.jpg"
+    },
+    {
+      "file": "dry-road-0.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 2.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_2.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Damaged_asphalt_surface_2.jpg/960px-Damaged_asphalt_surface_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "ffaa7882529068a1c931fba951a076f4753c9da4598fd62ced2286eca8caee32",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "damaged asphalt surface 2\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-1.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 5.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_5.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Damaged_asphalt_surface_5.jpg/960px-Damaged_asphalt_surface_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "d12ba505e564f7fe9d776de71e23d4f3d3bc8057aa6d8c724b485baa8f527cb7",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "damaged asphalt surface 6\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-2.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 1.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_1.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Damaged_asphalt_surface_1.jpg/960px-Damaged_asphalt_surface_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "884b47f25cedc2d3f8acc3a1c9e3e420b164f7caeed95d11ca6d9697c4b58853",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "destroyed asphalt surface 1\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-3.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 4.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_4.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Damaged_asphalt_surface_4.jpg/960px-Damaged_asphalt_surface_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "5265a123d9dfe193cb7a63cefd39f7f5687d1ae9aa91c64d38270386b580def8",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "damaged asphalt surface 4\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-4.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Intermediate asphald road surface near Krate\u010dko.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Intermediate_asphald_road_surface_near_Krate%C4%8Dko.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Intermediate_asphald_road_surface_near_Krate%C4%8Dko.jpg/960px-Intermediate_asphald_road_surface_near_Krate%C4%8Dko.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "d860b07e6537b58fb5c28de52e9cbc5629dafafaf6181c7b4d31b3e4a62d7629",
+      "artist": "Mnalis",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Intermediate asphald road surface near Krate\u010dko\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-4.jpg"
+    },
+    {
+      "file": "dry-road-5.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:002 Damaged road surface background - cracked asphalt blacktop in Spain.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:002_Damaged_road_surface_background_-_cracked_asphalt_blacktop_in_Spain.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/002_Damaged_road_surface_background_-_cracked_asphalt_blacktop_in_Spain.jpg/960px-002_Damaged_road_surface_background_-_cracked_asphalt_blacktop_in_Spain.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "471f684a270dd18f52eb2d7b1097e790f1adc0f23c24ca1ced413a2fc1766886",
+      "artist": "Marek \u015alusarczyk (Tupungato) Photo portfolio",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "description": "Damaged road surface background - cracked asphalt blacktop in Spain.",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-5.jpg"
+    },
+    {
+      "file": "dry-road-6.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Asphalt road surface (Unsplash).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Asphalt_road_surface_(Unsplash).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Asphalt_road_surface_%28Unsplash%29.jpg/960px-Asphalt_road_surface_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "e1590094ed9d0cecc2a2902327d06b4be429503dddff5ea24c4e314b7e33973c",
+      "artist": "marius sebastian mariodesign",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "Gurghiu, Romania",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-6.jpg"
+    },
+    {
+      "file": "dry-road-7.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Damaged asphalt surface 3.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Damaged_asphalt_surface_3.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Damaged_asphalt_surface_3.jpg/960px-Damaged_asphalt_surface_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "562d036a2a4e8c2e7aee861ce7a0ae540e3cb25430353c0eb7c08e85dda392b5",
+      "artist": "Mateusz Konieczny",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "damaged asphalt surface 3\u00a0",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "damaged-asphalt-series"
+    },
+    {
+      "file": "dry-road-8.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Surface-asphalt-excellent-thusis-schweiz.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Surface-asphalt-excellent-thusis-schweiz.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Surface-asphalt-excellent-thusis-schweiz.jpg/960px-Surface-asphalt-excellent-thusis-schweiz.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "9ca47300c697576b0be484bf66567e278c75dea815dcf6b7e2fdde87e9cee853",
+      "artist": "Mcliquid",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Surface-asphalt-excellent-thusis-schweiz",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-8.jpg"
+    },
+    {
+      "file": "dry-road-9.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Surface-asphalt-smoothness-bad-horrible.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Surface-asphalt-smoothness-bad-horrible.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Surface-asphalt-smoothness-bad-horrible.jpg/960px-Surface-asphalt-smoothness-bad-horrible.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "681d6bd1f90b2b548a734afa66f7f797b3e560d1b8a3074b65f937c0983c4ee0",
+      "artist": "Mcliquid",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Surface-asphalt-smoothness-bad-horrible",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-9.jpg"
+    },
+    {
+      "file": "dry-road-10.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Surface-asphalt-horrible-rongellen-schweiz.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Surface-asphalt-horrible-rongellen-schweiz.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Surface-asphalt-horrible-rongellen-schweiz.jpg/960px-Surface-asphalt-horrible-rongellen-schweiz.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "48490b63faf077bc1403a8e2b390fda1af0dd3533b954a988f46e726b93a34cd",
+      "artist": "Mcliquid",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Surface-asphalt-horrible-rongellen-schweiz",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": true,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-10.jpg"
+    },
+    {
+      "file": "dry-road-11.jpg",
+      "candidate_group": "dry-road",
+      "title": "File:Surface-asphalt-rock-ebenalp-schweiz.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Surface-asphalt-rock-ebenalp-schweiz.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Surface-asphalt-rock-ebenalp-schweiz.jpg/960px-Surface-asphalt-rock-ebenalp-schweiz.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sha256": "2eeeabf5062dc6ca13d0227f7cd41726f510235eb0a8f77b8068ff227dcb1ea1",
+      "artist": "Mcliquid",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Surface-asphalt-rock-ebenalp-schweiz",
+      "review_label": "visually_reviewed_before_model_evaluation",
+      "ground_truth": {
+        "visible_puddle": false,
+        "visible_pavement_damage": false,
+        "physical_height_change": "not_measured"
+      },
+      "reviewer": "Codex visual inspection of downloaded RGB photos",
+      "scene_group": "dry-road-11.jpg"
+    },
+    {
+      "file": "holdout-00.jpg",
+      "title": "File:202606 A Puddle on the path to Bali North Breakwater Beach.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:202606_A_Puddle_on_the_path_to_Bali_North_Breakwater_Beach.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/202606_A_Puddle_on_the_path_to_Bali_North_Breakwater_Beach.jpg/960px-202606_A_Puddle_on_the_path_to_Bali_North_Breakwater_Beach.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Junyu-K",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "The path to Bali North Breakwater Beach is blocked already by a large puddle.",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "3f080efb8d0cec2f6045ede896b905373a89cc7f7f1859f033bcdd75e3828102",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-00.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-01.jpg",
+      "title": "File:Puddle on the path - geograph.org.uk - 344693.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_on_the_path_-_geograph.org.uk_-_344693.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Puddle_on_the_path_-_geograph.org.uk_-_344693.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Oliver Dixon",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle on the path Between Close Farm and Red Gap. An all too frequent hazard when walking in farmland in winter.",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "5dee9b4bc13ca3db08d104363894a10a804138eee294faebc2a5ce485ea9a5a9",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-01.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-02.jpg",
+      "title": "File:Puddle on the path - geograph.org.uk - 7043121.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_on_the_path_-_geograph.org.uk_-_7043121.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Puddle_on_the_path_-_geograph.org.uk_-_7043121.jpg/960px-Puddle_on_the_path_-_geograph.org.uk_-_7043121.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Alan Murray-Rust\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle on the path\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "1c1c187a56a69349db09fac08ed71f88ed5c2f8c712a7d4095ffc24d916d90fa",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-02.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-03.jpg",
+      "title": "File:Puddle on the path - geograph.org.uk - 3068066.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_on_the_path_-_geograph.org.uk_-_3068066.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/d/df/Puddle_on_the_path_-_geograph.org.uk_-_3068066.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Robin Webster\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle on the path\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "44c6efed1f3ab9cca8d8efc744c074f2490000efba61abc5b9ff63c802f35162",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-03.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-04.jpg",
+      "title": "File:Puddle on a path - geograph.org.uk - 7363812.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_on_a_path_-_geograph.org.uk_-_7363812.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Puddle_on_a_path_-_geograph.org.uk_-_7363812.jpg/960px-Puddle_on_a_path_-_geograph.org.uk_-_7363812.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "DS Pugh\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle on a path\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "72445828bb7e8da29584f77ab9ee8e3f94dc9b1cb4045183b0b6ab4ba4335656",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-04.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-05.jpg",
+      "title": "File:Puddle on path to Seething - geograph.org.uk - 3374259.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_on_path_to_Seething_-_geograph.org.uk_-_3374259.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Puddle_on_path_to_Seething_-_geograph.org.uk_-_3374259.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Evelyn Simak\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle on path to Seething\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "37d515d7ea217ad999987d24e0a8a48a4c297354392dac3279acaaa3ea53e12e",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-05.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-06.jpg",
+      "title": "File:A Puddle on the Path - geograph.org.uk - 7790134.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:A_Puddle_on_the_Path_-_geograph.org.uk_-_7790134.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/A_Puddle_on_the_Path_-_geograph.org.uk_-_7790134.jpg/960px-A_Puddle_on_the_Path_-_geograph.org.uk_-_7790134.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Anne Burgess\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "A Puddle on the Path\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "341e976048d09bd8ec5bf62d8d86a22ee7b53acb98ee8172b4ee82827bd8e6a8",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-06.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-07.jpg",
+      "title": "File:Puddle on permissive path - geograph.org.uk - 5271212.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_on_permissive_path_-_geograph.org.uk_-_5271212.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Puddle_on_permissive_path_-_geograph.org.uk_-_5271212.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Evelyn Simak\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle on permissive path\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "fd3cab49114b27bc20b71b43fd0f19fefea2ce4eb4edc3e28e3e59887cf95770",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-07.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-08.jpg",
+      "title": "File:Exmoor , Puddle on the path - geograph.org.uk - 2622998.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Exmoor_,_Puddle_on_the_path_-_geograph.org.uk_-_2622998.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Exmoor_%2C_Puddle_on_the_path_-_geograph.org.uk_-_2622998.jpg/960px-Exmoor_%2C_Puddle_on_the_path_-_geograph.org.uk_-_2622998.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Lewis Clarke\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Exmoor\u00a0: Puddle on the path\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "2085151d30293ce1e61d9c7a090a3d956346d473e43b200ee8d7d3629e9beec5",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-08.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-09.jpg",
+      "title": "File:Puddle on the Tinto path - geograph.org.uk - 8150396.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_on_the_Tinto_path_-_geograph.org.uk_-_8150396.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Puddle_on_the_Tinto_path_-_geograph.org.uk_-_8150396.jpg/960px-Puddle_on_the_Tinto_path_-_geograph.org.uk_-_8150396.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Alan O'Dowd\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle on the Tinto path\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "b1a894ae243eef5900ef487267ac7e62acb378e16e7c61b489d40878860f5a13",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-09.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-10.jpg",
+      "title": "File:Berry Hill Fields, puddle on path - geograph.org.uk - 5190865.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Berry_Hill_Fields,_puddle_on_path_-_geograph.org.uk_-_5190865.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Berry_Hill_Fields%2C_puddle_on_path_-_geograph.org.uk_-_5190865.jpg/960px-Berry_Hill_Fields%2C_puddle_on_path_-_geograph.org.uk_-_5190865.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Jonathan Hutchins\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Berry Hill Fields: puddle on path\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "3771caebba5aee2fd21859fefc964ff877a9622764b05c5e01ae3351e3e82dab",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-10.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-11.jpg",
+      "title": "File:Puddle on path west of Dunkery Beacon - geograph.org.uk - 1283283.jpg",
+      "query": "puddle on path",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Puddle_on_path_west_of_Dunkery_Beacon_-_geograph.org.uk_-_1283283.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Puddle_on_path_west_of_Dunkery_Beacon_-_geograph.org.uk_-_1283283.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Derek Harper",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Puddle on path west of Dunkery Beacon A soggy stretch of the path west of Dunkery Beacon and leading towards Little Rowbarrow.",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "9d06b8e854a94c35d6067e5d1ccae301c452f1df6f59cc32a2f2bf423757c14f",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-11.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-12.jpg",
+      "title": "File:Wet pavement, Castle Street, Exeter - geograph.org.uk - 1069814.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Wet_pavement,_Castle_Street,_Exeter_-_geograph.org.uk_-_1069814.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Wet_pavement%2C_Castle_Street%2C_Exeter_-_geograph.org.uk_-_1069814.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Derek Harper",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Wet pavement, Castle Street, Exeter. A rainy day in the city, and the pavements turn into mirrors. The buildings on the right are shown in 513156, whilst on the left are 1018912 and 333534.",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "85d0a1fd2a01553998f1344db69397216c84eb068fe68bf78e9e8a7e22ba2510",
+      "ground_truth": {
+        "visible_puddle": null,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Reflective wet paving: standing-water boundary is ambiguous, not scored",
+      "scene_group": "holdout-12.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-13.jpg",
+      "title": "File:Wet Pavement - geograph.org.uk - 6519247.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Wet_Pavement_-_geograph.org.uk_-_6519247.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Wet_Pavement_-_geograph.org.uk_-_6519247.jpg/960px-Wet_Pavement_-_geograph.org.uk_-_6519247.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Bob Harvey\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Wet Pavement\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "db88edcf6d22c1671954a6fe0b746959dc765a9f8ad860097709d387e9867552",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "holdout-13.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-14.jpg",
+      "title": "File:Wet pavement, Omagh - geograph.org.uk - 6745287.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Wet_pavement,_Omagh_-_geograph.org.uk_-_6745287.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Wet_pavement%2C_Omagh_-_geograph.org.uk_-_6745287.jpg/960px-Wet_pavement%2C_Omagh_-_geograph.org.uk_-_6745287.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Kenneth  Allen\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Wet pavement, Omagh\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "5e2722cd3e707268dc6542f5d6b41e5e9cb63fe0d19b7e31419d1edc4a7b9951",
+      "ground_truth": {
+        "visible_puddle": null,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Reflective wet paving: standing-water boundary is ambiguous, not scored",
+      "scene_group": "omagh-wet-streets",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-15.jpg",
+      "title": "File:A wet pavement, Omagh - geograph.org.uk - 7556753.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:A_wet_pavement,_Omagh_-_geograph.org.uk_-_7556753.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/A_wet_pavement%2C_Omagh_-_geograph.org.uk_-_7556753.jpg/960px-A_wet_pavement%2C_Omagh_-_geograph.org.uk_-_7556753.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Kenneth  Allen\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "A wet pavement, Omagh\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "c9de12f26b515dc46f80611a8a3d27757aeab0cca9bd0d6add4b34bc6a9d80c6",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "omagh-wet-streets",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-16.jpg",
+      "title": "File:From dry pavement to wet pavement, Pillmawr Road, Newport - geograph.org.uk - 7844328.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:From_dry_pavement_to_wet_pavement,_Pillmawr_Road,_Newport_-_geograph.org.uk_-_7844328.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/From_dry_pavement_to_wet_pavement%2C_Pillmawr_Road%2C_Newport_-_geograph.org.uk_-_7844328.jpg/960px-From_dry_pavement_to_wet_pavement%2C_Pillmawr_Road%2C_Newport_-_geograph.org.uk_-_7844328.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Jaggery\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "From dry pavement to wet pavement, Pillmawr Road, Newport\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "0adeefa1c024728823df8da6bbf0b60a7f75ca5ad3f9cfc88d1030e1ec272f5f",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "holdout-16.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-17.jpg",
+      "title": "File:Wet pavement, Albert Street - geograph.org.uk - 4720353.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Wet_pavement,_Albert_Street_-_geograph.org.uk_-_4720353.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Wet_pavement%2C_Albert_Street_-_geograph.org.uk_-_4720353.jpg/960px-Wet_pavement%2C_Albert_Street_-_geograph.org.uk_-_4720353.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Richard Webb\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Wet pavement, Albert Street\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "b420f2336a2508b4e0e294eda0adbaca11eea45d123dd741af812ed5d5ac836f",
+      "ground_truth": {
+        "visible_puddle": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visible standing water",
+      "scene_group": "holdout-17.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-18.jpg",
+      "title": "File:Wet pavement at Greens End - geograph.org.uk - 8256821.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Wet_pavement_at_Greens_End_-_geograph.org.uk_-_8256821.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Wet_pavement_at_Greens_End_-_geograph.org.uk_-_8256821.jpg/960px-Wet_pavement_at_Greens_End_-_geograph.org.uk_-_8256821.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "David Martin\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Wet pavement at Greens End\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "d89e637627013514eb3112f7f5e8eae7efe44852fca2c889fd150785c4d212c8",
+      "ground_truth": {
+        "visible_puddle": null,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Reflective wet paving: standing-water boundary is ambiguous, not scored",
+      "scene_group": "holdout-18.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-19.jpg",
+      "title": "File:Wet leaves littering pavement - geograph.org.uk - 1593324.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Wet_leaves_littering_pavement_-_geograph.org.uk_-_1593324.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Wet_leaves_littering_pavement_-_geograph.org.uk_-_1593324.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Evelyn Simak",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Wet leaves littering pavement. View east along The Street as it passes the Old Rectory &gt; 1593329 the brick wall of which can be seen at right.\nThe village of Starston covers an area of 9.02 square kilometres and has a population of approximately 320.  Between 1856 and 1866 it had its own railway station on the Waveney Valley Line before it was shut to passenger trains through lack of usage. Starston station &gt; https://www.geograph.org.uk/photo/1592857 was one of the first stations to close in 1866 but freight and passenger through trains continued until the 1960s.  The station has since been converted into a private dwelling house. The parish church, St Margaret's &gt;  https://www.geograph.org.uk/photo/1593311 is located on an elevation overlooking the Beck and the main street, called The Street. Starston is without pub (closed in the 1950s) and no longer has a village shop (closed in the early 1980s) and the village school was closed in 1968.  The village is home to the probably only surviving hollow post windpump &gt; https://www.geograph.org.uk/photo/1592950 which is incorporated into the village sign &gt; https://www.geograph.org.uk/photo/1593247.",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "39fb417bdcf18a991e5e37fb85bec3b5e884a37422663bd16d8342481fd63e57",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "holdout-19.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-20.jpg",
+      "title": "File:Wet High Street pavement - geograph.org.uk - 4744030.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Wet_High_Street_pavement_-_geograph.org.uk_-_4744030.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/7/76/Wet_High_Street_pavement_-_geograph.org.uk_-_4744030.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Philip Halling\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Wet High Street pavement\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "2b257ed40207f4be2fb074c8865b0145827a30607b9d3dd0d8a433500c4d75c2",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "holdout-20.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-21.jpg",
+      "title": "File:A wet pavement, High Street, Omagh - geograph.org.uk - 6710067.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:A_wet_pavement,_High_Street,_Omagh_-_geograph.org.uk_-_6710067.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/A_wet_pavement%2C_High_Street%2C_Omagh_-_geograph.org.uk_-_6710067.jpg/960px-A_wet_pavement%2C_High_Street%2C_Omagh_-_geograph.org.uk_-_6710067.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Kenneth  Allen\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "A wet pavement, High Street, Omagh\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "14fb09c9753e772829cf92730cb148c09103093aaa66bade0f855abc15a66c46",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "omagh-wet-streets",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-22.jpg",
+      "title": "File:A wet pavement, Market Street, Omagh - geograph.org.uk - 4909304.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:A_wet_pavement,_Market_Street,_Omagh_-_geograph.org.uk_-_4909304.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/d/d9/A_wet_pavement%2C_Market_Street%2C_Omagh_-_geograph.org.uk_-_4909304.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Kenneth  Allen\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "A wet pavement, Market Street, Omagh\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "fbd5ba4f7d64b5acdaa6d4ed334d7e38e5fcc24ee07792bd2874fb823ccb4e66",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "omagh-wet-streets",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-23.jpg",
+      "title": "File:Wet reflections on the pavement, Omagh - geograph.org.uk - 7169215.jpg",
+      "query": "wet pavement",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Wet_reflections_on_the_pavement,_Omagh_-_geograph.org.uk_-_7169215.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Wet_reflections_on_the_pavement%2C_Omagh_-_geograph.org.uk_-_7169215.jpg/960px-Wet_reflections_on_the_pavement%2C_Omagh_-_geograph.org.uk_-_7169215.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Kenneth  Allen\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Wet reflections on the pavement, Omagh\u00a0",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "b4225c81fe64bea63553d9607d1418e72c1e1b5360fd2240caebca4616cc8c34",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "omagh-wet-streets",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-24.jpg",
+      "title": "File:Alexander pushkins shadow art object in Odessa 02.jpg",
+      "query": "sidewalk shadows",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Alexander_pushkins_shadow_art_object_in_Odessa_02.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Alexander_pushkins_shadow_art_object_in_Odessa_02.jpg/960px-Alexander_pushkins_shadow_art_object_in_Odessa_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "HOBOPOCC",
+      "license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "description": "Art object - Shadow of Alexander Pushkin, created on the corner of Deribasovskaya and Rishelevskay streets of Odessa, at the place which was visited by poet by many times - house of Reno was located at this place in the beginning of XIX century",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "5798e268923c2fd7e3438a53d1454bae1f799e8ed60e872090f0a5b32fad5d41",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "odessa-shadow-art",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-25.jpg",
+      "title": "File:Alexander pushkins shadow art object in Odessa 04.jpg",
+      "query": "sidewalk shadows",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Alexander_pushkins_shadow_art_object_in_Odessa_04.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Alexander_pushkins_shadow_art_object_in_Odessa_04.jpg/960px-Alexander_pushkins_shadow_art_object_in_Odessa_04.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "HOBOPOCC",
+      "license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "description": "Art object - Shadow of Alexander Pushkin, created on the corner of Deribasovskaya and Rishelevskay streets of Odessa, at the place which was visited by poet by many times - house of Reno was located at this place in the beginning of XIX century/ Odessa Opera at background.",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "e31d39db1e71510d3bf4ad668abd1f3991d2a05eb7a6b7a48c630a28cbc028fe",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "odessa-shadow-art",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-26.jpg",
+      "title": "File:Alexander pushkins shadow art object in Odessa 03.jpg",
+      "query": "sidewalk shadows",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Alexander_pushkins_shadow_art_object_in_Odessa_03.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Alexander_pushkins_shadow_art_object_in_Odessa_03.jpg/960px-Alexander_pushkins_shadow_art_object_in_Odessa_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "HOBOPOCC",
+      "license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "description": "Art object - Shadow of Alexander Pushkin, created on the corner of Deribasovskaya and Rishelevskay streets of Odessa, at the place which was visited by poet by many times - house of Reno was located at this place in the beginning of XIX century",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "2d22112b70d14687da900c73711b37339dffd43f5379177c1edd2e98323b4f2f",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "odessa-shadow-art",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-27.jpg",
+      "title": "File:Alexander pushkins shadow art object in Odessa 01.jpg",
+      "query": "sidewalk shadows",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Alexander_pushkins_shadow_art_object_in_Odessa_01.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Alexander_pushkins_shadow_art_object_in_Odessa_01.jpg/960px-Alexander_pushkins_shadow_art_object_in_Odessa_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "HOBOPOCC",
+      "license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "description": "Art object - Shadow of Alexander Pushkin, created on the corner of Deribasovskaya and Rishelevskay streets of Odessa, at the place which was visited by poet by many times - house of Reno was located at this place in the beginning of XIX century",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "50b6b7142cb4238def16475ed41652812d04a029528029fd421afc03697ad788",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "odessa-shadow-art",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-28.jpg",
+      "title": "File:Alexander pushkins shadow art object in Odessa plaque.jpg",
+      "query": "sidewalk shadows",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Alexander_pushkins_shadow_art_object_in_Odessa_plaque.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Alexander_pushkins_shadow_art_object_in_Odessa_plaque.jpg/960px-Alexander_pushkins_shadow_art_object_in_Odessa_plaque.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "HOBOPOCC",
+      "license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "description": "Art object - Shadow of Alexander Pushkin, created on the corner of Deribasovskaya and Rishelevskay streets of Odessa, at the place which was visited by poet by many times - house of Reno was located at this place in the beginning of XIX century. Bronze plaque mounted into the pavement.",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "f68f36cdbdb0431eaba3ae6cbb51331e1cc3cf137a9e1aed8164052a5a18bfdf",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "odessa-shadow-art",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-29.jpg",
+      "title": "File:DC Sidewalk in spring.jpg",
+      "query": "sidewalk shadows",
+      "source_page": "https://commons.wikimedia.org/wiki/File:DC_Sidewalk_in_spring.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/DC_Sidewalk_in_spring.jpg/960px-DC_Sidewalk_in_spring.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Kurt Kaiser",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "near Dupont",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "6449b27a22c03e854360f4f9c178fb694b57f4cb52ef8455b687651fdbc75229",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "holdout-29.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-30.jpg",
+      "title": "File:Sidewalk, Wall, Park Shadows (Washington, DC) (5490917542).jpg",
+      "query": "sidewalk shadows",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Sidewalk,_Wall,_Park_Shadows_(Washington,_DC)_(5490917542).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Sidewalk%2C_Wall%2C_Park_Shadows_%28Washington%2C_DC%29_%285490917542%29.jpg/960px-Sidewalk%2C_Wall%2C_Park_Shadows_%28Washington%2C_DC%29_%285490917542%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "takomabibelot",
+      "license": "CC BY 2.0",
+      "license_url": "https://creativecommons.org/licenses/by/2.0",
+      "description": "Sidewalk, Wall, Park: Shadows (Washington, DC)",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "1d5f18f91feee435016426856540ab229a07e6f646802d7ae4c4bcc7a6d9670b",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "holdout-30.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    },
+    {
+      "file": "holdout-31.jpg",
+      "title": "File:Jules passing over a shadow cast of window bars, Biblioteca das Galveias, Lisbon, Portugal julesvernex2.jpg",
+      "query": "sidewalk shadows",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Jules_passing_over_a_shadow_cast_of_window_bars,_Biblioteca_das_Galveias,_Lisbon,_Portugal_julesvernex2.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Jules_passing_over_a_shadow_cast_of_window_bars%2C_Biblioteca_das_Galveias%2C_Lisbon%2C_Portugal_julesvernex2.jpg/960px-Jules_passing_over_a_shadow_cast_of_window_bars%2C_Biblioteca_das_Galveias%2C_Lisbon%2C_Portugal_julesvernex2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Jules Verne Times Two",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Jules passing over a shadow cast of window bars, Biblioteca das Galveias, Lisbon, Portugal",
+      "review_label": "visually_reviewed_before_selected_pipeline_evaluation",
+      "sha256": "5cecadcb94eed1c85070b2393f50b8a0c081aecc0c36d68d01a6f89d1a78fad8",
+      "ground_truth": {
+        "visible_puddle": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "No clearly visible standing-water pool; wet film/shadows may remain",
+      "scene_group": "holdout-31.jpg",
+      "model_training_overlap": "unknown; held out only from our earlier engineering development set"
+    }
+  ]
+}

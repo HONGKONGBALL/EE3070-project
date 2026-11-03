@@ -61,7 +61,8 @@ class OutputRequest:
     extra_clips: list[str] = field(default_factory=list)  # e.g. distance clip after a turn
     created: float = 0.0
     ttl_s: float = 5.0  # stale requests are dropped instead of played late
+    event_id: str = ""  # optional identity for separately tracked visual events
 
     @property
     def key(self) -> str:
-        return "|".join([self.prompt_id, *self.extra_clips, self.text or ""])
+        return self.event_id or "|".join([self.prompt_id, *self.extra_clips, self.text or ""])

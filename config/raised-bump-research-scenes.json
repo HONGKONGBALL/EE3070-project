@@ -1,0 +1,158 @@
+{
+  "purpose": "Small preliminary raised-bump versus flat-stripe diagnostic, not complete uneven-ground acceptance",
+  "items": [
+    {
+      "file": "bump-00.jpg",
+      "title": "File:Speed-bump street marking-LosAngeles.jpg",
+      "query": "speed bump -sign -warning -MUTCD -symbol -diagram",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Speed-bump_street_marking-LosAngeles.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Speed-bump_street_marking-LosAngeles.jpg/960px-Speed-bump_street_marking-LosAngeles.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Eric Polk",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Street markings for a speed bump in the Elysian Park neighborhood of Los Angeles, California, United States",
+      "review_label": "visually_reviewed_before_bump_model_inference",
+      "sha256": "b08a92b21663280382dc63aeb8c69309e2d84ba257bd3ce17b59f4fcdfe977a0",
+      "ground_truth": {
+        "visible_raised_bump": null,
+        "physical_height_change": "not_measured"
+      },
+      "scene_group": "bump-00.jpg",
+      "review_notes": "Painted speedbump marking, actual raised profile unclear; unscored"
+    },
+    {
+      "file": "bump-01.jpg",
+      "title": "File:Speed bump on W\u00fcrttembergische Stra\u00dfe.jpg",
+      "query": "speed bump -sign -warning -MUTCD -symbol -diagram",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Speed_bump_on_W%C3%BCrttembergische_Stra%C3%9Fe.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Speed_bump_on_W%C3%BCrttembergische_Stra%C3%9Fe.jpg/960px-Speed_bump_on_W%C3%BCrttembergische_Stra%C3%9Fe.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "\u0410\u043d\u0434\u0440\u0435\u0439 \u0420\u043e\u043c\u0430\u043d\u0435\u043d\u043a\u043e",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Speed bump on W\u00fcrttembergische Stra\u00dfe",
+      "review_label": "visually_reviewed_before_bump_model_inference",
+      "sha256": "4627584c518c76d3593dba56ff2bfa0ab5c5aa64eca7dc5e67d00322290d468b",
+      "ground_truth": {
+        "visible_raised_bump": true,
+        "physical_height_change": "not_measured"
+      },
+      "scene_group": "bump-01.jpg",
+      "review_notes": "Visible installed bump profile"
+    },
+    {
+      "file": "bump-02.jpg",
+      "title": "File:Speed bump before bend near Aggons Farm - geograph.org.uk - 1531727.jpg",
+      "query": "speed bump -sign -warning -MUTCD -symbol -diagram",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Speed_bump_before_bend_near_Aggons_Farm_-_geograph.org.uk_-_1531727.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Speed_bump_before_bend_near_Aggons_Farm_-_geograph.org.uk_-_1531727.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Dave Spicer",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Speed bump before bend near Aggons Farm I thought this was a little over the top seeing as there are only 4 properties on this deadend road",
+      "review_label": "visually_reviewed_before_bump_model_inference",
+      "sha256": "3153e8fcdc6acfd3f360f7fad633110c0c375120e0b94c946fc7f44d185a56fe",
+      "ground_truth": {
+        "visible_raised_bump": true,
+        "physical_height_change": "not_measured"
+      },
+      "scene_group": "bump-02.jpg",
+      "review_notes": "Visible installed bump profile"
+    },
+    {
+      "file": "bump-03.jpg",
+      "title": "File:Rubber speed bumps.jpg",
+      "query": "speed bump -sign -warning -MUTCD -symbol -diagram",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Rubber_speed_bumps.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Rubber_speed_bumps.jpg/960px-Rubber_speed_bumps.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Fumikas Sagisavas",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "Rubber speed bumps",
+      "review_label": "visually_reviewed_before_bump_model_inference",
+      "sha256": "02a627248206d9613e5895d33c9a38c182510e7ce28258d8aa32190fd0b3a4a1",
+      "ground_truth": {
+        "visible_raised_bump": null,
+        "physical_height_change": "not_measured"
+      },
+      "scene_group": "bump-03.jpg",
+      "review_notes": "Removed rubber modules stacked on pallet, not an installed path hazard; unscored"
+    },
+    {
+      "file": "bump-04.jpg",
+      "title": "File:Zebra crossing St Helier.jpg",
+      "query": "zebra crossing -sign -night -diagram",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Zebra_crossing_St_Helier.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Zebra_crossing_St_Helier.jpg/960px-Zebra_crossing_St_Helier.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "J\u00e8rriais janne",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "A zebra crossing in The Parade, St Helier.",
+      "review_label": "visually_reviewed_before_bump_model_inference",
+      "sha256": "ae6fd3d13cf25d5df34dfeda06b090da21e54cd3e1743ad136d7e53813cd7fab",
+      "ground_truth": {
+        "visible_raised_bump": false,
+        "physical_height_change": "not_measured"
+      },
+      "scene_group": "bump-04.jpg",
+      "review_notes": "No visibly raised speedbump in crossing scene"
+    },
+    {
+      "file": "bump-05.jpg",
+      "title": "File:Zebra Cross di Jalan Asia Afrika.jpg",
+      "query": "zebra crossing -sign -night -diagram",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Zebra_Cross_di_Jalan_Asia_Afrika.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Zebra_Cross_di_Jalan_Asia_Afrika.jpg/960px-Zebra_Cross_di_Jalan_Asia_Afrika.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Astari28",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Zebra Cross di Jalan Asia Afrika",
+      "review_label": "visually_reviewed_before_bump_model_inference",
+      "sha256": "0fdc1e330321ffdb7eddcecd8fb759ff322e2f8241dfbfa408297d86417875b7",
+      "ground_truth": {
+        "visible_raised_bump": false,
+        "physical_height_change": "not_measured"
+      },
+      "scene_group": "bump-05.jpg",
+      "review_notes": "No visibly raised speedbump in crossing scene"
+    },
+    {
+      "file": "bump-06.jpg",
+      "title": "File:Zebra crossing on Freeman Street - geograph.org.uk - 8147284.jpg",
+      "query": "zebra crossing -sign -night -diagram",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Zebra_crossing_on_Freeman_Street_-_geograph.org.uk_-_8147284.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Zebra_crossing_on_Freeman_Street_-_geograph.org.uk_-_8147284.jpg/960px-Zebra_crossing_on_Freeman_Street_-_geograph.org.uk_-_8147284.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Stephen Craven",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Zebra crossing on Freeman Street",
+      "review_label": "visually_reviewed_before_bump_model_inference",
+      "sha256": "2b34c5e189497e0df1d7cd12f41a26c5ce145297ed640b62192f3f179c2cff35",
+      "ground_truth": {
+        "visible_raised_bump": false,
+        "physical_height_change": "not_measured"
+      },
+      "scene_group": "bump-06.jpg",
+      "review_notes": "No visibly raised speedbump in crossing scene"
+    },
+    {
+      "file": "bump-07.jpg",
+      "title": "File:Zebra crossing, Kingsway, Newport - geograph.org.uk - 4821157.jpg",
+      "query": "zebra crossing -sign -night -diagram",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Zebra_crossing,_Kingsway,_Newport_-_geograph.org.uk_-_4821157.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/8/84/Zebra_crossing%2C_Kingsway%2C_Newport_-_geograph.org.uk_-_4821157.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Jaggery",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Zebra crossing, Kingsway, Newport",
+      "review_label": "visually_reviewed_before_bump_model_inference",
+      "sha256": "683bfbc4ac88f03a926ff5e8ee0b89ba60a8c4dc5a1c73e9c3818afb8b13ad8e",
+      "ground_truth": {
+        "visible_raised_bump": false,
+        "physical_height_change": "not_measured"
+      },
+      "scene_group": "bump-07.jpg",
+      "review_notes": "No visibly raised speedbump in crossing scene"
+    }
+  ],
+  "labels_frozen_utc": "2026-10-27T01:39:55.221904+00:00"
+}

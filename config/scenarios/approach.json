@@ -1,0 +1,13 @@
+{
+  "description": "SCRIPTED MOCK: uncalibrated front distances; near warning must remain generic.",
+  "segments": [
+    {"seconds": 2, "cm": 250},
+    {"seconds": 2, "cm": 180},
+    {"seconds": 2, "cm": 120},
+    {"seconds": 2, "cm": 90},
+    {"seconds": 2, "cm": 50},
+    {"seconds": 2, "cm": 150},
+    {"seconds": 2, "cm": 90},
+    {"seconds": 2, "cm": 90, "age_ms": 1000}
+  ]
+}

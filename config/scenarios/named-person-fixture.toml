@@ -1,0 +1,11 @@
+# Simulation fixture for the central person in the 640x480 letterboxed public bus.jpg.
+# This region is NOT a real sensor calibration and must never be used with Pico.
+[distance]
+mode = "mock"
+script = "config/scenarios/named-person.json"
+
+[association]
+verified = true
+source = "mock"
+id = "photo-person-fixture"
+beam_roi = [[0.415,0.48],[0.435,0.48],[0.435,0.56],[0.415,0.56]]

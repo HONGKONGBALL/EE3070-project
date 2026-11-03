@@ -62,7 +62,7 @@ ssh -N -L 127.0.0.1:8010:127.0.0.1:8000 gp7_3070@192.168.1.99
 
 `config/camera.example.toml` 的 `[audio] enabled = true` 启用耳机播放。
 在 Pi 声音输出中选 HyperX，或用 `wpctl status` 确认默认输出。
-默认用 PipeWire 的 `pw-play`，不依赖 Windows 或树莓派上的蓝牙配对。
+默认用 Pi 上的 PipeWire `pw-play`。USB 接收器直接接 Pi；AirPods 等蓝牙耳机须先与 Pi 配对。V2 预览页可保存和切换两种输出，见 [耳机输出切换](pi-audio-outputs.md)。
 
 固定 WAV 保存在 `audio/en/`，不提交 Git。在本机 Windows 项目根目录已实际生成过；
 如需重新生成，可使用已安装 Microsoft David Desktop 声音：

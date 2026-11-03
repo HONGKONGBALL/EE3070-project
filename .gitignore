@@ -14,3 +14,5 @@ audio/*/
 models/
 calib/*.npz
 captures/
+testdata/simulation/
+testdata/stairs-*/

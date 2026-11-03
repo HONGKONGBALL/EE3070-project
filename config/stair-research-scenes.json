@@ -1,0 +1,512 @@
+{
+  "items": [
+    {
+      "file": "stairs-00.jpg",
+      "title": "File:Looking down the stairs - geograph.org.uk - 1235409.jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_down_the_stairs_-_geograph.org.uk_-_1235409.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Looking_down_the_stairs_-_geograph.org.uk_-_1235409.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Bill Nicholls",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Looking down the stairs This photo shows three areas. To the right you can make out the road that goes to the carpark, the centre the pedestrian and to the left is the exit ramp the buses took to leave the bus station.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "bb5157d857112241f3a453116010eaacf387101a8a4b793f0468ead91b07614e",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-00.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-01.jpg",
+      "title": "File:A shot looking down the main stairs (16040027841).jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:A_shot_looking_down_the_main_stairs_(16040027841).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/A_shot_looking_down_the_main_stairs_%2816040027841%29.jpg/960px-A_shot_looking_down_the_main_stairs_%2816040027841%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "U.S. Embassy Abidjan",
+      "license": "Public domain",
+      "license_url": "",
+      "description": "A shot looking down the main stairs. The stairs are winding.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "79f26918bf5cfd1c280919f2c08d21ecb55520c7ea12f77a7b42bf71885bb692",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-01.jpg",
+      "extreme_viewpoint": true
+    },
+    {
+      "file": "stairs-02.jpg",
+      "title": "File:13th floor looking down - staircase modern high rise.jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:13th_floor_looking_down_-_staircase_modern_high_rise.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/13th_floor_looking_down_-_staircase_modern_high_rise.jpg/960px-13th_floor_looking_down_-_staircase_modern_high_rise.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Virtual-Pano",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "view into a staircase of  a modern high-rise from the 13th floor",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "5aa1093f129a98f9f3f1e83e5c1833fea3fa31970db32c40a9bd86ca26a98496",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-02.jpg",
+      "extreme_viewpoint": true
+    },
+    {
+      "file": "stairs-03.jpg",
+      "title": "File:Looking down the All\u00e9e Vito Di Cairano stairs, Valbonne, 2021.jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_down_the_All%C3%A9e_Vito_Di_Cairano_stairs,_Valbonne,_2021.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Looking_down_the_All%C3%A9e_Vito_Di_Cairano_stairs%2C_Valbonne%2C_2021.jpg/960px-Looking_down_the_All%C3%A9e_Vito_Di_Cairano_stairs%2C_Valbonne%2C_2021.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "DimiTalen",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "Looking down the All\u00e9e Vito Di Cairano stairs, Valbonne, 2021",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "bd07958cf785559fa855def98ebacee19852050d8dce75e157d3d259e5a5077f",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "valbonne",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-04.jpg",
+      "title": "File:Lighthouse Stairs - Looking Down (23498179513).jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Lighthouse_Stairs_-_Looking_Down_(23498179513).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Lighthouse_Stairs_-_Looking_Down_%2823498179513%29.jpg/960px-Lighthouse_Stairs_-_Looking_Down_%2823498179513%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Amanda Slater from Coventry, West Midlands, UK",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "A visit to the very endangered Orfordness lighthouse.\nTo read about its history and what is happening to it now see the website of the lovely people who are trying to save it.\n\n&lt;a href=\"http://www.orfordnesslighthouse.co.uk/\" rel=\"nofollow\"&gt;www.orfordnesslighthouse.co.uk/&lt;/a&gt;",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "17fdf88bd9cf96ad9d24b532f023251831427cf76c238892d81eed1d71a2ad58",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "lighthouse1",
+      "extreme_viewpoint": true
+    },
+    {
+      "file": "stairs-05.jpg",
+      "title": "File:Looking down Cape Hatteras Lighthouse stairs (50068192978).jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_down_Cape_Hatteras_Lighthouse_stairs_(50068192978).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Looking_down_Cape_Hatteras_Lighthouse_stairs_%2850068192978%29.jpg/960px-Looking_down_Cape_Hatteras_Lighthouse_stairs_%2850068192978%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Cape Hatteras National Seashore",
+      "license": "Public domain",
+      "license_url": "",
+      "description": "Looking down Cape Hatteras Lighthouse stairs. NPS/Barber",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "d7b51d324039d11bf90df39169d91279308959e6ef0fdd407df77c333475e245",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-05.jpg",
+      "extreme_viewpoint": true
+    },
+    {
+      "file": "stairs-06.jpg",
+      "title": "File:Stairs looking down from Bailengzun Memorial Park on 27 January 2021.jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Stairs_looking_down_from_Bailengzun_Memorial_Park_on_27_January_2021.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Stairs_looking_down_from_Bailengzun_Memorial_Park_on_27_January_2021.jpg/960px-Stairs_looking_down_from_Bailengzun_Memorial_Park_on_27_January_2021.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Kai3952",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Stairs looking down from Bailengzun Memorial Park on 27 January 2021.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "c93373b1adfa8f16d7920ea96fac13216947cb60a9cd86d8a6f09e3efa4cba4e",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-06.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-07.jpg",
+      "title": "File:Kesgrave Hall - top landing, looking down the stairs - geograph.org.uk - 1031407.jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Kesgrave_Hall_-_top_landing,_looking_down_the_stairs_-_geograph.org.uk_-_1031407.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Kesgrave_Hall_-_top_landing%2C_looking_down_the_stairs_-_geograph.org.uk_-_1031407.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Nicholas Mutton",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Kesgrave Hall - top landing, looking down the stairs When this was Kesgrave Hall School, there was a big firewall with wired-glass here running right the way across from left to right with a fire door.  The door (now blocked off) that you can see on the left was the \"Constable\" dormitory.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "03b19477d4d5052abd5c4747e1c12c726b2c1ab1ed9fc5089dca7ec12f1c42e7",
+      "ground_truth": {
+        "downstairs_visible": null,
+        "upstairs_visible": null,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Partial landing/ambiguous directional evidence; not scored",
+      "scene_group": "stairs-07.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-08.jpg",
+      "title": "File:Looking down the Jezsuita Stairs, Budapest halaszbastya 01 015.jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_down_the_Jezsuita_Stairs,_Budapest_halaszbastya_01_015.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Looking_down_the_Jezsuita_Stairs%2C_Budapest_halaszbastya_01_015.jpg/960px-Looking_down_the_Jezsuita_Stairs%2C_Budapest_halaszbastya_01_015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "hazai t\u00e1jak",
+      "license": "CC BY 2.5 hu",
+      "license_url": "https://creativecommons.org/licenses/by/2.5/hu/deed.en",
+      "description": "Looking down the Jezsuita Stairs, Budapest.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "0a4e0c4c645667846aac3e53fb68a100622eac463626df90d22c9a7e0894cd36",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "budapest-jezsuita",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-09.jpg",
+      "title": "File:Looking down the Jezsuita Stairs, Budapest halaszbastya 01 013 002.jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_down_the_Jezsuita_Stairs,_Budapest_halaszbastya_01_013_002.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Looking_down_the_Jezsuita_Stairs%2C_Budapest_halaszbastya_01_013_002.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "hazai t\u00e1jak",
+      "license": "CC BY 2.5 hu",
+      "license_url": "https://creativecommons.org/licenses/by/2.5/hu/deed.en",
+      "description": "Looking down the Jezsuita Stairs, Budapest.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "95228d69cae6c669274721825bbc569c1ee8b96ce35aadeddc83a820eb990777",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "budapest-jezsuita",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-10.jpg",
+      "title": "File:Lubawka train station \u2013 looking down the stairs in the west section of the station underpass.jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Lubawka_train_station_%E2%80%93_looking_down_the_stairs_in_the_west_section_of_the_station_underpass.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Lubawka_train_station_%E2%80%93_looking_down_the_stairs_in_the_west_section_of_the_station_underpass.jpg/960px-Lubawka_train_station_%E2%80%93_looking_down_the_stairs_in_the_west_section_of_the_station_underpass.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "GoogolManiac",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Lubawka train station \u2013 looking down the stairs in the west section of the station underpass. The photograph was taken on 27th August 2020 14.55 CEST by Samsung Galaxy A8 (2018) mobile phone. Cropped.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "729d288fa3f1186532575d70479dd74dd732d3aa12a4b9258231384ee6c2618a",
+      "ground_truth": {
+        "downstairs_visible": true,
+        "upstairs_visible": false,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "lubawka",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-11.jpg",
+      "title": "File:Looking down on stairs - Esslingen Neckar - Stuttgart - Germany (8917160605).jpg",
+      "query": "stairs looking down",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_down_on_stairs_-_Esslingen_Neckar_-_Stuttgart_-_Germany_(8917160605).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Looking_down_on_stairs_-_Esslingen_Neckar_-_Stuttgart_-_Germany_%288917160605%29.jpg/960px-Looking_down_on_stairs_-_Esslingen_Neckar_-_Stuttgart_-_Germany_%288917160605%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Cesar I. Martins from Jundiai, Brazil",
+      "license": "CC BY 2.0",
+      "license_url": "https://creativecommons.org/licenses/by/2.0",
+      "description": "Stuttgart - Germany / Alemanha",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "3c9983e0276ad841bc4bd9fe88a8ce0c241e153fbff4099226b754597255791f",
+      "ground_truth": {
+        "downstairs_visible": null,
+        "upstairs_visible": null,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Partial landing/ambiguous directional evidence; not scored",
+      "scene_group": "stairs-11.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-12.jpg",
+      "title": "File:Looking up Castle Stairs - geograph.org.uk - 7812132.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_up_Castle_Stairs_-_geograph.org.uk_-_7812132.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Looking_up_Castle_Stairs_-_geograph.org.uk_-_7812132.jpg/960px-Looking_up_Castle_Stairs_-_geograph.org.uk_-_7812132.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Robert Graham\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Looking up Castle Stairs\u00a0",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "d7d11e1369b0d3bf0343395dfe1b37339c7773876c0dff44df0036125fb0d2e4",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-12.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-13.jpg",
+      "title": "File:Looking up the stairs at St Clement Danes - geograph.org.uk - 1796162.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_up_the_stairs_at_St_Clement_Danes_-_geograph.org.uk_-_1796162.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Looking_up_the_stairs_at_St_Clement_Danes_-_geograph.org.uk_-_1796162.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "artist": "Basher Eyre\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Looking up the stairs at St Clement Danes\u00a0",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "38f4f740a84585b65364de10d48996aa7a7fabc3ea068b50628e241f02d43934",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-13.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-14.jpg",
+      "title": "File:Looking up the All\u00e9e Vito Di Cairano stairs, Valbonne, 2021.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_up_the_All%C3%A9e_Vito_Di_Cairano_stairs,_Valbonne,_2021.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Looking_up_the_All%C3%A9e_Vito_Di_Cairano_stairs%2C_Valbonne%2C_2021.jpg/960px-Looking_up_the_All%C3%A9e_Vito_Di_Cairano_stairs%2C_Valbonne%2C_2021.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "DimiTalen",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "Looking up the All\u00e9e Vito Di Cairano stairs, Valbonne, 2021",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "51ae5e2f7b540d98af3e35669c269a1eb762400b5b4bf40d8b097bef7199b982",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "valbonne",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-15.jpg",
+      "title": "File:Lighthouse Stairs - Looking Up (23498183093).jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Lighthouse_Stairs_-_Looking_Up_(23498183093).jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Lighthouse_Stairs_-_Looking_Up_%2823498183093%29.jpg/960px-Lighthouse_Stairs_-_Looking_Up_%2823498183093%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Amanda Slater from Coventry, West Midlands, UK",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "A visit to the very endangered Orfordness lighthouse.\nTo read about its history and what is happening to it now see the website of the lovely people who are trying to save it.\n\n&lt;a href=\"http://www.orfordnesslighthouse.co.uk/\" rel=\"nofollow\"&gt;www.orfordnesslighthouse.co.uk/&lt;/a&gt;",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "9e45a62a2eb7710f9ec2f933b6ff7c0559f1ba7ab5537f811a88ddfbc2279b1f",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "lighthouse1",
+      "extreme_viewpoint": true
+    },
+    {
+      "file": "stairs-16.jpg",
+      "title": "File:Horseblock Lookout Tower, Cleburne County, AL, looking up through stairs and tower 2024-11-17.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Horseblock_Lookout_Tower,_Cleburne_County,_AL,_looking_up_through_stairs_and_tower_2024-11-17.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Horseblock_Lookout_Tower%2C_Cleburne_County%2C_AL%2C_looking_up_through_stairs_and_tower_2024-11-17.jpg/960px-Horseblock_Lookout_Tower%2C_Cleburne_County%2C_AL%2C_looking_up_through_stairs_and_tower_2024-11-17.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Xnatedawgx",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Horseblock Lookout Tower, Cleburne County, AL, looking up through stairs and tower",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "2ba9b2a16f4a8862dd2210e8d99db2cf90687a0c235f287734003653ebc50d3a",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-16.jpg",
+      "extreme_viewpoint": true
+    },
+    {
+      "file": "stairs-17.jpg",
+      "title": "File:Babcock Theatre Building, Stairs Looking Up, Billings MT, 2026.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Babcock_Theatre_Building,_Stairs_Looking_Up,_Billings_MT,_2026.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/Babcock_Theatre_Building%2C_Stairs_Looking_Up%2C_Billings_MT%2C_2026.jpg/960px-Babcock_Theatre_Building%2C_Stairs_Looking_Up%2C_Billings_MT%2C_2026.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Chevsapher",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "description": "Looking up a stairwell to the second floor of the Babcock Theatre Building in Billings, Montana. These stairs connect the main floor arcade to the second floor hallway. Note the vertical wallboard panels, which likely date to the 1940s.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "5a3dfcc9f621615a9ce50de8adafbc441febefbdfd318033263d2c53fb5a0701",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-17.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-18.jpg",
+      "title": "File:Lubawka train station \u2013 looking up the stairs in the west section of the station underpass.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Lubawka_train_station_%E2%80%93_looking_up_the_stairs_in_the_west_section_of_the_station_underpass.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Lubawka_train_station_%E2%80%93_looking_up_the_stairs_in_the_west_section_of_the_station_underpass.jpg/960px-Lubawka_train_station_%E2%80%93_looking_up_the_stairs_in_the_west_section_of_the_station_underpass.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "GoogolManiac",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Lubawka train station \u2013 looking up the stairs in the west section of the station underpass. The photograph was taken on 27th August 2020 14.56 CEST by Samsung Galaxy A8 (2018) mobile phone. Unedited.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "c1b0cdf2df3c33f0a06eea32bbd29fbdcb46913bbfec21c18bae4f6ad3b5a9db",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "lubawka",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-19.jpg",
+      "title": "File:Looking up the stairs to a door at the back of Strawberry Hill House - geograph.org.uk - 5039599.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_up_the_stairs_to_a_door_at_the_back_of_Strawberry_Hill_House_-_geograph.org.uk_-_5039599.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Looking_up_the_stairs_to_a_door_at_the_back_of_Strawberry_Hill_House_-_geograph.org.uk_-_5039599.jpg/960px-Looking_up_the_stairs_to_a_door_at_the_back_of_Strawberry_Hill_House_-_geograph.org.uk_-_5039599.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Robert Lamb\u00a0",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "description": "Looking up the stairs to a door at the back of Strawberry Hill House\u00a0",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "0346bcceed1b41bdc7e515891d5f4b46d000dc0ca9528bf9a83fdf819060900b",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-19.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-20.jpg",
+      "title": "File:Looking up the stairs - panoramio.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_up_the_stairs_-_panoramio.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Looking_up_the_stairs_-_panoramio.jpg/960px-Looking_up_the_stairs_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Max Nossin",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "description": "Looking up the stairs",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "9d12cf564601c036298511638d97494d6b9636c1827d6f546419f4e11e0066b9",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-20.jpg",
+      "extreme_viewpoint": true
+    },
+    {
+      "file": "stairs-21.jpg",
+      "title": "File:Cimu Pavilion, looking up from stairs in the morning on 4 December 2021.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Cimu_Pavilion,_looking_up_from_stairs_in_the_morning_on_4_December_2021.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Cimu_Pavilion%2C_looking_up_from_stairs_in_the_morning_on_4_December_2021.jpg/960px-Cimu_Pavilion%2C_looking_up_from_stairs_in_the_morning_on_4_December_2021.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Kai3952",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Cimu Pavilion, looking up from stairs in the morning on 4 December 2021.",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "4b540112203d3e37490595372b59d60ec29402f5d000aad465b60f2ad452f2dd",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-21.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-22.jpg",
+      "title": "File:Porter looking up stairs.JPG",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Porter_looking_up_stairs.JPG",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Porter_looking_up_stairs.JPG/960px-Porter_looking_up_stairs.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Pi.1415926535",
+      "license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "description": "Looking up the 117 steps and 143 feet of escalators of the Porter Square station's middle and longest span",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "b2ae995bfd7030b3bedc1620c1aa01a468be094ccbda25f4a3f4902fb06d3e37",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-22.jpg",
+      "extreme_viewpoint": false
+    },
+    {
+      "file": "stairs-23.jpg",
+      "title": "File:Looking up from the basement pf an Art Nouveau staircase.jpg",
+      "query": "stairs looking up",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Looking_up_from_the_basement_pf_an_Art_Nouveau_staircase.jpg",
+      "download_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Looking_up_from_the_basement_pf_an_Art_Nouveau_staircase.jpg/960px-Looking_up_from_the_basement_pf_an_Art_Nouveau_staircase.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "artist": "Virtual-Pano",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "description": "Art-Noveau staircase - looking upwards",
+      "review_label": "visually_reviewed_before_inference",
+      "sha256": "f23652274f406863f02d3e09d021f49873a877e3e218137ed342972a584973a3",
+      "ground_truth": {
+        "downstairs_visible": false,
+        "upstairs_visible": true,
+        "physical_height_change": "not_measured"
+      },
+      "review_notes": "Visual direction reviewed; image title alone is not a truth label",
+      "scene_group": "stairs-23.jpg",
+      "extreme_viewpoint": true
+    }
+  ],
+  "reviewed_before_model_inference": true,
+  "positive_count": 10,
+  "negative_count": 12,
+  "ambiguous_count": 2
+}

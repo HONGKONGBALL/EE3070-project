@@ -27,7 +27,8 @@ NAMES = (
 ).split(",")
 
 
-def decode(pred, padded_w, padded_h, scale, pad_x, pad_y, width, height, confidence):
+def decode(pred, padded_w, padded_h, scale, pad_x, pad_y, width, height, confidence,
+           classes=None, max_detections=20):
     """Standard DFL decoding and class-aware OpenCV NMS for this exported model."""
     grids, strides = [], []
     for stride in (8, 16, 32):
@@ -40,6 +41,8 @@ def decode(pred, padded_w, padded_h, scale, pad_x, pad_y, width, height, confide
     labels = pred[:, 64:].argmax(axis=1)
     logits = pred[np.arange(len(pred)), labels + 64]
     keep = logits >= np.log(confidence / (1 - confidence))
+    if classes is not None:
+        keep &= np.isin(labels, classes)
     if not keep.any():
         return []
     labels, logits = labels[keep], logits[keep]
@@ -63,14 +66,16 @@ def decode(pred, padded_w, padded_h, scale, pad_x, pad_y, width, height, confide
             i = indices[k]
             result.append({"label": NAMES[label], "confidence": round(float(scores[i]), 3),
                            "bbox": boxes[i].round(1).tolist()})
-    return sorted(result, key=lambda d: d["confidence"], reverse=True)[:20]
+    return sorted(result, key=lambda d: d["confidence"], reverse=True)[:max_detections]
 
 
 class Detector:
     model_id = "yolo11n-coco-ncnn"
 
-    def __init__(self, directory: Path, size=416, confidence=0.45, threads=2):
+    def __init__(self, directory: Path, size=416, confidence=0.45, threads=2,
+                 *, classes=None, max_detections=20):
         self.size, self.confidence = size, confidence
+        self.classes, self.max_detections = classes, max_detections
         self.net = ncnn.Net()
         self.net.opt.use_vulkan_compute = False
         self.net.opt.num_threads = threads
@@ -96,4 +101,4 @@ class Detector:
                 raise RuntimeError(f"YOLO11 inference failed ({code})")
             prediction = np.array(output)
         return decode(prediction, rw + px, rh + py, scale, px // 2, py // 2,
-                      w, h, self.confidence)
+                      w, h, self.confidence, self.classes, self.max_detections)

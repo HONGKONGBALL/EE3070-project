@@ -1,0 +1,47 @@
+{
+  "stairs": [
+    "a photograph of a flight of stairs",
+    "a photograph of a staircase with steps and risers",
+    "a stairway leading between two levels",
+    "steps of a staircase ahead",
+    "stairs leading down from a landing",
+    "stairs leading up to a landing"
+  ],
+  "flat_ground": [
+    "a flat indoor floor without stairs",
+    "a level corridor with floor tiles",
+    "a flat sidewalk without stairs",
+    "a level path without steps",
+    "an inclined ramp without steps",
+    "a smooth road without stairs"
+  ],
+  "floor_objects": [
+    "shoes sitting on a floor",
+    "a pair of black shoes and a bag on the floor",
+    "a black floor mat on a flat floor",
+    "a jacket lying on a floor",
+    "electrical cables on a flat floor",
+    "a round pattern on floor tiles"
+  ],
+  "other": [
+    "a photograph of a wall or railing",
+    "a picture hanging on a wall",
+    "furniture in a room without a staircase",
+    "a landscape without stairs",
+    "an indoor room without a staircase"
+  ],
+  "upstairs": [
+    "a view from the bottom looking up a flight of stairs",
+    "stairs rising away from the viewer to a higher landing",
+    "vertical stair risers facing the camera as stairs lead upward",
+    "a staircase climbing uphill ahead",
+    "looking up at stairs leading to an upper floor"
+  ],
+  "downstairs": [
+    "a view from a top landing looking down a flight of stairs",
+    "stairs descending away from the viewer to a lower floor",
+    "stair treads leading down below the camera",
+    "a staircase dropping downhill ahead",
+    "looking down at stairs leading to the ground below"
+  ]
+}

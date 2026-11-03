@@ -1,0 +1,8 @@
+# Windows Python 3.12 CPU-only conversion environment; not Pi runtime dependencies.
+# Install torch/torchvision separately from https://download.pytorch.org/whl/cpu.
+ultralytics==8.4.189
+onnx==1.23.2
+onnxruntime==1.31.0
+ncnn==1.0.20261020
+pnnx==20260526
+tokenizers==0.22.1

@@ -1,0 +1,25 @@
+# Local ground + dense-crowd awareness plan
+
+User scope, 2 November 2026: retain tuned ground models; add meaningful dense-crowd awareness, not individual-object narration. Local evaluation only; no Pi deployment or Git push until the user reviews results. The latest direct instruction takes priority over the pasted prompts: CROWD uses the same SAFETY priority as ordinary ground alerts; existing CRITICAL ground risk ranks are preserved. Persistent simultaneous crowd/ground evidence must produce both messages without crowd delaying critical ground speech.
+
+## Frozen baseline
+
+`D:/SmartCaneRuntime/crowd-awareness-20261102/baseline-source.zip` preserves 202 source files, including the uncommitted Bluetooth/USB controls. `baseline.json` contains source/config hashes and 114 existing model-file hashes. Existing tests before editing: 291 passed, one existing dependency warning, 61.68 seconds. The extracted baseline is retained for before/after runs. Default mode remains ground.
+
+## Work and acceptance evidence
+
+1. Reuse the existing YOLO11n NCNN detector once per shared camera stream in awareness mode; filter class person, preserve balanced decoding by default, no new weights/training. Independently disable crowd inference; keep the ground task list/config/regions/preprocessing/verification/confirmation intact.
+2. Use bounded person-box clustering and visible image occupancy/concentration/size evidence, not a person-count-only trigger or a body-path/distance/physical density estimate. Add configurable confirmation, uncertainty, episode clear/missing and fresh-evidence retry. Short cane swings/box churn must retain the episode.
+3. Use exactly the four approved English awareness phrases. Internal pothole/crack labels remain separate; both map to DAMAGED_PAVEMENT speech. Preserve serious internal priority and existing ground confirmation; suppress repeated identical damage-family speech after successful handling.
+4. Integrate with the existing warning/audio interfaces and preserve USB/Bluetooth output selection. No individual object warnings in awareness; add diagnostics, show permitted classes only, no additional camera reader. Keep person rate low and defer person inference if ground observations are too old.
+5. Tests: count-only negatives, spread/plaza negatives, compact cluster positives, quality/occlusion/swing/missing/clear/new encounter, stale queue/retry, simultaneous crowd + each ground family, critical ground priority, unwanted classes, disabled crowd, legacy modes, fault recovery, category mapping and original metadata. Tests must exercise runtime and real queue behavior, not only helper functions.
+6. Re-run all 125 existing image sources with the real ground models and compare deterministic raw outputs and admitted detections against the snapshot. Separately report intentional speech/event-count changes from family merging. Existing accuracy weaknesses remain visible.
+7. Real person-model examples: frozen positive/negative/ambiguous crowd images and available moving footage, source/licence attribution, actual boxes, reasons and event/audio outcomes. Clearly distinguish real video from repeated photos and procedural fixtures. Include co-occurrence coverage and a local review page with playable updated WAVs.
+8. Measure before/after ground inference rates, result age, warning timing, preview/HTTP load, CPU/RSS and extra person cost on Windows. Predeclare investigation gates: no ground-model/result regression; ground task rates within 5%, result-age and ground decision P95 within 10% plus 20 ms, preview loss <=1 FPS. These are short-run local gates, not a Pi performance guarantee. If breached, adjust only crowd scheduling and repeat paired checks.
+9. Publish local files/functions, unchanged model/config evidence, phrase/category dictionary, tests, measured results, launch/disable/rollback commands and physical/Pi limitations. No production-mode default change, new visual model, Pico changes, road-boundary or unrelated functions.
+
+Completion requires the above evidence in the actual worktree and local results. User review is the boundary before any Pi update; screenshots/tests do not substitute for model recognition evaluation.
+
+## Local delivery record
+
+Implementation and evidence are documented in `docs/pi-awareness-report.md`. Six real videos were run before integrated pressure testing. Final 120.77-second, four-client fault/coexistence stress passes all 20 engineering checks; 319 tests pass. Model/source/config checks and 125-image deterministic ground regression are retained. One final aggregate request-delay P95 gate failed because that run includes an extra same-episode puddle queue retry; the failure, first-attempt diagnostic and hardware limitations are explicitly reported. Do not describe every performance gate as passed. The local review page includes actual annotated videos, still-image misses and listenable queue fixtures. Pi deployment and Git push remain outside this delivery until user review.

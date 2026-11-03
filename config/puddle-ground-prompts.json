@@ -1,0 +1,8 @@
+{
+  "puddle": ["a photo of a puddle of standing water on the ground", "a photo of a pool of water covering a path", "a photo of a muddy puddle on a road"],
+  "wet_pavement": ["a photo of wet pavement without any puddles", "a photo of a rain-soaked surface with a thin wet sheen", "a photo of wet road tiles without standing water"],
+  "dry_ground": ["a photo of dry pavement", "a photo of a dry dirt path", "a photo of solid ground with no water"],
+  "shadow_or_art": ["a photo of a shadow on pavement", "a photo of a painted drawing on the ground", "a photo of graffiti painted on paving stones"],
+  "other": ["a photo of grass and plants", "a photo of a wall or an object", "a photo with no visible ground or standing water"],
+  "indoor_floor": ["A photo of a dry blue indoor floor with no water.", "A photo of indoor carpet or painted flooring, not a puddle.", "A photo of a dry laboratory, hospital or sports hall floor."]
+}

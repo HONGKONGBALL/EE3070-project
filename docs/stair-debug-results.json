@@ -1,0 +1,195 @@
+{
+  "kind": "stair_context_integration_results",
+  "training_performed": false,
+  "pi_deployed": false,
+  "direction_speech_enabled": false,
+  "full_stair_acceptance_passed": false,
+  "previous59_case_run": "53dcfe89ff",
+  "integrated59_case_run": "7d870375a1",
+  "before_after": {
+    "indoor_upstairs": {
+      "photos": 11,
+      "before_stair_events_within3s": 6,
+      "after_stair_events_within3s": 11
+    },
+    "indoor_downstairs": {
+      "photos": 10,
+      "before_stair_events_within3s": 4,
+      "after_stair_events_within3s": 9
+    },
+    "outdoor_upstairs": {
+      "photos": 13,
+      "before_stair_events_within3s": 10,
+      "after_stair_events_within3s": 12
+    },
+    "outdoor_downstairs": {
+      "photos": 9,
+      "before_stair_events_within3s": 1,
+      "after_stair_events_within3s": 7
+    }
+  },
+  "flat_negative_regression": {
+    "photos": 9,
+    "before_false_stair_events": 1,
+    "after_false_stair_events": 0
+  },
+  "new_image_round": {
+    "indoor_upstairs": {
+      "photos": 3,
+      "generic_stair_events": 3,
+      "within3s": 3,
+      "misses": []
+    },
+    "indoor_downstairs": {
+      "photos": 3,
+      "generic_stair_events": 3,
+      "within3s": 3,
+      "misses": []
+    },
+    "outdoor_downstairs": {
+      "photos": 6,
+      "generic_stair_events": 4,
+      "within3s": 4,
+      "misses": [
+        "fresh-117547738.jpg",
+        "fresh-177311494.jpg"
+      ]
+    }
+  },
+  "extended_run": "786b26f323",
+  "footwear_regression": {
+    "photos": 10,
+    "real_photos": 4,
+    "ai_scenes": 6,
+    "any_hazard_false_warning_cases": 0
+  },
+  "caveat": "Current prompts and fusion were calibrated on development material. First classifier-only heldout result is separately frozen; final fusion evaluation is not an untouched test. Public-photo pretraining overlap unknown. Direction and Pi field acceptance remain unpassed.",
+  "http_windows": {
+    "environment": "Windows local replay, not Raspberry Pi measurements",
+    "timings_ms": {
+      "/status": {
+        "p95": 18.36,
+        "max": 23.4
+      },
+      "/frame.jpg": {
+        "p95": 16.83,
+        "max": 19.01
+      }
+    },
+    "max_response_bytes": {
+      "/status": 5536,
+      "/frame.jpg": 105517
+    },
+    "preview_fps": 11.3,
+    "tasks": {
+      "objects": {
+        "state": "disabled",
+        "error": "",
+        "fps": 0,
+        "frame_age_ms": null
+      },
+      "road": {
+        "state": "ready",
+        "error": "",
+        "fps": 1.5,
+        "inference_ms": 110.0,
+        "prediction_skipped": false,
+        "visual_quality": {
+          "state": "usable",
+          "usable": true,
+          "reasons": [],
+          "metrics": {
+            "mean_luma": 125.57,
+            "dark_fraction": 0.0174,
+            "saturated_fraction": 0.0019,
+            "luma_p95_p05": 173.0,
+            "laplacian_variance": 6001.63
+          },
+          "basis": "experimental pixel thresholds; cannot prove visibility, occlusion, or path safety"
+        },
+        "latency_p95_ms": 196.2,
+        "model": "vinothvikas1987/pothole-detection-yolov8:ncnn",
+        "frame_id": 82,
+        "captured_at": 438995.781,
+        "frame_age_ms": 312
+      },
+      "pothole": {
+        "state": "ready",
+        "error": "",
+        "fps": 1.51,
+        "inference_ms": 265.0,
+        "prediction_skipped": false,
+        "visual_quality": {
+          "state": "usable",
+          "usable": true,
+          "reasons": [],
+          "metrics": {
+            "mean_luma": 125.57,
+            "dark_fraction": 0.0174,
+            "saturated_fraction": 0.0019,
+            "luma_p95_p05": 173.0,
+            "laplacian_variance": 6001.63
+          },
+          "basis": "experimental pixel thresholds; cannot prove visibility, occlusion, or path safety"
+        },
+        "latency_p95_ms": 447.4,
+        "model": "AMD-PAVS-AI/pothole-detection:yolox-s-ncnn-research",
+        "frame_id": 75,
+        "captured_at": 438995.281,
+        "frame_age_ms": 812
+      },
+      "semantic": {
+        "state": "ready",
+        "error": "",
+        "fps": 1.51,
+        "inference_ms": 329.0,
+        "prediction_skipped": false,
+        "visual_quality": {
+          "state": "usable",
+          "usable": true,
+          "reasons": [],
+          "metrics": {
+            "mean_luma": 125.57,
+            "dark_fraction": 0.0174,
+            "saturated_fraction": 0.0019,
+            "luma_p95_p05": 173.0,
+            "laplacian_variance": 6001.63
+          },
+          "basis": "experimental pixel thresholds; cannot prove visibility, occlusion, or path safety"
+        },
+        "latency_p95_ms": 431.7,
+        "model": "segformer-b0-ade20k-onnx+stairs-context",
+        "frame_id": 73,
+        "captured_at": 438995.125,
+        "frame_age_ms": 968
+      },
+      "puddle": {
+        "state": "ready",
+        "error": "",
+        "fps": 1.49,
+        "inference_ms": 93.0,
+        "prediction_skipped": false,
+        "visual_quality": {
+          "state": "usable",
+          "usable": true,
+          "reasons": [],
+          "metrics": {
+            "mean_luma": 125.57,
+            "dark_fraction": 0.0174,
+            "saturated_fraction": 0.0019,
+            "luma_p95_p05": 173.0,
+            "laplacian_variance": 6001.63
+          },
+          "basis": "experimental pixel thresholds; cannot prove visibility, occlusion, or path safety"
+        },
+        "latency_p95_ms": 172.0,
+        "model": "Ayush0000002/Puddle-detection-model:ncnn+mobileclip2-s0-global",
+        "frame_id": 79,
+        "captured_at": 438995.562,
+        "frame_age_ms": 531
+      }
+    },
+    "source_fps": 15,
+    "passed": true
+  }
+}
