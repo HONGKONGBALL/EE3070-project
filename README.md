@@ -1,5 +1,15 @@
 # EE3070 智能盲杖
 
+> **Pi 视觉与声音更新（2026-11-03）**：当前版本已部署到 Pi，包含地面识别、人群聚集提醒、楼梯误报修正，以及 AirPods／USB 耳机输出切换。人群仍需至少 8 名合格聚集人物及连续确认；路况优先于人群播报。运行方式见下方，详情见 [最新实机部署](docs/pi-deployment-20261103.md)、[人群判定与验证](docs/crowd-grouping-fix.md)、[四段新视频综合测试及保留问题](docs/comprehensive-video-round-20261103.md)、[耳机输出设置](docs/pi-audio-outputs.md)。积水晚提示、混合视频中的坑洞误判和楼梯重新提醒仍有待改进，不能当作现场出行验收通过。
+
+仓库配置默认仍为 `ground`；要启用地面＋人群模块，在已有模型和环境的 Pi 项目根目录运行：
+
+```sh
+.venv/bin/python -m cane.vision.v2 --config config/camera.v2.toml --mode awareness --distance none
+```
+
+模型准备见 [地面模式安装](docs/pi-ground-local.md)，英语提示音生成见 [audio/README.md](audio/README.md)。权重、WAV、测试视频与现场日志不入库。以下日期较早的方案和部署信息保留作历史记录。
+
 > **Pi 提醒更新（2026-11-01）**：最新片段确认、去重和音频送达逻辑已部署到 Pi。坑洞／损坏路面共用提醒片段，强坑洞证据可升级提示；持续积水不会每隔 8 秒重复播报。人行区／车道越界实验已取消并从源码移除。
 > [最新部署与提示规则](docs/pi-deployment-20261101.md) · [提醒策略及离线测试](docs/pi-hazard-episodes-20261031.md)。实机短时检查预览约 11.8 FPS，音频保留关闭状态；没有检测到真实播放设备，不能视为声音验收通过。
 

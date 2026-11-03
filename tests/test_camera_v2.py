@@ -357,7 +357,8 @@ def test_downstairs_requires_temporal_confirmation_but_no_distance_and_can_preem
     assert not policy.step(None,1.7)
     policy.observe_ground('stairs',observed(5,2.7,'downstairs'),2.7)
     event=policy.step(None,2.7)[0]
-    assert event['phrase_id']=='downstairs_ahead' and event['priority']=='CRITICAL'
+    assert event['phrase_id']=='stairs_ahead' and event['priority']=='CRITICAL'
+    assert event['object_class']=='downstairs' and event['warning_category']=='STAIRS'
     assert event['distance_m'] is None
 
 
@@ -382,7 +383,8 @@ def test_confirmed_downstairs_supersedes_generic_stairs_in_the_same_region():
         policy.observe_ground('semantic',observed(frame,now,'stairs'),now)
         policy.observe_ground('stairs',observed(frame,now,'downstairs'),now)
     events=policy.step(None,1.7)
-    assert [e['phrase_id'] for e in events]==['downstairs_ahead']
+    assert [e['phrase_id'] for e in events]==['stairs_ahead']
+    assert events[0]['object_class']=='downstairs'
     assert not policy.step(None,2)
 
 

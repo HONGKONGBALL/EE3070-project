@@ -44,9 +44,9 @@ def evaluate_intervals(clip,events):
     return rows
 
 
-def run_clip(clip,config,models_root,out,timed_audio_dir=None,encode_review=True):
+def run_clip(clip,config,models_root,out,timed_audio_dir=None,encode_review=True,mode='ground'):
     source=Path(clip['input']);assert hashlib.sha256(source.read_bytes()).hexdigest()==clip['input_sha256']
-    settings=load_config(config,mode='ground',models_root=models_root)
+    settings=load_config(config,mode=mode,models_root=models_root)
     settings['source']={'video':str(source)};settings['distance']['mode']='none';settings['audio']['enabled']=False
     settings.pop('simulation',None)
     app=V2(settings);assert not app.timeline
@@ -55,6 +55,7 @@ def run_clip(clip,config,models_root,out,timed_audio_dir=None,encode_review=True
         app.audio.sink=TimedReviewAudio(app.audio,timed_audio_dir)
     started=time.monotonic();samples=[];previews=[];events={};errors={};seen_preview=-1
     report={'id':clip['id'],'input_sha256':clip['input_sha256'],'config':settings,
+        'mode':mode,
         'no_policy_scene_resets':True,'audio_playback_tested':False,'not_pi_timing':True,'completed':False,
         'timed_wav_simulation':bool(timed_audio_dir),
         'runtime_source_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest()
@@ -105,7 +106,8 @@ def run_clip(clip,config,models_root,out,timed_audio_dir=None,encode_review=True
                 image=np.zeros((480,640,3),np.uint8)
                 cv2.putText(image,'Waiting for fresh runtime preview',(20,210),cv2.FONT_HERSHEY_SIMPLEX,.7,(220,220,220),1)
             cv2.rectangle(image,(0,430),(640,480),(20,20,20),-1)
-            cv2.putText(image,f'REAL VIDEO REPLAY | source {now:.1f}s | AUDIO OFF',(7,449),cv2.FONT_HERSHEY_SIMPLEX,.47,(240,240,240),1)
+            audio_label='TIMED AUDIO SIMULATION' if timed_audio_dir else 'AUDIO OFF'
+            cv2.putText(image,f'REAL VIDEO | source {now:.1f}s | {audio_label}',(7,449),cv2.FONT_HERSHEY_SIMPLEX,.43,(240,240,240),1)
             recent=[e['object_class'] for e in events.values() if 0<=now-e['first_seen_decision_source_s']<2]
             cv2.putText(image,'EVENT: '+(', '.join(recent) if recent else 'none newly emitted'),(7,470),cv2.FONT_HERSHEY_SIMPLEX,.47,(70,230,255),1)
             writer.write(image)

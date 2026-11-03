@@ -1,5 +1,5 @@
 # Run on Windows once; the Pi only plays the generated WAV files offline.
-param([string]$OutputDirectory = './audio/en')
+param([string]$OutputDirectory = './audio/en', [switch]$AwarenessOnly)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Speech
 $cameraAudioDir = [IO.Path]::GetFullPath($OutputDirectory)
@@ -17,15 +17,17 @@ $cameraPhrases = @{
     bicycle_ahead = 'Bicycle ahead.'
     obstacle_ahead = 'Obstacle ahead.'
     pothole_ahead = 'Possible pothole ahead.'
-    damaged_pavement = 'Possible damaged pavement ahead.'
-    puddle_ahead = 'Possible wet pavement ahead.'
-    stairs_ahead = 'Possible stairs ahead.'
+    damaged_pavement = 'The pavement ahead looks damaged. Watch your step!'
+    puddle_ahead = "Looks like there's a puddle ahead. Take care!"
+    stairs_ahead = 'Careful, there might be stairs ahead.'
+    crowd_ahead = 'Looks a bit crowded ahead. Take care!'
     downstairs_ahead = 'Possible steps down ahead. Watch your step.'
     object_unavailable = 'Object detection unavailable.'
     ground_unavailable = 'Ground detection unavailable.'
 }
 try {
     foreach ($cameraPhrase in $cameraPhrases.GetEnumerator()) {
+        if ($AwarenessOnly -and $cameraPhrase.Key -notin @('damaged_pavement','puddle_ahead','stairs_ahead','crowd_ahead')) { continue }
         $cameraWavPath = Join-Path $cameraAudioDir ($cameraPhrase.Key + '.wav')
         $cameraSynth.SetOutputToWaveFile($cameraWavPath)
         $cameraSynth.Speak($cameraPhrase.Value)

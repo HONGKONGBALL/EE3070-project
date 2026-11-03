@@ -70,3 +70,26 @@ def test_loading_rejects_tampered_stair_recipe_before_starting_inference(tmp_pat
     import pytest
     with pytest.raises(ValueError,match="crop"):
         StairContextRefiner(tmp_path,ROI)
+
+
+def test_weak_absolute_scene_match_is_not_stairs_even_with_winning_margin():
+    weak=dict(zip(LABELS,[.12,.08,.09,.08,.13,.14]))
+    value=refiner().select([],640,480,weak,.05)
+    assert not value['detections']
+    candidate,=value['candidate_detections']
+    assert not candidate['evidence']['verification_accepted']
+    assert candidate['evidence']['verification_reason']=='insufficient_absolute_stair_match'
+    assert candidate['evidence']['score_kind']=='cosine_similarity'
+
+
+def test_scene_evidence_floor_does_not_discard_independent_spatial_stairs():
+    weak=dict(zip(LABELS,[.12,.08,.09,.08,.13,.14]))
+    value=refiner().select([mask()],640,480,weak,.05)
+    assert len(value['detections'])==1
+    assert value['detections'][0]['localization']=='segmentation_region'
+
+
+def test_weak_scene_rejection_preserves_other_ground_labels():
+    weak=dict(zip(LABELS,[.12,.08,.09,.08,.13,.14]))
+    water=mask('possible_puddle')
+    assert refiner().select([water],640,480,weak,.05)['detections']==[water]

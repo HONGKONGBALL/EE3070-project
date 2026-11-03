@@ -8,6 +8,7 @@ import time
 import uuid
 from cane.arbiter import OutputArbiter
 from cane.model import OutputRequest, Priority
+from .voice import VOICE
 
 
 class PipeWireAudio:
@@ -91,11 +92,14 @@ class PipeWireAudio:
 
 
 class Speech:
-    def __init__(self, directory, enabled, target="", record=None, *, ordinary_interval_s=1.5):
+    def __init__(self, directory, enabled, target="", record=None, *, ordinary_interval_s=1.5,
+                 allowed_phrases=None):
         self.record = record or (lambda *_a, **_k: None)
+        self.allowed_phrases = None if allowed_phrases is None else frozenset(allowed_phrases)
         self.on_delivery = lambda *_a: None
         self.contexts = OrderedDict()
         self.deliveries = deque(maxlen=16)
+        self.control_lock = threading.RLock()
         self.sink = PipeWireAudio(directory, enabled, target, self._record_audio)
         self.validator = lambda req: True
         self.arbiter = OutputArbiter(self, repeat_cooldown_s=3, max_pending=2,
@@ -150,8 +154,19 @@ class Speech:
     def last_played(self): return self.sink.last_played
 
     def submit(self, event):
+        with self.control_lock:
+            return self._submit(event)
+
+    def _submit(self, event):
+        if self.allowed_phrases is not None and event['phrase_id'] not in self.allowed_phrases:
+            self.record('audio_filtered', phrase_id=event['phrase_id'], event_id=event.get('event_id',''),
+                        reason='outside_v1_awareness_voice_scope')
+            return False
         submitted=time.monotonic()
-        req = OutputRequest(event["phrase_id"], Priority[event.get("priority", "SYSTEM")],
+        priority = event.get('priority','SYSTEM')
+        if self.allowed_phrases is not None and event['phrase_id']==VOICE['CROWD'][0]:
+            priority = 'INFO'
+        req = OutputRequest(event["phrase_id"], Priority[priority],
                             text=event.get("text"), created=event.get("created_at", time.monotonic()),
                             ttl_s=event.get("ttl_ms",1500)/1000, event_id=event.get("event_id", ""))
         self.contexts[req.event_id] = {key:event[key] for key in ("event_id","episode_id","warning_family",
@@ -165,7 +180,16 @@ class Speech:
         return accepted
 
     def tick(self):
-        self.arbiter.tick()
+        with self.control_lock:
+            self.arbiter.tick()
+
+    def configure_output(self, enabled, target):
+        with self.control_lock:
+            self.clear_pending()
+            self.sink.stop()
+            self.sink.enabled, self.sink.target = enabled, target
+            self.sink.state, self.sink.error = ('ready' if enabled else 'disabled'), ''
+            self.record('audio_output_changed', enabled=enabled, target=target)
 
     def clear_pending(self):
         self.arbiter.cancel_pending(lambda req: bool(req.event_id))

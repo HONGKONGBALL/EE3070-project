@@ -14,6 +14,10 @@ from .puddle import context_pixels
 LABELS = ("stairs", "flat_ground", "floor_objects", "other", "upstairs", "downstairs")
 CROP = (.05, .25, .95, 1.0)
 DECISION = {"strong_margin": .01, "semantic_veto_margin": -.03, "direction_speech": False}
+# An open scene must not become stairs merely by winning among several weak
+# matches. This applies only to maskless recovery; spatial stair evidence keeps
+# its existing verification. Cosine similarity is not a probability.
+SCENE_MIN_SIMILARITY = .18
 
 
 class StairContextRefiner:
@@ -60,13 +64,16 @@ class StairContextRefiner:
         retained = [d for d in semantic_detections if d["label"] != "stairs"]
         stairs = [d for d in semantic_detections if d["label"] == "stairs"]
         supported = margin >= DECISION["semantic_veto_margin"]
-        strong = margin >= DECISION["strong_margin"]
+        positive = max(scores[k] for k in ("stairs", "upstairs", "downstairs"))
+        relative_match = margin >= DECISION["strong_margin"]
+        strong = relative_match and positive >= SCENE_MIN_SIMILARITY
         evidence = {"stair_context_model": self.manifest["repository"],
                     "stair_context_revision": self.manifest["revision"],
                     "prototype_sha256": self.manifest["sha256"]["stair-context-prototypes.npy"],
                     "score_kind": "cosine_similarity", "context_cosines": scores,
                     "stair_margin": margin, "direction_speech": False,
-                    "classification_crop": list(CROP), "decision": DECISION}
+                    "classification_crop": list(CROP), "decision": DECISION,
+                    "scene_minimum_similarity": SCENE_MIN_SIMILARITY}
         candidates = []
         relevant_mask = False
         for d in stairs:
@@ -78,17 +85,20 @@ class StairContextRefiner:
             candidates.append(candidate)
             if supported:
                 retained.append(candidate)
-        if strong and not relevant_mask:
+        if relative_match and not relevant_mask:
             # This is the observed classification region, NOT an object bounding box.
             candidate = {"label": "stairs", "raw_label": "stairs_scene_context",
-                "confidence": max(scores[k] for k in ("stairs", "upstairs", "downstairs")),
+                "confidence": positive,
                 "score_kind": "cosine_similarity", "localization": "classification_roi",
                 "context_supported": True,
                 "bbox": [v*(width if i % 2 == 0 else height) for i, v in enumerate(CROP)],
-                "evidence": {**evidence, "verification_accepted": True,
-                             "verification_reason": "strong_stair_scene_without_path_mask"}}
+                "evidence": {**evidence, "verification_accepted": strong,
+                             "verification_reason": "strong_stair_scene_without_path_mask" if strong
+                                                     else "insufficient_absolute_stair_match"}}
             candidates.append(candidate)
-            retained.append(candidate)
+            if strong:
+                retained.append(candidate)
         return {"detections": retained, "candidate_detections": candidates,
                 "stair_context": {"margin": margin, "cosines": scores,
+                                  "scene_minimum_similarity": SCENE_MIN_SIMILARITY,
                                   "direction_speech": False, "localization_is_not_depth": True}}

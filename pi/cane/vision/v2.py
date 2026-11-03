@@ -3,6 +3,7 @@
 import argparse
 from collections import deque
 import json
+import os
 from pathlib import Path
 import signal
 import threading
@@ -23,6 +24,9 @@ from .quality import assess_frame
 from .stairs import StairDirectionDetector, confirm_stairs
 from .distance import NoDistanceProvider, MockDistanceProvider, PicoDistanceProvider
 from .speech import Speech
+from .audio_outputs import AudioOutputControl
+from .crowd import CrowdAwareness
+from .voice import VOICE
 from .v2_policy import V2Policy, task_hazards, support_potholes
 from .diagnostics import ground_diagnostic
 
@@ -31,6 +35,7 @@ def load_config(path, *, mode=None, models_root=None):
     """Use one config on the Pi or with the same weights stored elsewhere locally."""
     with Path(path).open("rb") as file:
         config = tomllib.load(file)
+    config['_config_path'] = str(Path(path).resolve())
     if mode is not None:
         config.setdefault("vision", {})["mode"] = mode
     if models_root is not None:
@@ -57,13 +62,19 @@ class V2(Demo):
         if config.get("simulation", {}).get("timeline") and not source:
             raise ValueError("Simulation timeline requires an explicit replay source")
         self.vision_mode = config.get("vision", {}).get("mode", "balanced")
-        if self.vision_mode not in {"balanced", "ground"}:
-            raise ValueError("Vision mode must be balanced or ground")
+        if self.vision_mode not in {"balanced", "ground", "awareness"}:
+            raise ValueError("Vision mode must be balanced, ground or awareness")
+        self.awareness_mode = self.vision_mode == 'awareness'
         self.objects_enabled = self.vision_mode == "balanced"
         camera_factory = (lambda _device,w,h,fps: ReplayCamera(source,w,h,fps)) if source else None
         super().__init__(config, audio_factory=lambda *args: Speech(*args,
-                         ordinary_interval_s=config["audio"].get("ordinary_interval_s",1.5)), camera_factory=camera_factory)
+                         ordinary_interval_s=config["audio"].get("ordinary_interval_s",1.5),
+                         allowed_phrases={v[0] for v in VOICE.values()} if self.awareness_mode else None), camera_factory=camera_factory)
         self.config, self.input_source = config, "replay" if source else "live_camera"
+        self.audio_outputs = AudioOutputControl(self.audio, config.get('_config_path'))
+        self.crowd = (CrowdAwareness(self.run_id,config.get('crowd'),self.log)
+                      if self.awareness_mode and config.get('crowd',{}).get('enabled',True) else None)
+        self.person_priority_applied = False
         distance = config["distance"]
         mode = distance["mode"]
         if mode == "mock":
@@ -79,7 +90,7 @@ class V2(Demo):
         self.policy = V2Policy(self.run_id, config["warning"]["roi"], config.get("association",{}),
                                distance["enter_m"],distance["leave_m"], config["warning"]["ground_roi"], config["warning"], self.log)
         self.audio.validator = self._request_valid
-        self.audio.on_delivery = lambda event_id,action,now: self.policy.episodes.delivery(event_id,action,now)
+        self.audio.on_delivery = self._on_delivery
         self.results = {}
         self.ground_tasks={"road":RoadDetector,"pothole":RoadDetector,"semantic":SemanticDetector}
         if pothole_backend == 'yolox_onnx_research':
@@ -92,8 +103,10 @@ class V2(Demo):
         if not self.objects_enabled:
             self.model_state = "disabled"
             self.task_states["objects"] = {"state":"disabled","error":"","fps":0}
+        if self.awareness_mode:
+            self.task_states['persons'] = {'state':'loading' if self.crowd else 'disabled','error':'','fps':0}
         self.sample = None
-        self.workers = [*([self.thread] if self.objects_enabled else []),*[
+        self.workers = [*([self.thread] if self.objects_enabled or self.crowd else []),*[
                         threading.Thread(target=self._ground_loop,args=(name,factory),daemon=True)
                         for name,factory in self.ground_tasks.items()],
                         threading.Thread(target=self._render_loop,daemon=True)]
@@ -129,7 +142,27 @@ class V2(Demo):
         self.logfile.close()
 
     def _run(self):
-        self._model_loop("objects",Detector,self.config["model"])
+        if self.crowd:
+            try:
+                if os.name == 'nt':
+                    import ctypes
+                    self.person_priority_applied = bool(ctypes.windll.kernel32.SetThreadPriority(ctypes.c_void_p(-2),-1))
+                else:
+                    os.setpriority(os.PRIO_PROCESS,threading.get_native_id(),5)
+                    self.person_priority_applied = True
+            except OSError:
+                self.person_priority_applied = False
+            config = {**self.config['model'],'size':self.crowd.cfg['person_size'],
+                      'confidence':self.crowd.cfg['confidence'],'threads':1,'max_fps':1/self.crowd.cfg['interval_s']}
+            self._model_loop('persons',Detector,config)
+        else:
+            self._model_loop("objects",Detector,self.config["model"])
+
+    def _person_ground_fresh(self, now):
+        with self.condition:
+            return all(name in self.results and
+                       0 <= now-self.results[name]['captured_at'] <= self.crowd.cfg['ground_max_age_s']
+                       for name in self.ground_tasks)
 
     def _ground_loop(self,name,factory):
         self._model_loop(name,factory,self.config[name])
@@ -138,6 +171,7 @@ class V2(Demo):
         completions, latencies = deque(maxlen=60),deque(maxlen=1200)
         try:
             extra={'ground_roi':self.config['warning']['ground_roi']} if name=='puddle' else {}
+            if name == 'persons':extra = {'classes':(0,), 'max_detections':80}
             if name == "semantic" and cfg.get("stair_context_directory"):
                 extra = {"stair_context_directory": ROOT/cfg["stair_context_directory"],
                          "ground_roi": self.config["warning"]["ground_roi"]}
@@ -152,8 +186,14 @@ class V2(Demo):
             self.log("model_error",task=name,message=str(exc))
             return
         previous, last_error = 0, ""
-        sampled_count, unsampled_frames, quality_skips, stale_results = 0,0,0,0
+        sampled_count, unsampled_frames, quality_skips, stale_results, deferred = 0,0,0,0,0
         while not self.stopped.is_set():
+            if name == 'persons' and not self._person_ground_fresh(time.monotonic()):
+                deferred += 1
+                with self.condition:
+                    self.task_states[name].update(state='deferred',defer_reason='ground_observations_not_fresh',deferred_checks=deferred)
+                self.stopped.wait(.1)
+                continue
             sample = self.camera.next_frame(previous)
             if sample is None: continue
             image,frame_id,captured = sample
@@ -164,7 +204,10 @@ class V2(Demo):
                 quality=assess_frame(image)
                 if quality['usable']:
                     output = detector.predict(image)
-                    if name == "objects": output = {"detections":output}
+                    if name in {'objects','persons'}:
+                        output = {"detections":output}
+                        if name == 'persons':
+                            output['detections'] = [d for d in output['detections'] if d['label']=='person']
                 else:
                     output={'detections':[]}
                 output['visual_quality']=quality
@@ -194,6 +237,8 @@ class V2(Demo):
                                              "quality_skips":quality_skips,"stale_results":stale_results,
                                              "latency_p95_ms":round(float(np.percentile(latencies,95)),1) if latencies else None,
                                              "model":detector.model_id,"frame_id":frame_id,"captured_at":captured}
+                    if name == 'persons':
+                        self.task_states[name].update(deferred_checks=deferred,priority_lowered=self.person_priority_applied)
                     if name == "objects":
                         self.model_state,self.inference_ms = "ready",self.task_states[name]["inference_ms"]
                 last_error = ""
@@ -221,10 +266,11 @@ class V2(Demo):
                 # No newer frame within 100ms is normal at low capture rates. Only
                 # camera errors or the existing freshness limit invalidate vision.
                 if self.camera.status()["ready"]:
-                    for event in self.policy.step(self.sample,now): self._emit(event)
+                    for event in self._decision_events(now): self._emit(event)
                     self.audio.tick()
                     continue
                 self.policy.clear_visual()
+                if self.crowd:self.crowd.invalidate(now)
                 current=self.audio.arbiter.current
                 if current and not self._request_valid(current):self.audio.sink.stop()
                 self.visual_quality={'state':'unavailable','usable':False,'reasons':['no_fresh_frame']}
@@ -245,7 +291,7 @@ class V2(Demo):
                     self.log("camera_error" if message!="Replay finished" else "replay_finished",message=message)
                 with self.condition: self.jpeg,self.error,self.detections = None,message,[]
                 fault = message
-                for event in self.policy.step(self.sample,now): self._emit(event)
+                for event in self._decision_events(now): self._emit(event)
                 self.audio.tick()
                 continue
             image,frame_id,captured = frame
@@ -257,7 +303,7 @@ class V2(Demo):
             snapshots = self._quality_results(image,frame_id,snapshots)
             for name,message in faults.items():
                 if self.task_faults.get(name) != message:
-                    self.audio.submit({"phrase_id":"object_unavailable" if name=="objects" else "ground_unavailable",
+                    self.audio.submit({"phrase_id":"object_unavailable" if name in {'objects','persons'} else "ground_unavailable",
                                        "priority":"SYSTEM","ttl_ms":5000,"event_id":"fault:"+name})
             self.task_faults = faults
             objects = snapshots.get("objects")
@@ -290,6 +336,7 @@ class V2(Demo):
                                                     max(1,np.count_nonzero(roi))),4),
                     'basis':'Semantic ground in image path ROI; not proof of safety or physical evenness'}
             self.policy.observe_objects(objects,now)
+            if self.crowd:self.crowd.observe(snapshots.get('persons'),now,semantic)
             ground_inputs, blocked = {}, {}
             for name in self.ground_tasks:
                 result = task_hazards(name,snapshots.get(name))
@@ -313,13 +360,16 @@ class V2(Demo):
                 self.policy.observe_ground(name,result,now,
                     negative_reliable=(self.context_valid or self.indoor_floor_context)
                         if name=="semantic" else (name!="road" or self.context_valid))
-            events = self.policy.step(self.sample,now)
+            events = self._decision_events(now)
             for event in events: self._emit(event)
             diagnostics = {name:ground_diagnostic(name,snapshots.get(name),ground_inputs.get(name),
                 self.policy,now,blocked_by=blocked.get(name,"")) for name in self.ground_tasks}
             self.audio.tick()
             detections = []
             if objects: detections.extend(objects["detections"])
+            persons = snapshots.get('persons')
+            if self.crowd and persons and now-persons['captured_at'] <= self.crowd.cfg['freshness_s']:
+                detections.extend(persons['detections'])
             for name in self.ground_tasks:
                 result = snapshots.get(name)
                 if result and now-result["captured_at"]<=1.5:
@@ -349,6 +399,8 @@ class V2(Demo):
             self.policy=V2Policy(self.run_id+':'+case['id'],self.config['warning']['roi'],
                 self.config.get('association',{}),self.config['distance']['enter_m'],self.config['distance']['leave_m'],
                 self.config['warning']['ground_roi'], self.config['warning'], self.log)
+            if getattr(self,'crowd',None):
+                self.crowd = CrowdAwareness(self.run_id+':'+case['id'],self.config.get('crowd'),self.log)
             self.log('simulation_scene',case_id=case['id'],source_file=case['source_file'],frame_id=frame_id,
                      observed_frame_captured_at=captured_at)
         return {k:v for k,v in snapshots.items() if v['frame_id']>=case['start_frame']} if case else snapshots
@@ -361,6 +413,7 @@ class V2(Demo):
         if not quality['usable']:
             self.quality_after_frame=frame_id
             self.policy.clear_visual()
+            if getattr(self,'crowd',None):self.crowd.invalidate(time.monotonic())
             # A valid unassociated distance warning remains independent of image quality.
             self.audio.arbiter.cancel_pending(lambda req:not self._request_valid(req))
             current=self.audio.arbiter.current
@@ -376,7 +429,28 @@ class V2(Demo):
         with self.condition: self.events.append(event)
         self.audio.submit(event)
 
+    def _decision_events(self, now):
+        # Awareness never associates Pico distance with individual-object speech.
+        events = self.policy.step(None if self.awareness_mode else self.sample,now)
+        if self.crowd:
+            ground_phrases = {VOICE[name][0] for name in ('STAIRS','DAMAGED_PAVEMENT','PUDDLE')}
+            arbiter = self.audio.arbiter
+            current_ground = arbiter.current and arbiter.current.prompt_id in ground_phrases
+            if (any(e['kind']=='GROUND_HAZARD' for e in events) or current_ground or
+                    any(p in ground_phrases for p in arbiter.pending()) or arbiter.safety_hold_active(now)):
+                self.crowd.defer_speech(now)
+            events.extend(self.crowd.step(now))
+        return events
+
+    def _on_delivery(self, event_id, action, now):
+        if self.crowd and ':crowd-' in event_id:
+            self.crowd.delivery(event_id,action,now)
+        else:
+            self.policy.episodes.delivery(event_id,action,now)
+
     def _request_valid(self,request):
+        if getattr(self,'crowd',None) and ':crowd-' in request.event_id:
+            return self.crowd.valid(request.event_id,time.monotonic())
         if request.event_id.startswith("fault:"):
             task = request.event_id.partition(":")[2]
             if task=="camera": return not self.camera.status()["ready"]
@@ -392,6 +466,8 @@ class V2(Demo):
             cv2.addWeighted(tint,0.25,image,0.75,0,image)
         h,w = image.shape[:2]
         for d in detections:
+            if d['label']=='person' and self.crowd and not self.crowd.cfg['show_person_boxes']:
+                continue
             x1,y1,x2,y2 = (int(v) for v in d["bbox"])
             color = (70,220,80) if d.get("source_model")==Detector.model_id else (80,80,240)
             if d.get("localization") == "classification_roi":
@@ -417,16 +493,31 @@ class V2(Demo):
         title=f'{self.vision_mode.upper()} | {self.input_source.upper()} | {mode}'
         if self.scene:title+=' | '+self.scene['id']
         cv2.putText(image,title,(8,18),cv2.FONT_HERSHEY_SIMPLEX,0.48,(250,250,250),1)
-        active = next((e for e in reversed(self.events) if now-e["created_at"]<=1.5 and e["event_id"] in self.policy.live_events),None)
-        self.current_text = active["text"] if active else ""
-        cv2.rectangle(image,(0,h-26),(w,h),(15,15,15),-1)
+        if self.crowd:
+            crowd=self.crowd.status(now)
+            label=f"Crowd: {crowd['state']} | people seen {crowd['evidence'].get('person_count',0)}"
+            cv2.rectangle(image,(0,26),(w,47),(15,15,15),-1)
+            cv2.putText(image,label,(8,41),cv2.FONT_HERSHEY_SIMPLEX,.43,(250,250,250),1)
+        active = [e for e in self.events if now-e['created_at']<=1.5 and
+                  (e['event_id'] in self.policy.live_events or
+                   (self.crowd and e['kind']=='CROWD' and self.crowd.valid(e['event_id'],now)))]
+        self.current_text = ' / '.join(dict.fromkeys(e['text'] for e in active))
+        cv2.rectangle(image,(0,h-(47 if self.crowd and len(active)>1 else 26)),(w,h),(15,15,15),-1)
         text = self.current_text or ("Visual limited: "+', '.join(self.visual_quality['reasons']) if not self.visual_quality['usable'] else
             "Ground context detected; no safety conclusion" if self.context_valid else "Ground context unavailable")
-        cv2.putText(image,text,(8,h-8),cv2.FONT_HERSHEY_SIMPLEX,0.46,(250,250,250),1)
+        if self.crowd and len(active)>1:
+            ground=next((e['text'] for e in active if e['kind']=='GROUND_HAZARD'),active[0]['text'])
+            notice=next((e['text'] for e in active if e['kind']=='CROWD'),active[-1]['text'])
+            cv2.putText(image,ground,(8,h-28),cv2.FONT_HERSHEY_SIMPLEX,.43,(250,250,250),1)
+            cv2.putText(image,notice,(8,h-8),cv2.FONT_HERSHEY_SIMPLEX,.43,(250,250,250),1)
+        else:
+            cv2.putText(image,text,(8,h-8),cv2.FONT_HERSHEY_SIMPLEX,0.46,(250,250,250),1)
 
     def status(self):
         status = super().status()
+        status['audio'].update(enabled=self.audio.sink.enabled, target=self.audio.sink.target)
         now = time.monotonic()
+        crowd = self.crowd.status(now) if self.crowd else {'enabled':False,'state':'DISABLED'}
         with self.condition:
             tasks = {k:{**v,"frame_age_ms":round((now-v["captured_at"])*1000) if v.get("captured_at") else None}
                      for k,v in self.task_states.items()}
@@ -439,6 +530,7 @@ class V2(Demo):
                 {"state":"unavailable","reason":"no_fresh_result","candidates":[]}
                 for name,entry in self.ground_diagnostics.items()}
         status.update(version=2,input_source=self.input_source,tasks=tasks,visual_quality=dict(self.visual_quality),
+                      crowd=crowd,
                       vision_mode=self.vision_mode,ground_diagnostics=diagnostics,
                       hazard_episodes=self.policy.episodes.status(now),
                       episode_counters=dict(self.policy.episodes.counters),
@@ -472,7 +564,7 @@ def main():
     parser.add_argument("--script")
     parser.add_argument("--replay",help="Explicit video replay instead of live camera")
     parser.add_argument("--no-audio",action="store_true")
-    parser.add_argument("--mode",choices=["balanced","ground"],help="Ground skips the object model entirely")
+    parser.add_argument("--mode",choices=["balanced","ground","awareness"],help="Awareness adds only dense-crowd person analysis to ground tasks")
     parser.add_argument("--models-root",type=Path,help="Use existing weights at this models directory")
     args = parser.parse_args()
     config = load_config(args.config,mode=args.mode,models_root=args.models_root)

@@ -44,7 +44,7 @@ def working_set_mb():
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--phases',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--models-root',type=Path,required=True);p.add_argument('--mode',choices=['ground','balanced'],default='ground')
+    p.add_argument('--models-root',type=Path,required=True);p.add_argument('--mode',choices=['ground','balanced','awareness'],default='ground')
     p.add_argument('--clients',type=int,default=3);a=p.parse_args()
     if not 1<=a.clients<=4: p.error('Use one to four HTTP clients')
     fixture=json.loads(a.phases.read_text(encoding='utf8'));phases=fixture['phases'];cursor=0
@@ -72,7 +72,12 @@ def main():
                     if phase.get('camera_fault'):
                         self.frame=None;self.error='Injected QA camera outage'
                     else:
-                        self.frame=phase['_frame'];self.sequence+=1;self.captured_at=now
+                        frame=phase['_frame']
+                        if phase.get('rotate_deg'):
+                            angle=phase['rotate_deg']*np.sin(elapsed*3)
+                            matrix=cv2.getRotationMatrix2D((320,240),angle,1.)
+                            frame=cv2.warpAffine(frame,matrix,(640,480),borderMode=cv2.BORDER_REFLECT_101)
+                        self.frame=frame;self.sequence+=1;self.captured_at=now
                         self.delivered.append(now);self.error=''
                     self.condition.notify_all()
                 self.stopped.wait(max(0,1/15-(time.monotonic()-now)))
@@ -115,7 +120,9 @@ def main():
         while time.monotonic()-began<cursor+12:
             status=app.status();phase=app.camera.phase
             if phase:
-                name=phase['name'];row=phase_rows.setdefault(name,{'statuses':0,'events':[],'object_labels':set(),'task_frames':{},'quality_unusable':0,'ready':0,'not_ready':0,'fps':[]})
+                name=phase['name'];row=phase_rows.setdefault(name,{'statuses':0,'events':[],'object_labels':set(),'task_frames':{},'quality_unusable':0,'ready':0,'not_ready':0,'fps':[],'crowd_states':{}})
+                crowd_state=status.get('crowd',{}).get('state','DISABLED')
+                row['crowd_states'][crowd_state]=row['crowd_states'].get(crowd_state,0)+1
                 row['statuses']+=1;row['ready' if status['ready'] else 'not_ready']+=1
                 if not status['visual_quality'].get('usable'):row['quality_unusable']+=1
                 if status['ready']:row['fps'].append(status['fps'])
@@ -128,7 +135,9 @@ def main():
                         events[e['event_id']]={**e,'observed_phase':name};row['events'].append(events[e['event_id']])
                 samples.append({'t':round(time.monotonic()-began,3),'phase':name,'ready':status['ready'],
                     'camera':status['camera'],'visual_quality':status['visual_quality'],'tasks':status['tasks'],
-                    'fps':status['fps'],'detections_count':len(status['detections']),'memory_mb':working_set_mb()})
+                    'fps':status['fps'],'crowd':status.get('crowd',{}),
+                    'detection_labels':[d['label'] for d in status['detections']],
+                    'detections_count':len(status['detections']),'memory_mb':working_set_mb()})
             if status['camera']['error']=='Replay finished':report['completed']=True;break
             time.sleep(.2)
     except Exception as exc:report['error']=str(exc)
@@ -157,6 +166,8 @@ def main():
     fault_responses=[r for r in responses if r['phase'] in fault_names and r['route']=='/frame.jpg'
                     and r['fixture_elapsed_s']-fault_starts[r['phase']]>.4]
     report['checks']={'no_runtime_model_errors':not report['task_errors'], 'no_http_exceptions':not errors,
+        'awareness_has_no_unwanted_objects':not any(label not in {'person','possible_puddle','damaged_pavement','pothole','stairs','downstairs'}
+            for sample in samples for label in sample['detection_labels']) if a.mode=='awareness' else None,
         'successful_http_responses_well_formed':all(r['valid'] for r in responses if r['code']==200),
         'no_object_distance_bypass':not any(e['kind']=='OBJECT_NEAR' for e in events.values()),
         'no_stale_ground_event':all(e['created_at']-e['captured_at']<=1.5 for e in events.values() if e['kind']=='GROUND_HAZARD'),

@@ -3,19 +3,14 @@
 from collections import deque
 from dataclasses import dataclass, field
 from threading import RLock
+from .voice import VOICE, CATEGORIES
 
 
 FAMILIES = {"possible_puddle": "wet_surface", "damaged_pavement": "damaged_pavement",
             "pothole": "damaged_pavement", "stairs": "stairs", "downstairs": "stairs"}
 TASK_LABELS = {"road": {"damaged_pavement"}, "pothole": {"pothole"},
                "puddle": {"possible_puddle"}, "semantic": {"stairs"}, "stairs": {"downstairs"}}
-PHRASES = {
-    "possible_puddle": ("puddle_ahead", "Possible wet pavement ahead."),
-    "damaged_pavement": ("damaged_pavement", "Possible damaged pavement ahead."),
-    "pothole": ("pothole_ahead", "Possible pothole ahead."),
-    "stairs": ("stairs_ahead", "Possible stairs ahead."),
-    "downstairs": ("downstairs_ahead", "Possible steps down ahead. Watch your step."),
-}
+PHRASES = {label: VOICE[category] for label,category in CATEGORIES.items()}
 CONFIRM = {"hits": 2, "observations": 3, "window_s": 3.2, "min_span_s": .3}
 EPISODE = {"clear_hits": 3, "clear_span_s": 1.5, "missing_reset_s": 6.0,
            "freshness_s": 1.5, "retry_s": .8, "event_ttl_s": 1.5}
@@ -205,6 +200,14 @@ class HazardEpisodes:
                 if e.confirmed_at is None:
                     e.confirmed_at=now; e.state="CONFIRMED"; self.counters["confirmed"]+=1
                     self.record("hazard_episode_confirmed", episode_id=e.episode_id, warning_family=e.family, confirmed_at=now)
+                # A risk upgrade retains internal evidence/rank, but must not repeat
+                # the same damage-family sentence after it has already started.
+                if e.family == 'damaged_pavement' and e.announced_rank:
+                    if rank > e.announced_rank:
+                        self.record('hazard_risk_upgrade_no_repeat', episode_id=e.episode_id,
+                                    original_label=label, risk_rank=rank, warning_category='DAMAGED_PAVEMENT')
+                        e.announced_rank = rank
+                    continue
                 if e.announced_rank >= rank or (e.event_id and e.pending_rank >= rank): continue
                 if now < e.retry_at or s.last_capture <= e.last_attempt_capture: continue
                 previous_rank = max(e.announced_rank,e.pending_rank)
@@ -212,13 +215,14 @@ class HazardEpisodes:
                 e.attempt+=1; e.event_id=f"{e.episode_id}:attempt-{e.attempt}"
                 e.event_label,e.pending_rank,e.delivery = label,rank,"created"
                 e.last_attempt_capture=s.last_capture
-                spoken_label = "damaged_pavement" if e.family=="damaged_pavement" and rank==1 else label
+                spoken_label = "damaged_pavement" if e.family=="damaged_pavement" else label
                 phrase,text = self.phrase(spoken_label)
                 priority = "CRITICAL" if rank>=3 else "SAFETY"
                 if label=="stairs": priority=self.config.get("stairs_priority","CRITICAL")
                 positive_times=[o[0] for o in s.history if o[1]]
                 d=s.latest
                 event={"schema_version":"2.1","event_id":e.event_id,"kind":"GROUND_HAZARD",
+                    "warning_category":CATEGORIES[label],
                     "episode_id":e.episode_id,"warning_family":e.family,"phrase_id":phrase,"text":text,
                     "priority":priority,"created_at":now,"confirmed_at":now,"episode_confirmed_at":e.confirmed_at,
                     "ttl_ms":round(c["event_ttl_s"]*1000),"object_class":label,"track_id":e.episode_id,

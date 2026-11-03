@@ -85,7 +85,7 @@ def test_unreliable_negatives_never_establish_exit_and_timeout_is_explicit():
     assert "physical exit unknown" in m.current["stairs"].clear_reason
 
 
-def test_damage_shares_one_phrase_and_strong_pothole_independently_escalates():
+def test_damage_shares_one_phrase_and_strong_pothole_does_not_repeat_spoken_family():
     m=HazardEpisodes("test")
     admitted(m,"road",1,1,"damaged_pavement")
     generic=admitted(m,"road",2,1.7,"damaged_pavement")[0]
@@ -93,10 +93,11 @@ def test_damage_shares_one_phrase_and_strong_pothole_independently_escalates():
     admitted(m,"pothole",3,2,"pothole",confidence=.65)
     assert not admitted(m,"pothole",4,2.7,"pothole",confidence=.65)
     assert not admitted(m,"pothole",5,3.4,"pothole",confidence=.9)
-    urgent=admitted(m,"pothole",6,4.1,"pothole",confidence=.9)[0]
-    assert urgent["episode_id"]==generic["episode_id"] and urgent["upgrade"]
-    assert urgent["text"]=="Possible pothole ahead." and urgent["object_class"]=="pothole"
-    m.delivery(urgent["event_id"],"completed",4.1)
+    assert not admitted(m,"pothole",6,4.1,"pothole",confidence=.9)
+    assert m.current['damaged_pavement'].announced_rank==4
+    assert m.current['damaged_pavement'].signals['pothole'].latest['label']=='pothole'
+    assert generic['warning_category']=='DAMAGED_PAVEMENT'
+    assert generic['text']=='The pavement ahead looks damaged. Watch your step!'
     assert not admitted(m,"road",7,4.3,"damaged_pavement")
 
 

@@ -76,6 +76,7 @@ beam_roi = []
 ordinary_interval_s = 1.5
 enabled = true
 directory = "audio/en"
+# Empty uses the Pi default. The preview page can save a Bluetooth or USB node name.
 target = ""
 
 # Independent admitted observations, not consecutive captures. No extra inference.
@@ -117,13 +118,51 @@ image_area = 0.01
 # Image evidence thresholds do not measure physical depth or distance.
 [warning.phrases.possible_puddle]
 id = "puddle_ahead"
-text = "Possible wet pavement ahead."
+text = "Looks like there's a puddle ahead. Take care!"
 [warning.phrases.damaged_pavement]
 id = "damaged_pavement"
-text = "Possible damaged pavement ahead."
+text = "The pavement ahead looks damaged. Watch your step!"
 [warning.phrases.pothole]
-id = "pothole_ahead"
-text = "Possible pothole ahead."
+id = "damaged_pavement"
+text = "The pavement ahead looks damaged. Watch your step!"
 [warning.phrases.stairs]
 id = "stairs_ahead"
-text = "Possible stairs ahead."
+text = "Careful, there might be stairs ahead."
+
+# Used only with --mode awareness; no change to ground/balanced model scheduling.
+[crowd]
+enabled = true
+interval_s = 0.75
+ground_max_age_s = 1.3
+person_size = 640
+min_people = 8
+confidence = 0.20
+min_height = 0.12
+min_median_height = 0.22
+link_gap_width = 0.95
+link_gap_height = 0.15
+min_occupancy = 0.18
+min_cluster_fill = 0.48
+min_horizontal_coverage = 0.45
+min_semantic_person_fraction = 0.70
+max_visible_ground_fraction = 0.15
+# Large, broad groups have background/gaps inside their bounding rectangle.
+# Only those groups may use the relaxed semantic cross-check. These image-size
+# cues do not measure distance; eight-person/packing/temporal gates still apply.
+large_group_median_height = 0.45
+large_group_occupancy = 0.50
+large_group_width = 0.75
+large_group_semantic_fraction = 0.40
+large_group_max_ground = 0.25
+semantic_pair_s = 0.75
+hits = 3
+observations = 4
+window_s = 4.5
+min_span_s = 1.2
+clear_hits = 5
+clear_span_s = 4.0
+missing_reset_s = 20.0
+freshness_s = 2.0
+event_ttl_s = 2.0
+retry_s = 0.8
+show_person_boxes = false

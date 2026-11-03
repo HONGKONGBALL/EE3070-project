@@ -7,6 +7,7 @@ import wave
 class TimedReviewAudio:
     def __init__(self, speech, directory):
         self.speech, self.directory = speech, Path(directory)
+        self.enabled, self.target = True, 'offline-timed-simulation'
         self.state, self.error, self.last_played = "simulated", "", None
         self.playback_id, self.context, self.deadline = None, None, 0
         self.sequence = 0
