@@ -2,7 +2,9 @@
 
 Run through USB REPL without saving main.py. UART1 uses GP8 TX / GP9 RX at
 115200 baud; front ultrasonic uses GP2/GP3 and upper uses GP4/GP5. No other
-GPIO is configured and no commands are sent to TFmini-S.
+GPIO is configured in standalone sensor mode. When pico_diagnostics.py is
+prepended by the viewer, fixed component tests share this loop. No commands
+are sent to TFmini-S.
 
 TF_DATA,ticks_us,delta_us,raw_distance,strength
 US_DATA,sequence,ticks_ms,front_echo_us,upper_echo_us
@@ -90,7 +92,11 @@ def main():
     upper_trigger = machine.Pin(UPPER_TRIGGER_GPIO, machine.Pin.OUT, value=0)
     upper_echo = machine.Pin(UPPER_ECHO_GPIO, machine.Pin.IN)
     uart = None
+    diagnostics = None
     try:
+        diagnostics_class = globals().get('BoardDiagnostics')
+        if diagnostics_class is not None:
+            diagnostics = diagnostics_class(machine, time)
         uart = machine.UART(1, 115200, tx=machine.Pin(8), rx=machine.Pin(9),
                             rxbuf=UART_RX_BUFFER, timeout=0)
         tf_stream = TFStream(uart, time)
@@ -99,6 +105,8 @@ def main():
         front_us = 0
         sequence = 1
         while True:
+            if diagnostics is not None:
+                diagnostics.poll()
             tf_stream.poll()
             tick = time.ticks_us()
             if previous_start is None or time.ticks_diff(tick, previous_start) >= SENSOR_SLOT_US:
@@ -107,9 +115,13 @@ def main():
                     front_us = _measure(front_trigger, front_echo, machine, time)
                 else:
                     upper_us = _measure(upper_trigger, upper_echo, machine, time)
+                    if diagnostics is not None:
+                        diagnostics.poll()
                     print("US_DATA,{},{},{},{}".format(sequence, time.ticks_ms(), front_us, upper_us))
                     sequence += 1
                 front_next = not front_next
+                if diagnostics is not None:
+                    diagnostics.poll()
                 tf_stream.poll()
             time.sleep_ms(1)
     except KeyboardInterrupt:
@@ -117,8 +129,12 @@ def main():
     finally:
         front_trigger.value(0)
         upper_trigger.value(0)
-        if uart is not None:
-            uart.deinit()
+        try:
+            if diagnostics is not None:
+                diagnostics.close()
+        finally:
+            if uart is not None:
+                uart.deinit()
 
 
 if __name__ == "__main__":

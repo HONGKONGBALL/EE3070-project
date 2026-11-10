@@ -1,11 +1,20 @@
 const encoder = new TextEncoder();
 const telemetry = /(?:^|[\r\n])(?:US_DATA,\d+,\d+,-?\d+,-?\d+|TF_DATA,\d+,-?\d+,\d+,\d+)(?=[\r\n])/;
 const abortError = () => new DOMException('连接已取消', 'AbortError');
+const controlDurations = Object.freeze({ motor: '5000', buzzer: '5000', cob: '3000', led: '3000', buttons: '45000', stop: '0' });
+
+function validControl(line) {
+  if (line === 'HW_PING\n') return true;
+  if (typeof line !== 'string') return false;
+  const match = /^HW_CMD,([1-9]\d{0,9}),(motor|buzzer|cob|led|buttons|stop),(\d+)\n$/.exec(line);
+  return match !== null && match[0] === line && Number(match[1]) <= 1000000000
+    && controlDurations[match[2]] === match[3];
+}
 
 /** One cancellable Web Serial session; uploaded MicroPython runs only in RAM. */
 export class PicoSerial {
-  constructor({ onText = () => {}, onState = () => {}, onError = () => {}, programPath = '/distance_pico_stream.py' } = {}) {
-    Object.assign(this, { onText, onState, onError, programPath, session: null });
+  constructor({ onText = () => {}, onState = () => {}, onError = () => {}, programPath = '/distance_pico_stream.py', diagnosticsPaths = [] } = {}) {
+    Object.assign(this, { onText, onState, onError, programPath, diagnosticsPaths, session: null });
   }
 
   async connect({ upload = true } = {}) {
@@ -18,6 +27,7 @@ export class PicoSerial {
     const session = {
       abort: new AbortController(), decoder: new TextDecoder(), listeners: new Set(),
       output: '', uploadStarted: false, ready: false, uploading: upload,
+      uploaded: false, commandTail: Promise.resolve(),
     };
     this.session = session;
     this.onState('connecting');
@@ -43,6 +53,7 @@ export class PicoSerial {
       if (upload) {
         this.onState('uploading');
         await this.upload(session);
+        session.uploaded = true;
       }
       this.check(session);
       session.uploading = false;
@@ -57,6 +68,19 @@ export class PicoSerial {
 
   async disconnect() {
     if (this.session) await this.end(this.session);
+  }
+
+  async sendCommand(line) {
+    if (!validControl(line)) throw new Error('无效的组件测试指令。');
+    const session = this.session;
+    if (!session?.uploaded || session.uploading || !session.writer) {
+      throw new Error('请先连接并临时运行测距与测试程序。');
+    }
+    this.check(session);
+    const pending = session.commandTail.then(() => this.write(session, encoder.encode(line)));
+    // A failed command is reported to its caller; subsequent queued commands still check this session.
+    session.commandTail = pending.catch(() => {});
+    return pending;
   }
 
   check(session) {
@@ -92,11 +116,12 @@ export class PicoSerial {
   }
 
   async upload(session) {
-    const response = await fetch(this.programPath, {
-      cache: 'no-store', signal: session.abort.signal,
-    });
-    if (!response.ok) throw new Error('无法加载 Pico 测距程序。');
-    const program = encoder.encode((await response.text()).replace(/\r\n/g, '\n'));
+    const sources = await Promise.all([...this.diagnosticsPaths, this.programPath].map(async path => {
+      const response = await fetch(path, { cache: 'no-store', signal: session.abort.signal });
+      if (!response.ok) throw new Error(`无法加载 Pico 程序：${path}`);
+      return (await response.text()).replace(/\r\n/g, '\n');
+    }));
+    const program = encoder.encode(sources.join('\n'));
     this.check(session);
     session.uploadStarted = true;
     await this.write(session, encoder.encode('\x03\x03'));

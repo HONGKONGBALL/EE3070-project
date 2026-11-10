@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#eef3f6">
   <link rel="icon" href="data:,">
-  <title>激光与超声波测距 · EE3070</title>
+  <title>测距与组件测试 · EE3070</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <main>
   <header class="masthead">
     <div class="brand"><span class="brand-mark" aria-hidden="true">)))</span><span>EE3070 <span class="brand-divider">/</span> SENSOR LAB</span></div>
-    <span class="device">Pico H · TFmini-S + HC-SR04 × 2</span>
+    <span class="device">Pico H · 三路测距与外围组件</span>
   </header>
-  <div class="heading"><div><p class="eyebrow">LASER + ULTRASONIC MONITOR</p><h1>激光与超声波测距</h1><p class="intro">一个连接，同时观察 TFmini 与两路超声波。</p></div><span id="connection" class="connection" role="status">未连接设备</span></div>
+  <div class="heading"><div><p class="eyebrow">PICO · SENSOR + COMPONENT LAB</p><h1>测距与组件测试</h1><p class="intro">一个连接，读取三路距离，单独测试灯光、提示音与振动。</p></div><span id="connection" class="connection" role="status">未连接设备</span></div>
   <section class="toolbar" aria-label="设备连接">
     <div class="connection-controls"><button id="connect" class="primary">连接 Pico</button><button id="disconnect" disabled>断开连接</button><span class="toolbar-divider"></span><button id="demo">查看演示</button></div>
-    <label class="mode-label">连接方式 <select id="mode"><option value="upload">临时运行测距程序</option><option value="listen">只接收现有程序的数据</option></select></label>
+    <label class="mode-label">连接方式 <select id="mode"><option value="upload">临时运行测距与测试程序</option><option value="listen">只接收现有程序的数据</option></select></label>
   </section>
   <div id="notice" class="notice" role="status" aria-live="polite">连接后选择 Pico / USB Serial。请先关闭 TFmini 网页、Thonny 等占用串口的软件。</div>
   <section class="sensors" aria-label="三路实时距离">
@@ -46,15 +46,34 @@
       <div class="sensor-footer"><span id="pins-1">TRIG GP4 · ECHO GP5</span><span>回波 <b id="pulse-1">—</b> µs</span></div>
     </article>
   </section>
+  <section id="hardware-panel" class="hardware-panel" aria-labelledby="hardware-title" data-state="unavailable">
+    <div class="hardware-heading"><div><p class="eyebrow">COMPONENT TESTS</p><h2 id="hardware-title">组件测试</h2><p>每次测试一个组件，结束后自动关闭输出。</p></div><button id="hardware-stop" class="hardware-stop" disabled>立即停止</button></div>
+    <div class="hardware-status"><span id="hardware-status" role="status" aria-live="polite">连接 Pico 并临时运行测试程序后可用。</span><span id="hardware-countdown" class="hardware-countdown" aria-label="剩余时间">—</span></div>
+    <div class="hardware-actions">
+      <button class="hardware-action" data-hardware-target="motor" disabled><span class="hardware-action-name">马达振动</span><b>5 秒</b><span class="hardware-action-hint">轻触外壳感受振动</span></button>
+      <button class="hardware-action" data-hardware-target="buzzer" disabled><span class="hardware-action-name">蜂鸣器响</span><b>5 秒</b><span class="hardware-action-hint">3kHz · 已选定的提示音</span></button>
+      <button class="hardware-action" data-hardware-target="cob" disabled><span class="hardware-action-name">COB 灯亮</span><b>3 秒</b><span class="hardware-action-hint">观察灯条亮起再熄灭</span></button>
+      <button class="hardware-action" data-hardware-target="led" disabled><span class="hardware-action-name">板载 LED 闪烁</span><b>3 秒</b><span class="hardware-action-hint">USB 接口旁的小绿灯</span></button>
+    </div>
+    <div class="hardware-buttons"><div class="hardware-buttons-heading"><div><h3>按键检测</h3><p>按键接好后再检测，依次短按和长按各个按键。</p></div><button data-hardware-target="buttons" disabled>检测 45 秒</button></div>
+      <div class="hardware-button-grid" aria-label="四个按键的检测状态">
+        <div id="hardware-key-1" class="hardware-key" data-state="idle"><span>K1 · 确认</span><b>等待检测</b></div>
+        <div id="hardware-key-2" class="hardware-key" data-state="idle"><span>K2 · 目的地</span><b>等待检测</b></div>
+        <div id="hardware-key-3" class="hardware-key" data-state="idle"><span>K3 · 重播</span><b>等待检测</b></div>
+        <div id="hardware-key-4" class="hardware-key" data-state="idle"><span>K4 · 模式</span><b>等待检测</b></div>
+      </div>
+    </div>
+    <div class="hardware-record"><h3>执行记录</h3><p>回执表示 Pico 已执行指令；实际亮灯、发声和振动请现场观察。</p><ol id="hardware-events" aria-live="polite"><li>尚未发送测试指令</li></ol></div>
+  </section>
   <section class="trend" aria-label="距离历史">
     <div class="section-heading"><div><h2>距离变化</h2><span class="section-description">最近 30 秒 · 勾选要显示的通道</span></div><div class="legend"><label class="laser-key"><input id="show-tf" type="checkbox" checked>激光</label><label class="front-key"><input id="show-0" type="checkbox" checked>前方</label><label class="upper-key"><input id="show-1" type="checkbox" checked>上方</label></div></div>
     <canvas id="chart" role="img" aria-label="TFmini、前方与上方超声波的最近30秒曲线"></canvas>
     <div class="session"><span>激光 <b id="count-tf">0</b> 帧 · <b id="rate-tf">—</b></span><span>超声波 <b id="count-us">0</b> 组 · <b id="rate-us">—</b></span><span>最近接收 <b id="updated">—</b></span><div class="session-actions"><button id="clear">清空记录</button><button id="export" disabled>导出 CSV ↗</button></div></div>
     <p class="retention">无效读数和断流处留空。CSV 保留最近 10,000 条记录；三路按各自采集时刻记录。</p>
   </section>
-  <details class="help"><summary>接线与使用说明</summary><div class="help-body"><p>TFmini-S：白色 RX 接 GP8，绿色 TX 接 GP9，UART1 / 115200；红线接合适的 5V，黑线接地。前方超声波 TRIG GP2 / ECHO GP3，上方 TRIG GP4 / ECHO GP5。TRIG 按图经 SN74AHCT125N 升为 5V；Echo 经 2.2kΩ / 3.3kΩ 分压后进入 Pico，不能将 5V Echo 直接接到 GPIO。全部共地。</p><p>“临时运行测距程序”会暂停 Pico 当前程序，在 RAM 中读取两种测距模块，不写 main.py。只需本页连接一次；使用前断开旧 TFmini、超声波网页或 Thonny 的串口。“只接收”不发送命令，要求现有程序输出 TF_DATA / US_DATA 协议。</p><p>超声波依次触发，间隔至少 80 ms；激光帧在间隙读取。TFmini 时间及解析间隔是 Pico 处理串口帧的时间，超声波采集期间可能积压后集中解析，不能视为 TFmini 的真实采样间隔。三路并非同时测量。</p><p>TFmini 原始单位默认 cm；若传感器已经配置为 mm，请手选 mm。该选项只影响激光距离；改变单位会清空激光曲线，CSV 每条保留当时的单位。超声波按 343 m/s 换算，未做温度补偿。</p><p><a href="distance_pico_stream.py" download>下载合并 Pico 读取程序</a> · <a href="README.md" target="_blank" rel="noopener">完整说明</a></p></div></details>
+  <details class="help"><summary>接线与使用说明</summary><div class="help-body"><p>TFmini-S：白色 RX 接 GP8，绿色 TX 接 GP9，UART1 / 115200；红线接合适的 5V，黑线接地。前方超声波 TRIG GP2 / ECHO GP3，上方 TRIG GP4 / ECHO GP5。TRIG 按图经 SN74AHCT125N 升为 5V；Echo 经 2.2kΩ / 3.3kΩ 分压后进入 Pico，不能将 5V Echo 直接接到 GPIO。全部共地。</p><p>“临时运行测距与测试程序”会暂停 Pico 当前程序，在 RAM 中读取测距模块，并接受本页的组件测试指令，不写 main.py。只需本页连接一次；使用前断开旧 TFmini、超声波网页或 Thonny 的串口。“只接收”不发送命令，要求现有程序输出 TF_DATA / US_DATA 协议，该模式下不能控制实物。</p><p>马达 GP14，COB 灯 GP15，蜂鸣器 GP16，板载 LED GP25。马达使用已调好的 3V 电源；蜂鸣器使用已确认可持续发声的 3kHz。测试到时、点击“立即停止”或连接中断后关闭输出。按键 GP10–13，按原图接好后点击“检测 45 秒”。树莓派上的摄像头、音频和 MPU6050 不在本页测试范围。</p><p>超声波依次触发，间隔至少 80 ms；激光帧在间隙读取。TFmini 时间及解析间隔是 Pico 处理串口帧的时间，超声波采集期间可能积压后集中解析，不能视为 TFmini 的真实采样间隔。三路并非同时测量。</p><p>TFmini 原始单位默认 cm；若传感器已经配置为 mm，请手选 mm。该选项只影响激光距离；改变单位会清空激光曲线，CSV 每条保留当时的单位。超声波按 343 m/s 换算，未做温度补偿。</p><p><a href="distance_pico_stream.py" download>下载测距程序</a> · <a href="pico_diagnostics.py" download>下载组件测试程序</a> · <a href="README.md" target="_blank" rel="noopener">完整说明</a></p></div></details>
   <details class="help"><summary>串口诊断</summary><pre id="log">尚无串口数据</pre></details>
-  <footer>EE3070 / 激光 + 超声波 <span>一个 Pico · 一个连接 · 数据仅保存在本机</span></footer>
+  <footer>EE3070 / 测距与组件测试 <span>一个 Pico · 一个连接 · 数据仅保存在本机</span></footer>
 </main>
 <script type="module" src="app.js"></script>
 </body>

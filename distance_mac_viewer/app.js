@@ -1,6 +1,8 @@
 import { FrameDecoder, pulseReading, tfReading, exportCsv } from './protocol.js';
 import { drawChart } from './chart.js';
 import { PicoSerial } from './serial.js';
+import { HardwareController } from './hardware.js';
+import { createHardwarePanel } from './hardware-panel.js';
 
 const $ = id => document.getElementById(id);
 const channels = [
@@ -57,6 +59,7 @@ function showReading(channel, reading, receivedAt, addPoint = true) {
 }
 function receive(text) {
   log(text);
+  hardware.receive(text);
   for (const frame of decoder.feed(text)) {
     const sample = { ...frame, receivedAt: Date.now(), tfUnit: $('tf-unit').value };
     samples.push(sample); if (samples.length > 10000) samples.shift();
@@ -88,24 +91,33 @@ function controls(busy) {
   $('mode').disabled = busy; $('demo').disabled = busy && !demoTimer;
 }
 function onState(state) {
+  hardware.connection(state, { upload: $('mode').value === 'upload' });
   const busy = ['connecting', 'uploading', 'connected', 'receiving'].includes(state);
   controls(busy);
   const labels = { idle: '未连接设备', connecting: '正在连接', uploading: '正在准备 Pico',
     connected: 'Pico 已连接', receiving: 'Pico 已连接', disconnected: '已断开连接' };
   $('connection').textContent = labels[state] || state; $('connection').dataset.state = busy ? 'live' : '';
   if (state === 'connecting') notice('请在 Chrome 串口窗口中选择 Pico / USB Serial。');
-  if (state === 'uploading') notice('正在临时运行激光与超声波合并读取程序…');
+  if (state === 'uploading') notice('正在临时运行测距与组件测试程序…');
   if (state === 'connected' || state === 'receiving') notice('Pico 已连接。三路分别更新，无数据或超时会单独标记。');
   if (!busy && !demoTimer) {
     emptyReadings('已断开'); notice(errorMessage || '串口已释放。可再次连接 Pico，或查看演示。', errorMessage ? 'error' : '');
   }
 }
-const serial = new PicoSerial({ onText: receive, onState, onError(message) {
+const hardwarePanel = createHardwarePanel({
+  onStart: target => { void hardware.start(target); }, onStop: () => { void hardware.stop(); },
+});
+const hardware = new HardwareController({
+  send: line => serial.sendCommand(line), onChange: state => hardwarePanel.render(state),
+  onButton: event => hardwarePanel.button(event),
+});
+const serial = new PicoSerial({ diagnosticsPaths: ['/pico_diagnostics.py'], onText: receive, onState, onError(message) {
   errorMessage = message; notice(message, 'error'); log(`\n[错误] ${message}\n`);
 } });
 function stopDemo() {
   if (demoTimer === null) return;
   clearInterval(demoTimer); demoTimer = null; $('demo').textContent = '查看演示'; controls(false);
+  hardware.connection('idle');
   $('connection').textContent = '演示已停止'; $('connection').dataset.state = '';
   emptyReadings('演示已停止'); notice('演示已停止。点击“连接 Pico”读取真实传感器。');
 }
@@ -125,6 +137,7 @@ $('disconnect').addEventListener('click', () => { if (demoTimer !== null) stopDe
 $('demo').addEventListener('click', () => {
   if (demoTimer !== null) { stopDemo(); return; }
   resetSession(); demoSequence = 0; sessionSource = 'demo';
+  hardware.connection('demo');
   demoTimer = setInterval(demoFrame, 160); controls(true); $('demo').disabled = false;
   $('demo').textContent = '停止演示'; $('connection').textContent = '演示数据'; $('connection').dataset.state = 'demo';
   notice('演示数据 · 未连接传感器。停止演示后连接 Pico，读取三个真实通道。', 'demo'); demoFrame();
@@ -143,6 +156,7 @@ $('export').addEventListener('click', () => {
   link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 window.addEventListener('resize', renderChart);
+window.addEventListener('pagehide', () => { void serial.disconnect(); });
 setInterval(() => {
   const now = Date.now();
   if (active) {

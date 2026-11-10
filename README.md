@@ -23,7 +23,7 @@
 > 不要求 Pico、双目标定、导航或焊接音响；HyperX USB 耳机可播放英语提示。
 > 下文是原整机方案，坡度/麦克风等不自动成为本次样品要求。
 
-> **2026-10-27 测距前端：** [macOS 测距查看器](distance_mac_viewer/README.md)通过一个 Pico USB 串口显示 TFmini-S 激光与两路 HC-SR04，支持独立状态、30 秒曲线和 CSV。
+> **2026-11-10 测距与组件测试前端：** [macOS 测距与组件测试工具](distance_mac_viewer/README.md)通过一个 Pico USB 串口显示 TFmini-S 激光与两路 HC-SR04，支持独立状态、30 秒曲线和 CSV；新增马达、蜂鸣器、COB 灯、板载 LED 和按键检测入口，提供固定时长、执行回执及立即停止。
 > [三套界面设计与 Figma](design-explorations/opendesign-20261027/README.md)另含桌面、手机效果和交互预览；设计稿中的读数均为演示数据。
 
 EE3070 课程项目，4 人组。在一根普通折叠盲杖的上段装 Raspberry Pi 5 + Raspberry Pi Pico H，加上超声波、激光测距、IMU、摄像头、振动马达、蜂鸣器和语音提示，帮视障用户提前知道前方和头部高度的障碍、落差和不平路面，并在有手机热点时按高德步行路线播报转向。

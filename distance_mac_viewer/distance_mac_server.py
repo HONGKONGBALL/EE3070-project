@@ -20,6 +20,7 @@ ROOT: Final[Path] = Path(__file__).resolve().parent
 FILES: Final[frozenset[str]] = frozenset({
     "index.html", "styles.css", "app.js", "chart.js", "protocol.js", "serial.js",
     "distance_pico_stream.py", "README.md",
+    "pico_diagnostics.py", "hardware.js", "hardware-protocol.js", "hardware-panel.js",
 })
 
 

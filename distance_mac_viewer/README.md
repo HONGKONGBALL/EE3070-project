@@ -1,6 +1,6 @@
-# EE3070 TFmini + 双路超声波测距 · macOS
+# EE3070 测距与组件测试 · macOS
 
-在同一个 Chrome 页面中，通过一条 Pico USB 串口读取 TFmini-S、前方 HC-SR04 和上方 HC-SR04。网页资源均在本机；Mac 侧需要 Python 3.9 或更新版本和 Google Chrome，无需安装 Python 第三方库。Pico 侧需要 MicroPython。
+在同一个 Chrome 页面中，通过一条 Pico USB 串口读取 TFmini-S、前方 HC-SR04 和上方 HC-SR04，并测试马达、蜂鸣器、COB 灯、板载 LED 和四个按键。网页资源均在本机；Mac 侧需要 Python 3.9 或更新版本和 Google Chrome，无需安装 Python 第三方库。Pico 侧需要 MicroPython。
 
 ## 启动
 
@@ -21,10 +21,29 @@ bash start_distance_mac.command
 
 ## 两种连接方式
 
-- **临时运行测距程序（默认）**：发送 Ctrl-C 暂停 Pico 当前程序，在 RAM 中执行 `distance_pico_stream.py`，同时采集三路数据。不会写入 `main.py` 或修改板内文件。断开时停止本次读取；重新插拔 Pico 可恢复板内原有启动程序。如果原程序仅在 RAM 中，重新插拔不会恢复那段临时代码。
-- **只接收现有程序的数据**：不发送命令。板内现有程序须输出下述 `TF_DATA` / `US_DATA` 协议中相应的记录；任一模块无数据时，另一模块仍可显示。页面不能直接解析任意旧程序输出。
+- **临时运行测距与测试程序（默认）**：发送 Ctrl-C 暂停 Pico 当前程序，将 `pico_diagnostics.py` 与 `distance_pico_stream.py` 一起在 RAM 中执行，同时采集三路数据并等待测试指令。不会写入 `main.py` 或修改板内文件。断开时停止本次程序并关闭输出；重新插拔 Pico 可恢复板内原有启动程序。如果原程序仅在 RAM 中，重新插拔不会恢复那段临时代码。
+- **只接收现有程序的数据**：不发送任何命令，组件测试按钮禁用。板内现有程序须输出下述 `TF_DATA` / `US_DATA` 协议中相应的记录；任一模块无数据时，另一模块仍可显示。页面不能直接解析任意旧程序输出。
 
 **同一个 Pico 串口只交给一个页面或软件使用。** 此页面已经同时读取 TFmini 和两个超声波，无需同时连接原来的 TFmini 页面。
+
+## 组件测试
+
+连接后等待“测试已就绪”，直接点击对应动作。一次运行一项，点击“立即停止”可提前关闭；前端显示执行回执、倒计时和最近记录。回执表示程序执行，不自动将组件记为实物通过。
+
+| 按钮 | 固定动作 | 接线 |
+|---|---|---|
+| 马达振动 | 全开 5 秒 | GP14，经 U1/Q1 驱动；U2 输出按已确认的 3V 设置 |
+| 蜂鸣器响 | 3kHz、50% PWM，5 秒 | GP16，经 Q2 驱动；采用现场试听选择的频率 |
+| COB 灯亮 | 全开 3 秒 | GP15，经 U1/MOS 模块驱动 |
+| 板载 LED 闪烁 | 每 0.5 秒亮灭，共 3 秒 | GP25，USB 接口旁的小绿灯 |
+| 按键检测 | 采集 45 秒，显示按下、松开和长按 | K1–K4 对应 GP10–13，内部上拉，按下接地 |
+| 立即停止 | 关闭当前测试及全部输出 | GP14/15/16/25 |
+
+按键尚未接好时，暂不启动按键检测。树莓派上的 MPU6050、摄像头和音频组件不属于本页控制范围。
+
+Pico 使用 50ms 硬定时器检查测试到时和心跳：测试中网页每 500ms 发送心跳，连续 2.5 秒未收到即关闭输出。关闭不依赖网页倒计时；Ctrl-C/finally 也会关闭输出。相关 API 采用 [MicroPython v1.29 的 RP2 Timer](https://docs.micropython.org/en/v1.29.0/rp2/quickref.html#timers)。演示模式不控制实物。
+
+测试使用 `HW_CMD,id,target,duration_ms` 换行指令；只有上表固定时长可执行，不接受任意 GPIO 或提高电压的指令。Pico 回报 `HW_READY,1`、`HW_DATA,JSON` 和 `HW_BUTTON,JSON`；这些记录不混入测距 CSV。单独运行 `distance_pico_stream.py` 仍可只测距；网页会自动将诊断类放在它前面一起运行。
 
 ## 默认接线
 
@@ -82,6 +101,8 @@ TFmini 第一帧的 `delta_us` 为 -1。超声波 `-2` 表示等待回波上升�
 
 ## 验证范围
 
+2026-10-31 新增组件测试后：39 项 JavaScript 与 23 项 Python 测试通过；在真实 Pico 上确认硬定时器心跳超时关闭，在 Chrome 页面完成马达 5 秒指令回执、倒计时、完成回执以及 LED 立即停止验证。本轮没有重新取得所有负载的现场观察，四个按键仍未进行实物验证。
+
 2026-10-27 已在所连接的 **Pico H / RP2040、MicroPython v1.29.0** 上完成实际验证：
 
 - Mac 系统 Python 3.9.6 及 Chrome 可启动本机页面，资源加载正常。
@@ -96,5 +117,5 @@ TFmini 第一帧的 `delta_us` 为 -1。超声波 `-2` 表示等待回波上升�
 
 ```sh
 node --test tests/*.test.mjs
-python3 tests/test_distance_reader.py
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_*.py'
 ```
