@@ -1,0 +1,52 @@
+# macOS主机配置；密钥只从 AMAP_KEY / CANE_PHONE_TOKEN 环境变量读取。
+[general]
+language = "cmn"
+test_mode = false
+log_dir = "logs/mac"
+
+[audio]
+dir = "audio"
+player = "afplay"
+device = "default"
+
+[imu]
+enabled = false # Mac没有树莓派I2C；未接入真实运动源时不假造站稳/人体朝向。
+
+[vision]
+enabled = false # 单目类别识别通过 --camera 显式启用；双目需要真实标定。
+
+[voice]
+enabled = true
+device = "default"
+record_s = 8.0
+manual_stop = true
+backend = "vosk"
+vosk_model_dir = "models"
+
+[nav]
+enabled = true
+coord_mode = "amap_api"
+city = "香港"
+announce_m = [50, 20, 8]
+arrive_m = 8
+offroute_m = 25
+
+[[nav.destinations]]
+id = "dest1"
+name = "香港城市大学"
+aliases = ["城大", "城市大学", "cityu", "城市大學", "city university", "city university of hong kong"]
+lng = 114.1733
+lat = 22.3364
+
+[[nav.destinations]]
+id = "dest2"
+name = "九龙塘站"
+aliases = ["九龙塘", "九龍塘", "kowloon tong", "kowloon tong station"]
+lng = 114.1763
+lat = 22.3369
+
+[web]
+enabled = true
+diag_host = "127.0.0.1"
+diag_port = 8765
+diag_allow = ["127.0.0.1/32", "::1/128"]

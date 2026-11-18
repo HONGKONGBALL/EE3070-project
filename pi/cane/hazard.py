@@ -21,7 +21,7 @@ from .prompts import required_warning_distance
 DEFAULT_CLIP_S = 1.0  # used until real clip durations are measured
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Hazard:
     kind: str          # stop | front | head | drop | step_up
     prompt_id: str
@@ -67,22 +67,32 @@ class HazardAssessor:
             self.h.margin_m,
         )
 
-    def _valid(self, d: float | None) -> float | None:
-        if d is None or d <= 0.02 or d > self.h.max_valid_m:
+    def reset(self) -> None:
+        """A disconnected sensor cannot carry confirmation into a new session."""
+        self._streak.clear()
+
+    def valid_distance(self, d: float | None) -> float | None:
+        """Accept finite physical distances only."""
+        if d is None or not math.isfinite(d) or d <= 0.02 or d > self.h.max_valid_m:
             return None
         return d
 
+    _valid = valid_distance
+
     def ground_check(self, frame: SensorFrame, tilt_deg: float | None = None) -> str | None:
         """'drop', 'step_up' or None. tilt_deg may come from the IMU pitch."""
-        if self.tf.role != "ground" or frame.tfmini_m is None:
+        distance = self._valid(frame.tfmini_m)
+        if self.tf.role != "ground" or distance is None:
             return None
         if frame.tfmini_strength < self.tf.min_strength:
             return None
         tilt = self.tf.tilt_down_deg if tilt_deg is None else tilt_deg
+        if not math.isfinite(tilt) or not 0 < tilt < 90:
+            return None
         expected = expected_ground_range(self.tf.mount_height_m, tilt)
-        if frame.tfmini_m > expected + self.tf.drop_tolerance_m:
+        if distance > expected + self.tf.drop_tolerance_m:
             return "drop"
-        if frame.tfmini_m < expected - self.tf.rise_tolerance_m:
+        if distance < expected - self.tf.rise_tolerance_m:
             return "step_up"
         return None
 

@@ -4,8 +4,16 @@ from __future__ import annotations
 
 import threading
 import time
+import platform
 
 import cv2
+
+
+def capture_source(device: str, system: str | None = None) -> tuple[int | str, int]:
+    """Use a numeric AVFoundation index on macOS, a V4L2 path on Linux."""
+    if (system or platform.system()) == "Darwin":
+        return int(device), cv2.CAP_AVFOUNDATION
+    return device, cv2.CAP_V4L2
 
 
 class Camera:
@@ -52,7 +60,8 @@ class Camera:
 
     def _run(self):
         while not self.stopped.is_set():
-            cap = cv2.VideoCapture(self.device, cv2.CAP_V4L2)
+            source, backend = capture_source(self.device)
+            cap = cv2.VideoCapture(source, backend)
             try:
                 if not cap.isOpened():
                     raise RuntimeError("Camera could not be opened")

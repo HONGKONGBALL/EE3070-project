@@ -20,7 +20,7 @@ from __future__ import annotations
 import threading
 import time
 from collections import deque
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Callable, Protocol
 
 from .model import Direction, OutputRequest, Priority
@@ -35,7 +35,7 @@ class AudioSink(Protocol):
 HapticSink = Callable[[str], None]
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class ArbiterEvent:
     t: float
     action: str  # played | preempted | dropped_orientation | dropped_cooldown | expired | queued
@@ -53,12 +53,14 @@ class OutputArbiter:
         safety_hold_s: float = 2.0,
         repeat_cooldown_s: float = 3.0,
         clock: Callable[[], float] = time.monotonic,
+        event_sink: Callable[[ArbiterEvent], None] | None = None,
     ) -> None:
         self._audio = audio
         self._haptic = haptic
         self._hold = safety_hold_s
         self._cooldown = repeat_cooldown_s
         self._clock = clock
+        self._event_sink = event_sink
         self._lock = threading.RLock()
         self._queue: list[tuple[int, OutputRequest]] = []
         self._seq = 0
@@ -101,11 +103,55 @@ class OutputArbiter:
             with self._lock:
                 self._last_played.pop(req.key, None)
 
+    def discard_navigation(self) -> None:
+        """Remove obsolete directions without touching safety requests or hold."""
+        with self._lock:
+            self._queue = [(seq, req) for seq, req in self._queue if req.priority is not Priority.NAV]
+            if self._current is not None and self._current.priority is Priority.NAV:
+                self._audio.stop()
+                self._log(self._clock(), "cancelled_navigation", self._current)
+                self._current = None
+
+    def discard_information(self) -> None:
+        """Cancel destination readbacks while retaining every safety output."""
+        with self._lock:
+            self._queue = [(seq, req) for seq, req in self._queue if req.priority is not Priority.INFO]
+            if self._current is not None and self._current.priority is Priority.INFO:
+                self._audio.stop()
+                self._current = None
+
+    def discard_obsolete_hazards(self, active: set[str]) -> None:
+        """Queued range warnings expire when the next fresh frame supersedes them.
+
+        The playing warning and its hold remain intact. Controller-fault warnings
+        are deliberately excluded because a clear distance frame is not recovery.
+        """
+        observed = {"stop_now", "obstacle_front", "obstacle_head", "drop_ahead", "step_up_ahead"}
+        with self._lock:
+            self._queue = [(seq, req) for seq, req in self._queue
+                           if req.prompt_id not in observed or req.prompt_id in active]
+
+    def discard_vision_observations(self, active: set[str]) -> None:
+        """Withdraw unsupported camera classifications while retaining the hold.
+
+        These three labels never represent measured distances or a safe path.
+        Range hazards and system-fault warnings belong to independent sources.
+        """
+        observed = {"vision_person", "vision_chair", "vision_bag"}
+        with self._lock:
+            self._queue = [(seq, req) for seq, req in self._queue
+                           if req.prompt_id not in observed or req.prompt_id in active]
+            current = self._current
+            if current is not None and current.prompt_id in observed and current.prompt_id not in active:
+                self._audio.stop()
+                self._last_safety_t = self._clock()
+                self._log(self._last_safety_t, "expired_observation", current)
+                self._current = None
+
     # ----------------------------------------------------------------- submit
-    def submit(self, req: OutputRequest) -> bool:
+    def submit(self, request: OutputRequest) -> bool:
         now = self._clock()
-        if not req.created:
-            req.created = now
+        req = replace(request, created=now) if not request.created else request
         with self._lock:
             if req.direction is not Direction.NONE and not self._orientation_ok:
                 self._log(now, "dropped_orientation", req)
@@ -195,4 +241,7 @@ class OutputArbiter:
     def _log(self, now: float, action: str, req: OutputRequest) -> None:
         if action in self.QUIET_ACTIONS:
             return
-        self.history.append(ArbiterEvent(now, action, req.prompt_id, req.priority.name))
+        event = ArbiterEvent(now, action, req.prompt_id, req.priority.name)
+        self.history.append(event)
+        if self._event_sink is not None:
+            self._event_sink(event)

@@ -7,7 +7,7 @@ name = "cane"
 version = "0.1.0"
 description = "EE3070 smart white cane - Raspberry Pi 5 side"
 requires-python = ">=3.11"
-dependencies = ["pyserial>=3.5"]
+dependencies = ["pyserial>=3.5", "pydantic>=2,<3"]
 
 [project.optional-dependencies]
 web = ["fastapi>=0.110", "uvicorn>=0.29"]
@@ -15,6 +15,7 @@ pi = ["smbus2>=0.4", "numpy>=1.24"]
 vision = ["numpy>=1.24", "opencv-python-headless>=4.8"]
 camera = ["ncnn==1.0.20261020", "numpy>=1.24"]
 asr = ["vosk>=0.3.45"]
+mac = ["typer>=0.12", "sounddevice>=0.5", "vosk>=0.3.44", "numpy>=1.24", "opencv-python-headless>=4.8", "ncnn==1.0.20261020"]
 test = ["pytest>=8", "httpx>=0.27", "numpy>=1.24"]
 
 [tool.setuptools.packages.find]

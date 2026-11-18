@@ -8,6 +8,7 @@ from cane.model import ButtonEvent, SensorFrame
 from cane.pico_link import encode, parse_line
 from hcsr04 import echo_us_to_cm
 from outputs import BUZZER, VIBRATION, PatternPlayer
+from portable_keys import write_key
 from tfmini import TFminiParser, make_frame
 
 
@@ -64,6 +65,21 @@ def test_button_short_long_and_bounce():
     # a 10 ms glitch is ignored
     evs, t = press(b, t, 10)
     assert evs == []
+
+
+def test_portable_uart_only_sends_supported_short_presses():
+    class UART:
+        def __init__(self):
+            self.messages = []
+
+        def write(self, message):
+            self.messages.append(message)
+
+    uart = UART()
+    for name in ("confirm", "record", "next", "mode"):
+        write_key(uart, name, "long")
+        write_key(uart, name, "short")
+    assert uart.messages == [b"K1\n", b"K2\n", b"K3\n"]
 
 
 def test_pattern_player():
