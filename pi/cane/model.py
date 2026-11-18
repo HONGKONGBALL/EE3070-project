@@ -26,7 +26,7 @@ class Direction(enum.Enum):
     RIGHT = "right"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class SensorFrame:
     """One sample set from the Pico. Distances in metres, None = invalid."""
 
@@ -38,19 +38,20 @@ class SensorFrame:
     pico_ms: int = 0
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ButtonEvent:
     t: float
     button: str   # ok | dest | repeat | mode
     kind: str     # short | long
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class OutputRequest:
     """A request to the single output arbiter.
 
     prompt_id names a pre-generated clip (see prompts.CATALOG). text is only
     used for live TTS route read-back (NAV/INFO, never safety).
+    The arbiter creates a timestamped copy on first submission.
     """
 
     prompt_id: str

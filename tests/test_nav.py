@@ -5,7 +5,16 @@ import pytest
 
 from cane.config import NavCfg
 from cane.model import Direction
-from cane.nav.amap import AmapClient, AmapError, NetworkError, Step, parse_walking, redact
+from cane.nav.amap import (
+    AmapClient,
+    AmapError,
+    NetworkError,
+    Step,
+    WalkingRouteBlocked,
+    WalkingRouteUnavailable,
+    parse_walking,
+    redact,
+)
 from cane.nav.coords import bearing_deg, haversine_m, wgs84_to_gcj02
 from cane.nav.navigator import Navigator
 
@@ -61,6 +70,25 @@ def test_parse_walking():
 def test_parse_error():
     with pytest.raises(AmapError):
         parse_walking({"status": "0", "info": "INVALID_USER_KEY"})
+
+
+def test_explicit_empty_walking_results_are_unavailable():
+    with pytest.raises(WalkingRouteUnavailable):
+        parse_walking({"status": "1", "count": "0", "route": {"paths": []}})
+
+
+def test_ferry_only_path_is_not_a_walking_route():
+    path = ROUTE_JSON["route"]["paths"][0]
+    ferry = {**path, "steps": [{**path["steps"][0], "walk_type": "30"}]}
+    with pytest.raises(WalkingRouteBlocked):
+        parse_walking({"status": "1", "route": {"paths": [ferry]}})
+
+
+def test_blocked_first_path_uses_provider_alternative():
+    path = ROUTE_JSON["route"]["paths"][0]
+    blocked = {**path, "steps": [{**path["steps"][0], "assistant_action": "禁止行人通行"}]}
+    route = parse_walking({"status": "1", "route": {"paths": [blocked, path]}})
+    assert route.uses_alternative and len(route.steps) == 3
 
 
 def test_maneuver_mapping():

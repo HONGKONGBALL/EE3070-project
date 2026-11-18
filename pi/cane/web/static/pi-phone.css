@@ -1,0 +1,11 @@
+  :root { color-scheme: light dark; }
+  body { font: 18px/1.5 system-ui, sans-serif; margin: auto; max-width: 36rem; padding: 1.25rem; }
+  h1, h2 { line-height: 1.2; }
+  button, input { font: inherit; padding: .55rem .7rem; }
+  button { min-height: 44px; }
+  label { display: block; }
+  input { width: 100%; box-sizing: border-box; margin: .3rem 0 .5rem; }
+  .note { font-size: .9em; }
+  ol { padding-left: 1.7rem; }
+  li { margin-block: .5rem; }
+  li button { display: block; text-align: start; width: 100%; }

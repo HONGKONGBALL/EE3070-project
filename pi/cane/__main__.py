@@ -10,6 +10,9 @@ from pathlib import Path
 
 from .app import CaneApp
 from .config import load_config
+from .nav.amap import AmapClient
+from .voice.pi_places import PiPlaceSearch
+from .web.pairing import LAN_NETWORKS, PHONE_PORT, PhonePair
 
 log = logging.getLogger("cane")
 
@@ -53,6 +56,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--config", default="config/config.toml")
     ap.add_argument("--sim", action="store_true", help="simulated Pico, console audio")
     ap.add_argument("--no-web", action="store_true")
+    ap.add_argument("--phone-pair", type=Path, help="Pi pairing directory for iPhone location and K2 recording")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args(argv)
 
@@ -60,6 +64,27 @@ def main(argv: list[str] | None = None) -> int:
     cfg = load_config(cfg_path if cfg_path.exists() else None)
     if not cfg_path.exists():
         print(f"config {cfg_path} not found, using defaults", file=sys.stderr)
+
+    if args.phone_pair is not None:
+        try:
+            pair = PhonePair.load(args.phone_pair)
+        except (OSError, ValueError):
+            ap.error("prepare the phone pairing with tools/setup_pi_phone.py")
+        if not any(pair.address in network for network in LAN_NETWORKS):
+            ap.error("phone pairing must use a private IPv4 address")
+        if args.no_web or not cfg.web.enabled:
+            ap.error("phone pairing requires the web service")
+        cert, key = args.phone_pair / "server.crt", args.phone_pair / "server.key"
+        if not cert.is_file() or not key.is_file():
+            ap.error("phone pairing requires a server certificate and key")
+        cfg.web.phone_host = str(pair.address)
+        cfg.web.phone_port = PHONE_PORT
+        cfg.web.certfile, cfg.web.keyfile = str(cert), str(key)
+        cfg.secrets.phone_token = pair.token
+        cfg.voice.manual_stop = True
+        cfg.voice.candidate_selection = True
+        cfg.voice.places_source = "pi"
+        cfg.voice.backend = "vosk"
 
     Path(cfg.general.log_dir).mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
@@ -69,14 +94,17 @@ def main(argv: list[str] | None = None) -> int:
     )
     log.info("starting (sim=%s) %r", args.sim, cfg.secrets)
 
-    app = CaneApp(cfg, sim=args.sim)
+    amap = AmapClient(cfg.secrets.amap_key) if cfg.secrets.amap_key else None
+    pi_places = PiPlaceSearch(amap) if args.phone_pair is not None else None
+    app = CaneApp(cfg, sim=args.sim, amap=amap if cfg.nav.enabled else None, pi_places=pi_places)
     _attach_imu(app)
     _attach_vision(app)
     if cfg.web.enabled and not args.no_web:
         try:
             from .web.app import serve
 
-            serve(app, cfg.web, cfg.secrets.phone_token)
+            serve(app, cfg.web, cfg.secrets.phone_token, origin_control=app if pi_places else None,
+                  paired_phone=pi_places is not None)
             log.info("diagnostics on http://%s:%d/", cfg.web.diag_host, cfg.web.diag_port)
         except ImportError as e:
             log.warning("web disabled: %s", e)

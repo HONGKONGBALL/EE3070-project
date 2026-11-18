@@ -14,7 +14,7 @@ class Ctrl:
         self.log.write_text('{"kind":"boot"}\n')
 
     def status(self):
-        return {"state": "READY", "test_mode": True}
+        return {"state": "READY", "test_mode": True, "sim": True}
 
     def log_files(self):
         return [self.log]
@@ -25,6 +25,12 @@ class Ctrl:
     def on_destination_text(self, text):
         self.texts.append(text)
         return {"matched": "dest1"}
+
+    def enqueue_control(self, action):
+        return {"queued": True, "action": action}
+
+    def enqueue_scenario(self, name):
+        return {"queued": True, "scenario": name}
 
 
 @pytest.fixture
@@ -54,11 +60,13 @@ def test_diag_allowed_from_listed_network(ctrl):
     assert c.post("/api/voice/text", json={"text": "城大"}).json() == {"matched": "dest1"}
 
 
-def test_diag_is_read_only():
+def test_diag_only_exposes_whitelisted_control_routes():
     app = create_app(None, [], None)
     routes = {(r.path, m) for r in app.routes for m in getattr(r, "methods", [])}
     posts = {p for p, m in routes if m in ("POST", "PUT", "DELETE", "PATCH")}
-    assert posts == {"/api/voice/text", "/api/phone/location"}
+    assert posts == {
+        "/api/voice/text", "/api/voice/select", "/api/phone/location", "/api/control", "/api/sim/scenario",
+    }
     assert not any("safety" in p or "veto" in p or "override" in p for p, _ in routes)
 
 

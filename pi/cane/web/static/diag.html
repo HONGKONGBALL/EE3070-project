@@ -1,74 +1,101 @@
 <!doctype html>
-<html lang="zh">
+<html lang="zh-Hans">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>盲杖诊断</title>
-<style>
-  :root { --bg:#fff; --fg:#111; --muted:#666; --card:#f4f4f5; --warn:#b45309; --bad:#b91c1c; --ok:#15803d; }
-  @media (prefers-color-scheme: dark) { :root { --bg:#111; --fg:#eee; --muted:#999; --card:#1d1d20; } }
-  body { font: 15px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--fg); margin: 0 auto; padding: 16px; max-width: 900px; }
-  h1 { font-size: 20px; margin: 0 0 8px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-  .card { background: var(--card); border-radius: 8px; padding: 12px; }
-  .card h2 { font-size: 14px; margin: 0 0 6px; color: var(--muted); }
-  .banner { padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; font-weight: 600; display: none; }
-  .test { background: var(--warn); color: #fff; }
-  .fault { background: var(--bad); color: #fff; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  td { padding: 2px 4px; border-bottom: 1px solid rgba(127,127,127,.2); }
-  .ok { color: var(--ok); } .bad { color: var(--bad); }
-  code { font-size: 13px; }
-  input, button { font: inherit; padding: 4px 8px; }
-  .note { color: var(--muted); font-size: 13px; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>EE3070 盲杖诊断 · Mac 主机</title>
+  <link rel="stylesheet" href="/assets/dashboard.css">
+  <script type="module" src="/assets/dashboard.js"></script>
 </head>
 <body>
-<h1>EE3070 盲杖诊断 <span class="note">（只读，组员用）</span></h1>
-<div id="test" class="banner test">测试模式</div>
-<div id="fault" class="banner fault">故障</div>
-<div class="grid">
-  <div class="card"><h2>状态</h2><table id="st"></table></div>
-  <div class="card"><h2>传感器</h2><table id="sens"></table></div>
-  <div class="card"><h2>输出仲裁</h2><table id="arb"></table></div>
-  <div class="card"><h2>导航</h2><table id="nav"></table></div>
-</div>
-<div class="card" style="margin-top:12px"><h2>最近输出</h2><table id="hist"></table></div>
-<div class="card" style="margin-top:12px">
-  <h2>语音目的地（文字代替说话）</h2>
-  <form id="vf"><input id="vt" placeholder="例如：去城大" maxlength="200"> <button>发送</button> <span id="vr" class="note"></span></form>
-  <p class="note">匹配后盲杖读回目的地，仍需在杖上按确认键才出发。</p>
-</div>
-<div class="card" style="margin-top:12px"><h2>日志下载</h2><ul id="logs"></ul></div>
-<p class="note">本页不能解除安全否决、不能静音安全提示，也不显示任何密钥。</p>
-<script>
-const rows = (el, obj) => {
-  el.innerHTML = Object.entries(obj).map(([k, v]) =>
-    `<tr><td>${k}</td><td><code>${v === null ? '—' : (typeof v === 'object' ? JSON.stringify(v) : v)}</code></td></tr>`).join('');
-};
-async function refresh() {
-  try {
-    const s = await (await fetch('/api/status')).json();
-    document.getElementById('test').style.display = s.test_mode ? 'block' : 'none';
-    document.getElementById('fault').style.display = s.state === 'FAULT' ? 'block' : 'none';
-    rows(st, {state: s.state, aligned: s.aligned, language: s.language, sim: s.sim, pico_ok: s.pico_ok, vsys: s.vsys, terrain: s.terrain});
-    rows(sens, Object.assign({}, s.sensors || {}, s.imu || {}, {hazards: s.hazards.join(', ')}));
-    rows(arb, {speaking: s.speaking, queue: s.queue.join(', '), safety_hold: s.safety_hold, orientation_ok: s.orientation_ok});
-    rows(nav, s.nav);
-    hist.innerHTML = s.recent_outputs.slice().reverse().map(e =>
-      `<tr><td>${e.t.toFixed(1)}</td><td>${e.action}</td><td>${e.prompt_id}</td><td>${e.priority}</td></tr>`).join('');
-  } catch (e) { document.getElementById('fault').style.display = 'block'; }
-}
-async function loadLogs() {
-  const l = await (await fetch('/api/logs')).json();
-  logs.innerHTML = l.map(f => `<li><a href="/api/logs/${encodeURIComponent(f.name)}">${f.name}</a> (${f.bytes} B)</li>`).join('');
-}
-vf.onsubmit = async (e) => {
-  e.preventDefault();
-  const r = await fetch('/api/voice/text', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({text: vt.value})});
-  vr.textContent = JSON.stringify(await r.json());
-};
-refresh(); loadLogs(); setInterval(refresh, 1000); setInterval(loadLogs, 15000);
-</script>
+  <header class="masthead">
+    <div class="brand"><span class="cane-mark" aria-hidden="true">╱</span><div><p class="eyebrow">EE3070 · SMART CANE</p><h1 id="page-heading">盲杖主机控制台</h1></div></div>
+    <div class="connection"><span id="connection-dot" class="dot"></span><strong id="connection">正在连接 Mac 主机</strong><span id="updated" class="muted">等待首个状态</span></div>
+  </header>
+  <main>
+    <section class="mode-strip" aria-label="运行模式"><strong id="mode">正在读取模式</strong><span id="test-mode">测试模式：待确认</span><span id="hardware-note">正在读取传感器连接</span></section>
+    <div id="fault-banner" class="alert danger" role="alert" hidden></div>
+    <div id="action-feedback" class="alert feedback" role="status" aria-live="polite" hidden></div>
+    <div class="workspace">
+      <div class="primary-column">
+        <section class="panel observation" aria-labelledby="observation-title">
+          <div class="section-head"><div><p class="eyebrow">当前观测</p><h2 id="observation-title">三路距离</h2></div><span id="sensor-age" class="muted">尚无数据</span></div>
+          <div class="sensor-grid">
+            <article class="sensor" id="sensor-front"><span class="sensor-direction">前方 · 超声波</span><p class="distance"><strong id="front-distance">—</strong><span>m</span></p><span id="front-health" class="sensor-health">等待数据</span></article>
+            <article class="sensor" id="sensor-up"><span class="sensor-direction">头部 · 超声波</span><p class="distance"><strong id="up-distance">—</strong><span>m</span></p><span id="up-health" class="sensor-health">等待数据</span></article>
+            <article class="sensor" id="sensor-ground"><span class="sensor-direction" id="ground-role">地面 · TFmini-S</span><p class="distance"><strong id="ground-distance">—</strong><span>m</span></p><span id="ground-health" class="sensor-health">等待数据</span></article>
+          </div>
+          <div class="risk-line"><strong>风险提示</strong><span id="hazards">等待观测</span></div>
+          <p class="fine-print">数值失效、超时或未连接时显示“—”。没有风险事件不代表道路安全。</p>
+        </section>
+        <div class="two-up">
+          <section class="panel"><div class="section-head"><h2>主机与输出</h2><span id="state-badge" class="badge">等待状态</span></div><dl id="system-status" class="facts"></dl></section>
+          <section class="panel"><div class="section-head"><h2>地面与朝向</h2><span id="terrain-badge" class="badge">待观测</span></div><dl id="terrain-status" class="facts"></dl><p class="fine-print">坡向需要相机扫描或有效姿态数据。未观测时不会推断为平地。</p></section>
+        </div>
+        <section class="panel" aria-labelledby="navigation-title">
+          <div class="section-head"><div><p class="eyebrow full-host-only">定位与步行导航</p><h2 id="navigation-title">目的地</h2></div><span id="nav-badge" class="badge">未启动</span></div>
+          <div id="crossing-note" class="alert caution" hidden>已到路口：请停下并自行判断是否过街，确认键仅用于继续导航。</div>
+          <p id="destination" class="destination">尚未选择目的地</p>
+          <form id="voice-form" class="destination-form"><label for="voice-text">输入想去的地方</label><div class="input-row"><input id="voice-text" name="text" type="text" placeholder="例如：去城大" maxlength="200" required autocomplete="off"><button type="submit" class="primary" id="send-destination">识别目的地</button></div></form>
+          <div class="speech-row"><button id="host-voice-button" type="button" class="quiet" data-action="voice_input" disabled>主机离线语音输入</button><span id="host-voice-note" class="muted" role="status">正在检查主机录音与识别模型</span></div>
+          <div class="speech-row" id="wake-controls" hidden><button id="wake-switch" type="button" data-action="wake_enable" aria-pressed="false" disabled>开启语音唤醒</button><span id="wake-note" class="muted" role="status"></span></div>
+          <p class="fine-print" id="voice-provider" hidden></p>
+          <div id="origin-controls" class="origin-controls" hidden>
+            <p id="origin-status" role="status"></p>
+            <details id="origin-editor">
+              <summary>修改出发点</summary>
+              <form id="origin-form" class="destination-form">
+                <label for="origin-text">输入出发点</label>
+                <div class="input-row">
+                  <input id="origin-text" type="text" maxlength="200" required autocomplete="off">
+                  <button id="search-origin" type="submit" disabled>搜索出发点</button>
+                </div>
+              </form>
+              <button id="use-phone-origin" type="button" class="quiet" disabled>使用 iPhone 当前位置</button>
+              <div id="origin-search" class="destination-search" hidden>
+                <p id="origin-search-note" class="muted" role="status"></p>
+                <ul id="origin-candidates" aria-label="出发点候选"></ul>
+              </div>
+            </details>
+          </div>
+          <div class="speech-row full-host-only"><button id="speech-button" type="button" class="quiet">用浏览器麦克风输入</button><span id="speech-note" class="muted">正在检查浏览器语音输入</span></div>
+          <p class="fine-print full-host-only">主机语音使用主机麦克风和本地模型。浏览器语音识别可能使用联网服务。选好目的地后，按“确认 / 继续”开始导航。</p>
+          <section id="destination-search" class="destination-search" aria-labelledby="destination-search-heading" hidden>
+            <h3 id="destination-search-heading">目的地候选</h3>
+            <p id="destination-search-note" class="muted" role="status"></p>
+            <ul id="destination-candidates" aria-label="候选地点"></ul>
+          </section>
+          <div class="button-row full-host-only"><button type="button" class="primary" data-action="confirm">确认 / 继续</button><button type="button" data-action="cancel_destination">取消待定目的地</button><button type="button" class="danger-outline" data-action="stop_navigation">停止导航</button></div>
+          <dl id="navigation-status" class="facts nav-facts"></dl>
+        </section>
+        <section class="panel" aria-labelledby="outputs-title"><div class="section-head"><h2 id="outputs-title">最近输出</h2><span class="muted">主机仲裁记录</span></div><div class="table-wrap"><table><thead><tr><th scope="col">时间</th><th scope="col">结果</th><th scope="col">提示</th><th scope="col">优先级</th></tr></thead><tbody id="recent-outputs"><tr><td colspan="4" class="empty">等待输出记录</td></tr></tbody></table></div></section>
+      </div>
+      <aside class="side-column">
+        <section class="panel control-panel" aria-labelledby="controls-title">
+          <p class="eyebrow">主机操作</p><h2 id="controls-title">控制</h2>
+          <div class="control-grid"><button type="button" data-action="pause">暂停导航</button><button type="button" data-action="resume">恢复导航</button><button type="button" data-action="repeat">重复导航提示</button><button type="button" data-action="scan">静止扫描</button><button type="button" data-action="language">切换语言</button><button type="button" data-action="light">切换照明</button><button type="button" data-action="test_mode" class="wide">切换测试模式</button><button type="button" data-action="help" class="help-button wide">本地求助播报</button></div>
+          <p id="hardware-controls-note" class="fine-print" hidden>当前串口仅接收观测，不支持照明、振动等实体输出控制。本地求助仍可由 Mac 播报。</p>
+          <p class="fine-print">本地求助只在主机播报，不会拨号或发送消息。操作交由主机处理，安全提示仍拥有最高优先级。</p>
+        </section>
+        <section id="simulation-panel" class="panel simulation" aria-labelledby="simulation-title">
+          <div class="section-head"><h2 id="simulation-title">模拟演练</h2><span class="badge">SIM</span></div>
+          <p id="simulation-note" class="fine-print">只有模拟主机可注入演练场景。真实主机不可使用。</p>
+          <label for="scenario">选择场景</label><select id="scenario" disabled><option value="clear">恢复正常观测</option><option value="obstacle">前方近距离障碍</option><option value="head">头部高度障碍</option><option value="drop">前方落差</option><option value="step_up">向上台阶</option><option value="rough">粗糙地面</option><option value="slope_up">上坡（合成点云）</option><option value="slope_down">下坡（合成点云）</option><option value="slope_left">向左下斜（合成点云）</option><option value="slope_right">向右下斜（合成点云）</option><option value="sensor_lost">传感器断连</option><option value="low_power">低电压</option><option value="route">离线导航路线</option><option value="crossing">路口人工判断</option><option value="arrival">到达目的地</option></select>
+          <button id="apply-scenario" type="button" class="wide" disabled>运行场景</button>
+          <p class="fine-print">演练会改变模拟观测。路线使用合成坐标，仅演示流程，不代表实际位置。</p>
+        </section>
+        <section class="panel"><div class="section-head"><h2>设备诊断</h2><button id="refresh-button" type="button" class="quiet compact">刷新</button></div><dl id="device-status" class="facts"></dl></section>
+        <section class="panel camera-panel"><div class="section-head"><h2>相机预览</h2><span id="camera-badge" class="badge">不可用</span></div><img id="camera-preview" alt="Mac 相机最新画面" hidden><p id="camera-note" class="fine-print">相机未启用。连接并启动相机后显示真实画面。</p></section>
+      </aside>
+    </div>
+    <section class="panel logs-panel" aria-labelledby="logs-title">
+      <div class="section-head"><div><p class="eyebrow">留存与复查</p><h2 id="logs-title">日志与本地事件回放</h2></div><span class="muted">回放不会操作主机</span></div>
+      <div class="log-toolbar"><label for="log-select">主机日志</label><select id="log-select"><option value="">正在读取日志列表</option></select><a id="download-log" class="button" aria-disabled="true">下载原始日志</a><button type="button" id="load-replay" disabled>载入回放</button><button type="button" id="download-csv" disabled>导出 CSV</button></div>
+      <p id="log-note" class="fine-print">选择已有日志后可下载或回放；数据只在当前浏览器中解析。</p>
+      <div id="replay" class="replay" hidden><div class="replay-controls"><button type="button" id="replay-prev">上一条</button><button type="button" id="replay-play">播放</button><button type="button" id="replay-next">下一条</button><label for="replay-position" class="sr-only">回放事件位置</label><input id="replay-position" type="range" min="0" max="0" value="0"><span id="replay-count"></span></div><div class="table-wrap"><table><thead><tr><th scope="col">记录时间</th><th scope="col">事件类型</th><th scope="col">事件内容</th></tr></thead><tbody id="replay-event"></tbody></table></div></div>
+    </section>
+    <footer><span>EE3070 · Mac 主机</span><span class="full-host-only">未连接设备的功能保持不可用状态。状态每秒更新。</span></footer>
+  </main>
 </body>
 </html>
