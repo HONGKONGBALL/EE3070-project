@@ -1,0 +1,1096 @@
+{
+  "schema_version": "1.0",
+  "source_document_version": "v1.1",
+  "sources": [
+    {
+      "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+      "sha256": "ba30d3e97c2fdc43ee9dfd28f4ff74925cdb6fa28f0a8428ed925bb697f9f688"
+    },
+    {
+      "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+      "sha256": "324db28eb2939d4a0f9bf00b5d70f0e9ad9a1ce550e6ac648a7e340e65fc2d8b"
+    },
+    {
+      "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+      "sha256": "2a642d0b95e87576a9679b133dd03b399699085999aaf9c133225ce0f1073bd5"
+    },
+    {
+      "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+      "sha256": "bdca0caec94b99805fcaf6166c345ed8482f4e7cf6912427eb5446d3da339697"
+    }
+  ],
+  "schedule_basis": "elapsed_hours_from_H0",
+  "checkpoint_interval_minutes": 30,
+  "tasks": [
+    {
+      "id": "T01",
+      "stage": "准备",
+      "name": "登记环境并启动设备配合",
+      "requirement_ids": [
+        "R01",
+        "R23"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 0.5,
+      "dependencies": [],
+      "start_hour": 0.0,
+      "end_hour": 0.5,
+      "window": "H0–H0.5",
+      "input": "设备型号、开发电脑、签名账号、服务配置",
+      "actions": "检测 Xcode/iOS SDK、ESP-IDF、串口与 PSRAM；登记 iPhone UDID、签名 Team、Wi-Fi 和 Key 配置来源。设备操作者连接设备并完成系统授权。",
+      "target_paths": [
+        "config/local.example.json",
+        "evidence/T01/environment.json"
+      ],
+      "commands": [
+        "xcodebuild -version",
+        "idf.py --version",
+        "python3 -m serial.tools.list_ports"
+      ],
+      "evidence": "保存命令退出码、工具版本、设备标识和就绪项；设备操作者确认安装与行走时段。",
+      "completion_condition": "登记 iPhone/iOS、板卡/PSRAM、签名、串口、MCP 凭据来源与测试网络；保存环境报告。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 11,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 11,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 80
+      }
+    },
+    {
+      "id": "T02",
+      "stage": "准备",
+      "name": "生成协议与工程骨架",
+      "requirement_ids": [
+        "R01",
+        "R04",
+        "R19"
+      ],
+      "executor": "AI",
+      "budget_hours": 0.5,
+      "dependencies": [
+        "T01"
+      ],
+      "start_hour": 0.5,
+      "end_hour": 1.0,
+      "window": "H0.5–H1",
+      "input": "T01 环境记录、PRD R01/R04/R19",
+      "actions": "创建原生 iOS App、ESP-IDF 工程、可在电脑构建的导航核心、主机夹具和统一 navctl 入口；先定义可独立断言的输入、状态与事件序列。",
+      "target_paths": [
+        "protocol/navigation.schema.json",
+        "ios/NavigationCompanion.xcodeproj",
+        "firmware/",
+        "tests/host/",
+        "tools/navctl.py"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py check --task T02"
+      ],
+      "evidence": "协议校验、工程配置检查、CTest 与用例编号映射保存至 evidence/T02。",
+      "completion_condition": "冻结消息字段、状态、ACK 与证据格式；生成 iOS、固件、主机测试和工具入口。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 12,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 12,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 100
+      }
+    },
+    {
+      "id": "T03",
+      "stage": "服务",
+      "name": "探测 MCP 并保存路线样例",
+      "requirement_ids": [
+        "R07",
+        "R08",
+        "R10"
+      ],
+      "executor": "AI",
+      "budget_hours": 0.5,
+      "dependencies": [
+        "T01",
+        "T02"
+      ],
+      "start_hour": 1.0,
+      "end_hour": 1.5,
+      "window": "H1–H1.5",
+      "input": "T01 配置来源、T02 客户端样例",
+      "actions": "探测真实高德服务版本和步行工具 schema；按实际协议实现请求生命周期。选取香港同一测试区域三条 150–300 m 短路线，保存坐标语义及脱敏响应。",
+      "target_paths": [
+        "tools/mcp_probe.py",
+        "fixtures/mcp/provider.json",
+        "fixtures/routes/route01..03.json"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py probe-mcp --routes navigation_24h/config/field_routes.json"
+      ],
+      "evidence": "保存真实 HTTP 状态、请求标识、工具 schema、响应与耗时；对应 TC17/TC19。",
+      "completion_condition": "保存实际服务版本、步行工具 schema、三条短路线响应与坐标说明。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 13,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 13,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 118
+      }
+    },
+    {
+      "id": "T04",
+      "stage": "通信",
+      "name": "实现 ESP32 BLE 服务和分片",
+      "requirement_ids": [
+        "R03",
+        "R04",
+        "R23"
+      ],
+      "executor": "AI",
+      "budget_hours": 1.0,
+      "dependencies": [
+        "T02"
+      ],
+      "start_hour": 1.5,
+      "end_hour": 2.5,
+      "window": "H1.5–H2.5",
+      "input": "T02 协议、XIAO 板卡配置",
+      "actions": "实现 NimBLE Peripheral、绑定、写入/通知、按协商长度分片、重组期限、ACK 与资源回收；电脑端注入协议边界夹具。",
+      "target_paths": [
+        "firmware/components/ble_link/",
+        "tests/fixtures/ble/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py build --target esp32",
+        "python3 navigation_24h/tools/navctl.py test --cases TC10,TC53"
+      ],
+      "evidence": "保存固件构建日志、分片夹具断言和重组资源记录。",
+      "completion_condition": "固件构建通过；GATT、绑定、分片、重组及 ACK 夹具形成报告。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC10",
+        "TC53"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 14,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 14,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 136
+      }
+    },
+    {
+      "id": "T05",
+      "stage": "手机",
+      "name": "生成并安装 iOS 会话 App",
+      "requirement_ids": [
+        "R01",
+        "R06",
+        "R22"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 1.0,
+      "dependencies": [
+        "T02"
+      ],
+      "start_hour": 2.5,
+      "end_hour": 3.5,
+      "window": "H2.5–H3.5",
+      "input": "T02 iOS 工程、T01 签名和 UDID",
+      "actions": "实现目的地确认及会话控件，生成可签名真机 App 并安装。设备操作者确认开发者模式、信任与首次启动。",
+      "target_paths": [
+        "ios/NavigationCompanion/SessionView.swift",
+        "ios/NavigationCompanion/SessionStore.swift"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py build --target ios-device",
+        "python3 navigation_24h/tools/navctl.py install-ios"
+      ],
+      "evidence": "保存 xcodebuild 命令与构建日志、App 标识和安装记录；检查 TC15。",
+      "completion_condition": "iOS 工程构建并安装真机，目的地确认与会话操作形成记录。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 15,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 15,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 155
+      }
+    },
+    {
+      "id": "T06",
+      "stage": "手机",
+      "name": "实现后台定位和权限状态",
+      "requirement_ids": [
+        "R02",
+        "R04",
+        "R05"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 1.0,
+      "dependencies": [
+        "T05"
+      ],
+      "start_hour": 3.5,
+      "end_hour": 4.5,
+      "window": "H3.5–H4.5",
+      "input": "T05 App、定位权限状态",
+      "actions": "实现 Core Location 测量流、来源时刻、年龄、精度及授权状态；配置 location 后台模式并在前台启动会话。采集短程锁屏样本。",
+      "target_paths": [
+        "ios/NavigationCompanion/LocationService.swift",
+        "ios/NavigationCompanion/Info.plist"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC06 --mode device"
+      ],
+      "evidence": "保存 iOS 授权变化、前后台和测量时间线；长时间窗口关联 T22。",
+      "completion_condition": "启用 location 后台会话，输出带年龄/精度的测量并保存短程锁屏样本。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC06"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 16,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 16,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 174
+      }
+    },
+    {
+      "id": "T07",
+      "stage": "手机",
+      "name": "接通后台 BLE 位置闭环",
+      "requirement_ids": [
+        "R03",
+        "R17"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 1.5,
+      "dependencies": [
+        "T04",
+        "T06"
+      ],
+      "start_hour": 4.5,
+      "end_hour": 6.0,
+      "window": "H4.5–H6",
+      "input": "T04 BLE、T06 测量流",
+      "actions": "实现 Core Bluetooth Central、bluetooth-central 后台模式和状态恢复；向 ESP32 发送位置，接收通知并核对会话与序号。",
+      "target_paths": [
+        "ios/NavigationCompanion/BLECentral.swift",
+        "firmware/components/ble_link/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py flash-esp32",
+        "python3 navigation_24h/tools/navctl.py test --cases TC01,TC09,TC52 --mode device"
+      ],
+      "evidence": "保存手机发送与固件接收序号对照、ACK、绑定配置和后台短程记录。",
+      "completion_condition": "新位置到达 ESP32，状态通知返回手机；双方会话与序号可关联。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC01",
+        "TC09",
+        "TC52"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 17,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 17,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 192
+      }
+    },
+    {
+      "id": "T08",
+      "stage": "定位",
+      "name": "实现位置质量和时序校验",
+      "requirement_ids": [
+        "R04",
+        "R05"
+      ],
+      "executor": "AI",
+      "budget_hours": 1.0,
+      "dependencies": [
+        "T07"
+      ],
+      "start_hour": 6.0,
+      "end_hour": 7.0,
+      "window": "H6–H7",
+      "input": "T07 端到端位置、PRD 时效阈值",
+      "actions": "将质量判断与接收单调时钟放入导航核心；以重复、乱序、过期、跳点及墙钟改变夹具验证进度和 WAIT_FIX。",
+      "target_paths": [
+        "firmware/components/nav_core/fix_filter.cpp",
+        "tests/fixtures/fixes/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC11,TC12,TC13,TC14,TC16"
+      ],
+      "evidence": "记录每条测量的接受/丢弃原因、位置年龄和状态；覆盖 TC02 会话夹具。",
+      "completion_condition": "重复、乱序、过期、跳点和时钟偏移回放得到标注结果。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC11",
+        "TC12",
+        "TC13",
+        "TC14",
+        "TC16"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 18,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 18,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 211
+      }
+    },
+    {
+      "id": "T09",
+      "stage": "服务",
+      "name": "实现 ESP32 HTTPS MCP 客户端",
+      "requirement_ids": [
+        "R07",
+        "R18",
+        "R23"
+      ],
+      "executor": "AI",
+      "budget_hours": 1.5,
+      "dependencies": [
+        "T03",
+        "T07"
+      ],
+      "start_hour": 7.0,
+      "end_hour": 8.5,
+      "window": "H7–H8.5",
+      "input": "T03 Provider 描述、T07 实机网络",
+      "actions": "实现 esp_http_client TLS、实际协议版本请求、连接/读取超时及退避；BLE 回调只入队，网络任务异步处理。",
+      "target_paths": [
+        "firmware/components/mcp_client/",
+        "firmware/sdkconfig.defaults"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC17,TC18,TC19,TC43 --mode mixed"
+      ],
+      "evidence": "TC17/TC19 保存 ESP32 真实服务日志；版本和认证夹具保存各自断言。",
+      "completion_condition": "ESP32 发起真实 MCP 请求；TLS、协议版本、超时与状态均可追踪。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC17",
+        "TC18",
+        "TC19",
+        "TC43"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 19,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 19,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 229
+      }
+    },
+    {
+      "id": "T10",
+      "stage": "服务",
+      "name": "实现步行路线有界解析",
+      "requirement_ids": [
+        "R08",
+        "R09"
+      ],
+      "executor": "AI",
+      "budget_hours": 1.0,
+      "dependencies": [
+        "T09"
+      ],
+      "start_hour": 8.5,
+      "end_hour": 9.5,
+      "window": "H8.5–H9.5",
+      "input": "T09 MCP 传输、真实路线响应",
+      "actions": "实现 JSON/SSE 增量解包、工具结果解析、容量上限、活动/候选路线双缓冲和提交检查；响应夹具跨任意分片重放。",
+      "target_paths": [
+        "firmware/components/route_parser/",
+        "tests/fixtures/mcp/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC20,TC21,TC22"
+      ],
+      "evidence": "比较规范化路线与独立标注；记录容量边界、缓存释放及错误码。",
+      "completion_condition": "JSON/SSE、工具错误、容量边界与活动/候选路线切换夹具通过。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC20",
+        "TC21",
+        "TC22"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 20,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 20,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 247
+      }
+    },
+    {
+      "id": "T11",
+      "stage": "定位",
+      "name": "生成坐标与现场核对夹具",
+      "requirement_ids": [
+        "R10"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 0.5,
+      "dependencies": [
+        "T03",
+        "T08",
+        "T10"
+      ],
+      "start_hour": 9.5,
+      "end_hour": 10.0,
+      "window": "H9.5–H10",
+      "input": "T03 三条路线、T08 测量语义、T10 折线",
+      "actions": "冻结每份数据坐标系和 Provider 转换边界；给三条路线标出路口、平行道路、天桥/地道连接与入口，生成现场脚本。",
+      "target_paths": [
+        "fixtures/routes/annotations.json",
+        "config/field_routes.json",
+        "docs/field_checklist.md"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC23"
+      ],
+      "evidence": "保存坐标来源、转换次数、叠合检查与操作者路线确认；现场证据按 T23 采集。",
+      "completion_condition": "三条短路线形成控制点、坐标语义、入口和连接点标注，纳入 H20–H22 实测。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC23"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 21,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 21,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 265
+      }
+    },
+    {
+      "id": "T12",
+      "stage": "导航",
+      "name": "实现进度匹配与歧义处理",
+      "requirement_ids": [
+        "R11"
+      ],
+      "executor": "AI",
+      "budget_hours": 1.5,
+      "dependencies": [
+        "T08",
+        "T10",
+        "T11"
+      ],
+      "start_hour": 10.0,
+      "end_hour": 11.5,
+      "window": "H10–H11.5",
+      "input": "T08 位置过滤、T11 标注路线",
+      "actions": "实现沿线进度、可达步长、历史路段、可信 course、多候选及回走判断；用标注路段断言检测交叉/平行误匹配。",
+      "target_paths": [
+        "firmware/components/nav_core/route_matcher.cpp",
+        "tests/fixtures/matching/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC25,TC26,TC27"
+      ],
+      "evidence": "保存每步候选、选中路段、进度及 RELOCALIZE 的状态解释。",
+      "completion_condition": "直路、交叉、平行、回走、跳点回放的路段匹配符合标注。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC25",
+        "TC26",
+        "TC27"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 22,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 22,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 283
+      }
+    },
+    {
+      "id": "T13",
+      "stage": "导航",
+      "name": "实现转弯与确认状态机",
+      "requirement_ids": [
+        "R12"
+      ],
+      "executor": "AI",
+      "budget_hours": 1.0,
+      "dependencies": [
+        "T12"
+      ],
+      "start_hour": 11.5,
+      "end_hour": 12.5,
+      "window": "H11.5–H12.5",
+      "input": "T12 匹配结果、确认点标注",
+      "actions": "实现 FOLLOW 到 VERIFY 的完整状态机；人工确认与行进证据分别记录，重播按当前有效事件生成。",
+      "target_paths": [
+        "firmware/components/nav_core/turn_fsm.cpp",
+        "tests/fixtures/turns/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC28,TC30"
+      ],
+      "evidence": "对比完整状态序列和事件 ID，检查重复测量、确认、ACK 与重播。",
+      "completion_condition": "预告、人工确认、行进证据与转向验证的状态和事件符合时序断言。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC28",
+        "TC30"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 23,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 23,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 301
+      }
+    },
+    {
+      "id": "T14",
+      "stage": "导航",
+      "name": "实现偏航判定与重规划",
+      "requirement_ids": [
+        "R13"
+      ],
+      "executor": "AI",
+      "budget_hours": 1.0,
+      "dependencies": [
+        "T09",
+        "T12"
+      ],
+      "start_hour": 12.5,
+      "end_hour": 13.5,
+      "window": "H12.5–H13.5",
+      "input": "T09 异步请求、T12 路段进度",
+      "actions": "实现连续独立测量偏航、请求合并、冷却和原子替换；用延迟/乱序响应检验提交资格。",
+      "target_paths": [
+        "firmware/components/nav_core/reroute.cpp",
+        "tests/fixtures/reroute/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC31,TC32"
+      ],
+      "evidence": "记录测量次数/跨度、活动请求、route_version 和提交原因。",
+      "completion_condition": "独立测量确认、冷却、请求合并和候选路线提交满足回放断言。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC31",
+        "TC32"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 24,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 24,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 319
+      }
+    },
+    {
+      "id": "T15",
+      "stage": "导航",
+      "name": "实现取消和事件代次",
+      "requirement_ids": [
+        "R14",
+        "R19"
+      ],
+      "executor": "AI",
+      "budget_hours": 0.75,
+      "dependencies": [
+        "T10",
+        "T13",
+        "T14"
+      ],
+      "start_hour": 13.5,
+      "end_hour": 14.25,
+      "window": "H13.5–H14.25",
+      "input": "T10 候选路线、T13 事件、T14 请求",
+      "actions": "统一 session_id、generation 和 route_version；取消时撤销请求资格，检查迟到响应和迟到事件的时效与代次。",
+      "target_paths": [
+        "firmware/components/nav_core/session.cpp",
+        "tools/host_sim.py"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC02,TC33,TC34,TC35"
+      ],
+      "evidence": "保存取消前后乱序注入、ACK 时延及最终 IDLE/当前会话断言。",
+      "completion_condition": "规划中取消、迟到响应、旧代次事件的乱序注入验证通过。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC02",
+        "TC33",
+        "TC34",
+        "TC35"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 25,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 25,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 337
+      }
+    },
+    {
+      "id": "T16",
+      "stage": "导航",
+      "name": "实现暂停与许可租约",
+      "requirement_ids": [
+        "R15"
+      ],
+      "executor": "AI",
+      "budget_hours": 0.75,
+      "dependencies": [
+        "T15"
+      ],
+      "start_hour": 14.25,
+      "end_hour": 15.0,
+      "window": "H14.25–H15",
+      "input": "T15 会话代次、主机确认协议",
+      "actions": "实现 PAUSED、许可租约、CROSSING_WAIT 交接和 resume 新位置重算；通过主机模拟器驱动时钟和心跳。",
+      "target_paths": [
+        "firmware/components/nav_core/permission.cpp",
+        "tests/fixtures/permission/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC36,TC37,TC58"
+      ],
+      "evidence": "保存状态序列、许可年龄、暂停 ACK 和恢复引用的位置。",
+      "completion_condition": "pause/resume、许可过期和新位置恢复完成主机接口回放。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC36",
+        "TC37",
+        "TC58"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 26,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 26,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 355
+      }
+    },
+    {
+      "id": "T17",
+      "stage": "导航",
+      "name": "实现终段与入口确认",
+      "requirement_ids": [
+        "R16"
+      ],
+      "executor": "AI",
+      "budget_hours": 0.5,
+      "dependencies": [
+        "T12",
+        "T15"
+      ],
+      "start_hour": 15.0,
+      "end_hour": 15.5,
+      "window": "H15–H15.5",
+      "input": "T12 终段进度、T15 当前会话",
+      "actions": "结合最后路段与连续有效测量形成附近提示；用户入口确认后提交 ARRIVED 并结束会话。",
+      "target_paths": [
+        "firmware/components/nav_core/arrival.cpp",
+        "tests/fixtures/arrival/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC38,TC39 --mode mixed"
+      ],
+      "evidence": "回放漂移与终段样例；实机确认来源附手机/固件关联记录。",
+      "completion_condition": "终段附近提示与人工入口确认按预期形成 ARRIVAL_NEAR / ARRIVED。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC38",
+        "TC39"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 27,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 27,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 373
+      }
+    },
+    {
+      "id": "T18",
+      "stage": "恢复",
+      "name": "实现 BLE 与服务恢复",
+      "requirement_ids": [
+        "R17",
+        "R18"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 1.0,
+      "dependencies": [
+        "T07",
+        "T09",
+        "T15"
+      ],
+      "start_hour": 15.5,
+      "end_hour": 16.5,
+      "window": "H15.5–H16.5",
+      "input": "T07 BLE、T09 服务、T15 代次",
+      "actions": "实现重连摘要和新测量恢复；设备操作者短暂离开 BLE 范围、重启 App 并切换上游网络，AI 收集链路日志。",
+      "target_paths": [
+        "firmware/components/link_recovery/",
+        "ios/NavigationCompanion/RecoveryStore.swift"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC40,TC41,TC42 --mode device"
+      ],
+      "evidence": "保存恢复摘要、身份、测量年龄、重试次数与恢复耗时。",
+      "completion_condition": "BLE 重连、旧测量、Wi-Fi 中断和 MCP 恢复形成实机与注入报告。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC40",
+        "TC41",
+        "TC42"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 28,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 28,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 391
+      }
+    },
+    {
+      "id": "T19",
+      "stage": "集成",
+      "name": "接通主机事件与 Pico 确认",
+      "requirement_ids": [
+        "R19",
+        "R15"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 0.5,
+      "dependencies": [
+        "T13",
+        "T16",
+        "T18"
+      ],
+      "start_hour": 16.5,
+      "end_hour": 17.0,
+      "window": "H16.5–H17",
+      "input": "T13 转弯、T16 许可、T18 链路",
+      "actions": "实现 USB CDC 主机事件、ACK、TTL 与去重；Pico 通过独立 USB 接电脑桥接器，按键完成当前路口确认。",
+      "target_paths": [
+        "tools/host_sim.py",
+        "tools/pico_bridge.py",
+        "pico/confirm_button.py"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC29,TC44,TC45,TC55 --mode device"
+      ],
+      "evidence": "保存两路 USB 设备标识、按键去抖和事件/ACK 关联；电脑主机作为联调端。",
+      "completion_condition": "电脑接收事件并 ACK，Pico 确认关联到当前会话和路口。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC29",
+        "TC44",
+        "TC45",
+        "TC55"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 29,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 29,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 409
+      }
+    },
+    {
+      "id": "T20",
+      "stage": "诊断",
+      "name": "导出日志、资源和配置",
+      "requirement_ids": [
+        "R20",
+        "R21",
+        "R23"
+      ],
+      "executor": "AI",
+      "budget_hours": 0.5,
+      "dependencies": [
+        "T08",
+        "T09",
+        "T19"
+      ],
+      "start_hour": 17.0,
+      "end_hour": 17.5,
+      "window": "H17–H17.5",
+      "input": "T08 位置、T09 请求、T19 事件",
+      "actions": "统一 JSONL 单调时间线、配置版本与构建标识；实现回放、敏感配置脱敏和资源/时延统计。",
+      "target_paths": [
+        "tools/replay.py",
+        "tools/metrics.py",
+        "firmware/components/diagnostics/"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC46,TC47,TC48,TC56 --mode mixed"
+      ],
+      "evidence": "保存日志重建一致性、P50/P95/P99、最小空闲和最大连续块数据。",
+      "completion_condition": "会话证据可回放；内存、时延、配置版本和构建标识可追溯。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC46",
+        "TC47",
+        "TC48",
+        "TC56"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 30,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 30,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 427
+      }
+    },
+    {
+      "id": "T21",
+      "stage": "体验",
+      "name": "完成操作体验及候选构建",
+      "requirement_ids": [
+        "R22"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 0.5,
+      "dependencies": [
+        "T05",
+        "T13",
+        "T20"
+      ],
+      "start_hour": 17.5,
+      "end_hour": 18.0,
+      "window": "H17.5–H18",
+      "input": "T05 UI、T13 提示、T20 日志",
+      "actions": "完成状态与 VoiceOver 标签；运行全量主机回放，构建候选 App/固件并记录摘要与配置。",
+      "target_paths": [
+        "ios/NavigationCompanion/",
+        "evidence/release_candidate.json"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py test --cases TC50,TC51 --mode device",
+        "python3 navigation_24h/tools/navctl.py regression --suite host"
+      ],
+      "evidence": "保存操作记录、全量断言报告和候选版本 SHA-256；作为 T22 输入。",
+      "completion_condition": "按钮与 VoiceOver 检查通过；保存候选 App/固件版本和全量回放报告。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC50",
+        "TC51"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 31,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 31,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 445
+      }
+    },
+    {
+      "id": "T22",
+      "stage": "验收",
+      "name": "执行后台、共存及两小时耐久",
+      "requirement_ids": [
+        "R02",
+        "R03",
+        "R18",
+        "R21"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 2.0,
+      "dependencies": [
+        "T18",
+        "T20",
+        "T21"
+      ],
+      "start_hour": 18.0,
+      "end_hour": 20.0,
+      "window": "H18–H20",
+      "input": "T21 候选版本、设备及同一区域路线",
+      "actions": "运行连续 120 分钟会话，按测试排程切换移动锁屏、切应用、省电与静止；在窗口内采集共存及资源数据。AI 同时整理日志和发布说明。",
+      "target_paths": [
+        "tools/soak.py",
+        "evidence/T22/session.jsonl",
+        "evidence/T22/metrics.json"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py soak --minutes 120 --schedule navigation_24h/config/soak_schedule.json"
+      ],
+      "evidence": "保存 TC03/04/05/07/08/49/59 的分段原始日志、20 次规划/取消和统计。",
+      "completion_condition": "按分段脚本采集两小时连续会话；锁屏/切应用/省电/静止及共存窗口有对应证据。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 32,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 32,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 464
+      }
+    },
+    {
+      "id": "T23",
+      "stage": "验收",
+      "name": "完成短路线与团队接口实测",
+      "requirement_ids": [
+        "R10",
+        "R11",
+        "R12",
+        "R16",
+        "R19"
+      ],
+      "executor": "AI＋设备操作者",
+      "budget_hours": 2.0,
+      "dependencies": [
+        "T17",
+        "T19",
+        "T22"
+      ],
+      "start_hour": 20.0,
+      "end_hour": 22.0,
+      "window": "H20–H22",
+      "input": "T11 场地脚本、T22 稳定候选",
+      "actions": "操作者执行三条邻近短路线各两轮，AI 记录实际路口、连接点、入口与事件时间，分析锁屏导航全过程。",
+      "target_paths": [
+        "evidence/T23/route01..03/",
+        "evidence/T23/field_report.json"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py field --routes navigation_24h/config/field_routes.json --rounds 2"
+      ],
+      "evidence": "保存 TC24/57/60 的六轮记录，附关键点人工确认、轨迹和 App/固件版本。",
+      "completion_condition": "三条预选短路线各两轮，保存路口、连接点、入口和完整锁屏导航记录。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 33,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 33,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 482
+      }
+    },
+    {
+      "id": "T24",
+      "stage": "交接",
+      "name": "修复复测并打包验收产物",
+      "requirement_ids": [
+        "R24"
+      ],
+      "executor": "AI＋验收人",
+      "budget_hours": 2.0,
+      "dependencies": [
+        "T23"
+      ],
+      "start_hour": 22.0,
+      "end_hour": 24.0,
+      "window": "H22–H24",
+      "input": "T23 现场记录、全部任务和用例证据",
+      "actions": "H22–H23 根据缺陷定位修复并按影响范围复测，更新对应证据和验收状态。H23–H24 完成干净构建、安装复核、需求覆盖与交接归档。",
+      "target_paths": [
+        "release/navigation_24h.zip",
+        "release/manifest.json",
+        "evidence/acceptance.json",
+        "docs/handoff.md"
+      ],
+      "commands": [
+        "python3 navigation_24h/tools/navctl.py regression --suite all",
+        "python3 navigation_24h/tools/navctl.py test --cases TC54 --mode device",
+        "python3 navigation_24h/tools/navctl.py package"
+      ],
+      "evidence": "记录 24 项需求、60 用例真实结果、构建/安装日志和证据哈希；按验收状态生成交接摘要。",
+      "completion_condition": "H22–H23 修复与复测；H23–H24 重新构建、核对 60 用例和 24 需求，生成交接包与摘要。",
+      "recovery": "保存命令、退出码及原始日志；定向定位和修复后复测；更新 progress.json 与 checkpoint.md。",
+      "case_ids": [
+        "TC54"
+      ],
+      "status": "pending",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+        "sheet": "执行进度",
+        "row": 34,
+        "instruction_sheet": "AI执行指令",
+        "instruction_row": 34,
+        "markdown_path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+        "markdown_line": 500
+      }
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "id": "shenzhen-futian-public-controls-20261119",
+  "observed_at": "2026-11-19T06:37:55+08:00",
+  "area": "Shenzhen Futian Civic Center",
+  "method": "Public GPS photo controls and official AMap v3 walking geometry",
+  "source_frame": "WGS84",
+  "provider_frame": "GCJ02",
+  "controls": [
+    {
+      "name": "civic-center-plaza",
+      "source": "https://commons.wikimedia.org/wiki/Special:FilePath/File:SZ%20深圳%20Shenzhen%20福田區%20Futian%20市民中心%20Civic%20Center%20Shennan%20Road%20outdoor%20square%20October%202019%20SS34.jpg",
+      "wgs84": [
+        114.054641,
+        22.544453
+      ],
+      "gcj02": [
+        114.05975124783,
+        22.54173014323
+      ],
+      "forward_difference_m": 0.028,
+      "reverse_difference_m": 0.028
+    },
+    {
+      "name": "shenzhen-museum",
+      "source": "https://commons.wikimedia.org/wiki/File:SZ_深圳市_Shenzhen_福田區_Futian_市民中心_Civic_Center_福中三路_Fuzhong_3rd_Road_金田路_Jintian_Road_Shenzhen_Museum_January_2026_N13P_08.jpg",
+      "wgs84": [
+        114.056564,
+        22.546363
+      ],
+      "gcj02": [
+        114.06167670356,
+        22.543643663195
+      ],
+      "forward_difference_m": 0.009,
+      "reverse_difference_m": 0.009
+    },
+    {
+      "name": "central-bookcity-mcdonalds",
+      "source": "https://commons.wikimedia.org/wiki/File:SZ_深圳_Shenzhen_福田區_Futian_市民中心_Civic_Center_福中一路_Fuzhong_1st_Road_深圳書城_Shenzhen_BookCity_mall_McDonald%27s_Restaurant_September_2024_R12S_02.jpg",
+      "wgs84": [
+        114.054968,
+        22.549447
+      ],
+      "gcj02": [
+        114.06007921007,
+        22.54672498915
+      ],
+      "forward_difference_m": 0.042,
+      "reverse_difference_m": 0.042
+    },
+    {
+      "name": "civic-center-public-service-hall",
+      "source": "https://commons.wikimedia.org/wiki/File:SZ_深圳_Shenzhen_福田區_Futian_市民中心_Civic_Center_政府部門大廳_Administration_Service_Hall_sign_April_2023_Px3.jpg",
+      "wgs84": [
+        114.054698,
+        22.545365
+      ],
+      "gcj02": [
+        114.059808213976,
+        22.542642144098
+      ],
+      "forward_difference_m": 0.003,
+      "reverse_difference_m": 0.003
+    }
+  ],
+  "routes": [
+    {
+      "origin": "civic-center-plaza",
+      "destination": "shenzhen-museum",
+      "distance_m": 542.0,
+      "steps": 4,
+      "points": 30,
+      "origin_snap_m": 27.4,
+      "destination_snap_m": 43.0,
+      "max_step_gap_m": 0.6,
+      "normalized_geometry_length_m": 548.7
+    },
+    {
+      "origin": "shenzhen-museum",
+      "destination": "central-bookcity-mcdonalds",
+      "distance_m": 522.0,
+      "steps": 3,
+      "points": 36,
+      "origin_snap_m": 42.6,
+      "destination_snap_m": 0.4,
+      "max_step_gap_m": 0.7,
+      "normalized_geometry_length_m": 529.8
+    },
+    {
+      "origin": "civic-center-public-service-hall",
+      "destination": "civic-center-plaza",
+      "distance_m": 212.0,
+      "steps": 2,
+      "points": 13,
+      "origin_snap_m": 3.0,
+      "destination_snap_m": 26.8,
+      "max_step_gap_m": 0.4,
+      "normalized_geometry_length_m": 214.6
+    }
+  ]
+}

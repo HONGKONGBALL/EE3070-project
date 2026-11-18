@@ -1,0 +1,599 @@
+{
+  "$defs": {
+    "AckFrame": {
+      "additionalProperties": false,
+      "description": "Correlated command or measurement acknowledgment.",
+      "properties": {
+        "type": {
+          "const": "ack",
+          "default": "ack",
+          "title": "Type",
+          "type": "string"
+        },
+        "command_id": {
+          "title": "Command Id",
+          "type": "string"
+        },
+        "session_id": {
+          "title": "Session Id",
+          "type": "string"
+        },
+        "generation": {
+          "minimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "accepted": {
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "device_monotonic_ms": {
+          "minimum": 0,
+          "title": "Device Monotonic Ms",
+          "type": "integer"
+        },
+        "ack_ms": {
+          "minimum": 0,
+          "title": "Ack Ms",
+          "type": "integer"
+        },
+        "phone_send_monotonic_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone Send Monotonic Ms"
+        },
+        "fix_seq": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fix Seq"
+        }
+      },
+      "required": [
+        "command_id",
+        "session_id",
+        "generation",
+        "accepted",
+        "reason",
+        "device_monotonic_ms",
+        "ack_ms"
+      ],
+      "title": "AckFrame",
+      "type": "object"
+    },
+    "Command": {
+      "additionalProperties": false,
+      "description": "Session command with current route and event identity.",
+      "properties": {
+        "type": {
+          "const": "command",
+          "default": "command",
+          "title": "Type",
+          "type": "string"
+        },
+        "command": {
+          "enum": [
+            "start",
+            "cancel",
+            "pause",
+            "resume",
+            "repeat",
+            "confirm_turn",
+            "confirm_crossing",
+            "confirm_arrival",
+            "get_status",
+            "permission",
+            "bind"
+          ],
+          "title": "Command",
+          "type": "string"
+        },
+        "command_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Command Id",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 64,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "generation": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "route_version": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Route Version",
+          "type": "integer"
+        },
+        "event_id": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Event Id",
+          "type": "integer"
+        },
+        "phone_session_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone Session Id"
+        },
+        "destination": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Destination"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "lease_ms": {
+          "default": 3000,
+          "maximum": 3000,
+          "minimum": 0,
+          "title": "Lease Ms",
+          "type": "integer"
+        },
+        "phone_send_monotonic_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone Send Monotonic Ms"
+        },
+        "confirmation_source": {
+          "anyOf": [
+            {
+              "const": "manual_confirm",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Source"
+        }
+      },
+      "required": [
+        "command",
+        "command_id",
+        "session_id",
+        "generation"
+      ],
+      "title": "Command",
+      "type": "object"
+    },
+    "Destination": {
+      "additionalProperties": false,
+      "description": "User-confirmed destination in the phone coordinate frame.",
+      "properties": {
+        "name": {
+          "maxLength": 96,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "lng": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lng",
+          "type": "number"
+        },
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "coord_frame": {
+          "const": "WGS84",
+          "default": "WGS84",
+          "title": "Coord Frame",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "lng",
+        "lat"
+      ],
+      "title": "Destination",
+      "type": "object"
+    },
+    "EventFrame": {
+      "additionalProperties": false,
+      "description": "Current versioned action with a device-clock deadline.",
+      "properties": {
+        "type": {
+          "enum": [
+            "route_ready",
+            "maneuver",
+            "relocalize",
+            "rerouting",
+            "arrival_near",
+            "arrived",
+            "fault"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "session_id": {
+          "title": "Session Id",
+          "type": "string"
+        },
+        "generation": {
+          "minimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "route_version": {
+          "minimum": 0,
+          "title": "Route Version",
+          "type": "integer"
+        },
+        "event_id": {
+          "minimum": 1,
+          "title": "Event Id",
+          "type": "integer"
+        },
+        "fix_seq": {
+          "minimum": 0,
+          "title": "Fix Seq",
+          "type": "integer"
+        },
+        "fix_age_ms": {
+          "minimum": 0,
+          "title": "Fix Age Ms",
+          "type": "integer"
+        },
+        "distance_m": {
+          "minimum": 0,
+          "title": "Distance M",
+          "type": "number"
+        },
+        "ttl_ms": {
+          "exclusiveMinimum": 0,
+          "maximum": 2000,
+          "title": "Ttl Ms",
+          "type": "integer"
+        },
+        "issued_at_ms": {
+          "minimum": 0,
+          "title": "Issued At Ms",
+          "type": "integer"
+        },
+        "confirmation_source": {
+          "enum": [
+            "",
+            "manual_confirm",
+            "valid_movement_evidence"
+          ],
+          "title": "Confirmation Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "session_id",
+        "generation",
+        "route_version",
+        "event_id",
+        "fix_seq",
+        "fix_age_ms",
+        "distance_m",
+        "ttl_ms",
+        "issued_at_ms",
+        "confirmation_source"
+      ],
+      "title": "EventFrame",
+      "type": "object"
+    },
+    "Location": {
+      "additionalProperties": false,
+      "description": "Independent timestamped location measurement.",
+      "properties": {
+        "type": {
+          "const": "location",
+          "default": "location",
+          "title": "Type",
+          "type": "string"
+        },
+        "phone_session_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Phone Session Id",
+          "type": "string"
+        },
+        "fix_seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Fix Seq",
+          "type": "integer"
+        },
+        "source_timestamp_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Source Timestamp Ms",
+          "type": "integer"
+        },
+        "measurement_age_ms": {
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Measurement Age Ms",
+          "type": "integer"
+        },
+        "device_sent_lower_bound_ms": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Device Sent Lower Bound Ms"
+        },
+        "coord_frame": {
+          "const": "WGS84",
+          "default": "WGS84",
+          "title": "Coord Frame",
+          "type": "string"
+        },
+        "lng": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lng",
+          "type": "number"
+        },
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "horizontal_accuracy_m": {
+          "minimum": 0,
+          "title": "Horizontal Accuracy M",
+          "type": "number"
+        },
+        "speed_mps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Speed Mps"
+        },
+        "course_deg": {
+          "anyOf": [
+            {
+              "exclusiveMaximum": 360,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Course Deg"
+        }
+      },
+      "required": [
+        "phone_session_id",
+        "fix_seq",
+        "source_timestamp_ms",
+        "measurement_age_ms",
+        "lng",
+        "lat",
+        "horizontal_accuracy_m"
+      ],
+      "title": "Location",
+      "type": "object"
+    },
+    "StatusFrame": {
+      "additionalProperties": false,
+      "description": "Current navigation identity, position quality and link state.",
+      "properties": {
+        "type": {
+          "const": "status",
+          "default": "status",
+          "title": "Type",
+          "type": "string"
+        },
+        "session_id": {
+          "title": "Session Id",
+          "type": "string"
+        },
+        "generation": {
+          "minimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "route_version": {
+          "minimum": 0,
+          "title": "Route Version",
+          "type": "integer"
+        },
+        "state": {
+          "enum": [
+            "IDLE",
+            "WAIT_FIX",
+            "ROUTING",
+            "FOLLOW",
+            "APPROACH",
+            "ALIGN_CONFIRM",
+            "TURN",
+            "VERIFY",
+            "RELOCALIZE",
+            "REROUTING",
+            "CROSSING_WAIT",
+            "PAUSED",
+            "ARRIVAL_NEAR",
+            "ARRIVED"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "quality": {
+          "enum": [
+            "VALID",
+            "DEGRADED",
+            "LOST"
+          ],
+          "title": "Quality",
+          "type": "string"
+        },
+        "fix_seq": {
+          "minimum": 0,
+          "title": "Fix Seq",
+          "type": "integer"
+        },
+        "fix_age_ms": {
+          "minimum": 0,
+          "title": "Fix Age Ms",
+          "type": "integer"
+        },
+        "event_id": {
+          "minimum": 0,
+          "title": "Event Id",
+          "type": "integer"
+        },
+        "progress_m": {
+          "minimum": 0,
+          "title": "Progress M",
+          "type": "number"
+        },
+        "lateral_m": {
+          "minimum": 0,
+          "title": "Lateral M",
+          "type": "number"
+        },
+        "segment": {
+          "minimum": 0,
+          "title": "Segment",
+          "type": "integer"
+        },
+        "device_monotonic_ms": {
+          "minimum": 0,
+          "title": "Device Monotonic Ms",
+          "type": "integer"
+        },
+        "ble": {
+          "title": "Ble",
+          "type": "string"
+        },
+        "wifi": {
+          "title": "Wifi",
+          "type": "string"
+        },
+        "mcp": {
+          "title": "Mcp",
+          "type": "string"
+        },
+        "config_version": {
+          "title": "Config Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id",
+        "generation",
+        "route_version",
+        "state",
+        "quality",
+        "fix_seq",
+        "fix_age_ms",
+        "event_id",
+        "progress_m",
+        "lateral_m",
+        "segment",
+        "device_monotonic_ms",
+        "ble",
+        "wifi",
+        "mcp",
+        "config_version"
+      ],
+      "title": "StatusFrame",
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "discriminator": {
+        "mapping": {
+          "command": "#/$defs/Command",
+          "location": "#/$defs/Location"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Location"
+        },
+        {
+          "$ref": "#/$defs/Command"
+        }
+      ]
+    },
+    {
+      "$ref": "#/$defs/StatusFrame"
+    },
+    {
+      "$ref": "#/$defs/EventFrame"
+    },
+    {
+      "$ref": "#/$defs/AckFrame"
+    }
+  ]
+}

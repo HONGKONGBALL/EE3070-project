@@ -1,0 +1,51 @@
+{
+  "observed_at": "2026-11-17T18:17:44+08:00",
+  "service_alias": "amap-walking",
+  "protocol_version": "2025-03-26",
+  "tool": {
+    "name": "maps_direction_walking",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "origin": {
+          "type": "string",
+          "description": "出发点经度，纬度，坐标格式为：经度，纬度"
+        },
+        "destination": {
+          "type": "string",
+          "description": "目的地经度，纬度，坐标格式为：经度，纬度"
+        }
+      },
+      "required": [
+        "origin",
+        "destination"
+      ]
+    },
+    "outputSchema": null
+  },
+  "server": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "protocolVersion": "2025-03-26",
+      "capabilities": {
+        "logging": {},
+        "tools": {
+          "listChanged": false
+        }
+      },
+      "serverInfo": {
+        "name": "amap-sse-server",
+        "version": "1.0.0"
+      }
+    },
+    "error": null
+  },
+  "evidence": [
+    "evidence/T03/exchange_001.json",
+    "evidence/T03/exchange_002.json",
+    "evidence/T03/exchange_003.json"
+  ],
+  "coordinate_frame": "GCJ02",
+  "coordinate_verified": false
+}

@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/wandergis/coordtransform",
+  "revision": "606c6f3b57b6f1d60458793fea39928d2b11b637",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2015 记忆的残骸",
+  "source_file": "index.js",
+  "local_source_file": "coordtransform.js",
+  "source_sha256": "e941a1a5825c1a615eb3e986a0bfa95b5cba03f6aa89fb20cf3be33259fb897c",
+  "license_sha256": "801448faad6ec70fbd0d1bf384f6b20cdbd332f333898b1b8122ec26cb0b5d79",
+  "forward_adapter": "C++ port of wgs84togcj02 and its latitude/longitude delta functions",
+  "inverse_adapter": "Bounded numerical inversion of the forward adapter, at most 12 iterations",
+  "inverse_stop_tolerance_degrees": 1e-11,
+  "boundary_roundtrip_tolerance_degrees": 1e-8,
+  "source_region": {
+    "lng_min_exclusive": 73.66,
+    "lng_max_exclusive": 135.05,
+    "lat_min_exclusive": 3.86,
+    "lat_max_exclusive": 53.55
+  },
+  "reference_fixture": "tests/coordinates/reference_points.json",
+  "runtime_activation": "verified policy, matching provider frame and field-control evidence reference"
+}

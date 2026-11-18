@@ -1,0 +1,3895 @@
+{
+  "schema_version": "1.0",
+  "source_document_version": "v1.1",
+  "sources": [
+    {
+      "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+      "sha256": "ba30d3e97c2fdc43ee9dfd28f4ff74925cdb6fa28f0a8428ed925bb697f9f688"
+    },
+    {
+      "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行进度表_24小时_v1.1.xlsx",
+      "sha256": "324db28eb2939d4a0f9bf00b5d70f0e9ad9a1ce550e6ac648a7e340e65fc2d8b"
+    },
+    {
+      "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_AI执行指令_24小时_v1.1.md",
+      "sha256": "2a642d0b95e87576a9679b133dd03b399699085999aaf9c133225ce0f1073bd5"
+    },
+    {
+      "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+      "sha256": "bdca0caec94b99805fcaf6166c345ed8482f4e7cf6912427eb5446d3da339697"
+    }
+  ],
+  "mode_semantics": {
+    "host": "电脑协议和回放断言",
+    "device": "设备执行与操作者确认",
+    "mixed": "电脑断言与设备测量关联"
+  },
+  "cases": [
+    {
+      "id": "TC01",
+      "requirement_ids": [
+        "R01"
+      ],
+      "priority": "P0",
+      "level": "系统",
+      "name": "启动和状态摘要",
+      "preconditions": "手机与 ESP32 配对完成",
+      "steps": "前台启动导航会话，查询状态摘要",
+      "expected_result": "双方记录相同 session_id，显示各链路与导航状态",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "双方记录相同 session_id，显示各链路与导航状态"
+        },
+        {
+          "kind": "threshold",
+          "text": "命令 ACK ≤500 ms"
+        }
+      ],
+      "threshold": "命令 ACK ≤500 ms",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T07",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC01,TC09,TC52 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 11,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC02",
+      "requirement_ids": [
+        "R01"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "会话隔离",
+      "preconditions": "已保存两个会话夹具",
+      "steps": "交替输入 A、B 会话状态与事件",
+      "expected_result": "活动视图和输出绑定当前会话，历史事件记为丢弃",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "活动视图和输出绑定当前会话，历史事件记为丢弃"
+        },
+        {
+          "kind": "threshold",
+          "text": "历史事件有效输出 0 次"
+        }
+      ],
+      "threshold": "历史事件有效输出 0 次",
+      "environment": "电脑模拟主机",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T15",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC02,TC33,TC34,TC35",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 12,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC03",
+      "requirement_ids": [
+        "R02"
+      ],
+      "priority": "P0",
+      "level": "真机",
+      "name": "移动锁屏 30 分钟",
+      "preconditions": "精确定位授权，导航会话活动",
+      "steps": "锁屏后沿已核对路线行走 30 分钟，记录定位及收发",
+      "expected_result": "后台位置持续到达，时效状态与测量年龄一致",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "后台位置持续到达，时效状态与测量年龄一致"
+        },
+        {
+          "kind": "threshold",
+          "text": "有效移动点年龄 P95 ≤5 s"
+        }
+      ],
+      "threshold": "有效移动点年龄 P95 ≤5 s",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B03",
+      "window": "H18–H20",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 13,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC04",
+      "requirement_ids": [
+        "R02"
+      ],
+      "priority": "P0",
+      "level": "真机",
+      "name": "切换应用 30 分钟",
+      "preconditions": "导航会话活动",
+      "steps": "切换到其他应用并持续移动，返回导航界面",
+      "expected_result": "位置链路保持，前后台状态摘要一致",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "位置链路保持，前后台状态摘要一致"
+        },
+        {
+          "kind": "threshold",
+          "text": "有效移动点年龄 P95 ≤5 s"
+        }
+      ],
+      "threshold": "有效移动点年龄 P95 ≤5 s",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B03",
+      "window": "H18–H20",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 14,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC05",
+      "requirement_ids": [
+        "R02"
+      ],
+      "priority": "P0",
+      "level": "真机",
+      "name": "低电量模式",
+      "preconditions": "导航会话活动，电量充足",
+      "steps": "启用低电量模式，锁屏移动 30 分钟",
+      "expected_result": "记录位置间隔、精度和电量，时效状态按同一规则判定",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "记录位置间隔、精度和电量，时效状态按同一规则判定"
+        },
+        {
+          "kind": "threshold",
+          "text": "完成 30 分钟证据记录"
+        }
+      ],
+      "threshold": "完成 30 分钟证据记录",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B03",
+      "window": "H18–H20",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 15,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC06",
+      "requirement_ids": [
+        "R02"
+      ],
+      "priority": "P0",
+      "level": "真机",
+      "name": "定位权限变化",
+      "preconditions": "导航会话活动",
+      "steps": "依次切换精确定位与位置授权状态",
+      "expected_result": "手机显示当前授权，ESP32 进入匹配的 DEGRADED / WAIT_FIX 状态",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "手机显示当前授权，ESP32 进入匹配的 DEGRADED / WAIT_FIX 状态"
+        },
+        {
+          "kind": "threshold",
+          "text": "状态更新 ≤5 s"
+        }
+      ],
+      "threshold": "状态更新 ≤5 s",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T06",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC06 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 16,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC07",
+      "requirement_ids": [
+        "R03"
+      ],
+      "priority": "P0",
+      "level": "真机",
+      "name": "锁屏 BLE 位置传输",
+      "preconditions": "GATT 已连接并完成绑定",
+      "steps": "锁屏移动，核对手机测量序号与 ESP 接收序号",
+      "expected_result": "收到的新测量保持顺序，ACK 可追溯",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "收到的新测量保持顺序，ACK 可追溯"
+        },
+        {
+          "kind": "threshold",
+          "text": "端到端传输 P95 ≤1 s"
+        }
+      ],
+      "threshold": "端到端传输 P95 ≤1 s",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B03",
+      "window": "H18–H20",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 17,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC08",
+      "requirement_ids": [
+        "R03"
+      ],
+      "priority": "P0",
+      "level": "台架",
+      "name": "BLE 与 MCP 并发",
+      "preconditions": "持续位置输入，Wi-Fi 已联网",
+      "steps": "循环请求路线并保持 BLE 位置流 30 分钟",
+      "expected_result": "位置接收与导航任务持续运行，记录共存时延",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "位置接收与导航任务持续运行，记录共存时延"
+        },
+        {
+          "kind": "threshold",
+          "text": "传输 P95 ≤1 s；运行 30 分钟"
+        }
+      ],
+      "threshold": "传输 P95 ≤1 s；运行 30 分钟",
+      "environment": "iPhone＋ESP32＋MCP",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B03",
+      "window": "H18–H20",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 18,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC09",
+      "requirement_ids": [
+        "R04"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "位置字段和单位",
+      "preconditions": "准备规范位置帧",
+      "steps": "发送经纬度、精度、时间与可选速度/course 的边界组合",
+      "expected_result": "字段解析与单位一致，可选字段状态可追溯",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "字段解析与单位一致，可选字段状态可追溯"
+        },
+        {
+          "kind": "threshold",
+          "text": "全部字段夹具匹配"
+        }
+      ],
+      "threshold": "全部字段夹具匹配",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T07",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC01,TC09,TC52 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 19,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC10",
+      "requirement_ids": [
+        "R04"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "BLE 分片重组",
+      "preconditions": "按当前 MTU 构造位置帧",
+      "steps": "将 512 B 以内帧按 MTU 拆分，并插入重组超时",
+      "expected_result": "完整帧还原一致，超时帧释放缓冲并记录状态",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "完整帧还原一致，超时帧释放缓冲并记录状态"
+        },
+        {
+          "kind": "threshold",
+          "text": "单帧容量 512 B；重组超时 1 s"
+        }
+      ],
+      "threshold": "单帧容量 512 B；重组超时 1 s",
+      "environment": "BLE 测试端＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T04",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC10,TC53",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 20,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC11",
+      "requirement_ids": [
+        "R05"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "重复和乱序测量",
+      "preconditions": "已输入有效位置序号 10",
+      "steps": "依次输入 10、9、11 并核对导航进度",
+      "expected_result": "当前会话序号 11 推进，重复和旧测量计入丢弃记录",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "当前会话序号 11 推进，重复和旧测量计入丢弃记录"
+        },
+        {
+          "kind": "threshold",
+          "text": "重复计数与夹具一致"
+        }
+      ],
+      "threshold": "重复计数与夹具一致",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T08",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC11,TC12,TC13,TC14,TC16",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 21,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC12",
+      "requirement_ids": [
+        "R05"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "测量陈旧与心跳",
+      "preconditions": "位置流有效",
+      "steps": "暂停新测量并继续发送心跳",
+      "expected_result": "位置年龄继续增长，达到门限进入 WAIT_FIX",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "位置年龄继续增长，达到门限进入 WAIT_FIX"
+        },
+        {
+          "kind": "threshold",
+          "text": "位置年龄阈值 5 s"
+        }
+      ],
+      "threshold": "位置年龄阈值 5 s",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T08",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC11,TC12,TC13,TC14,TC16",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 22,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC13",
+      "requirement_ids": [
+        "R05"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "跳点与路线歧义",
+      "preconditions": "已匹配当前路段",
+      "steps": "注入超出步行连续性的点和相邻道路歧义点",
+      "expected_result": "质量状态转为 DEGRADED / RELOCALIZE，保留可解释候选",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "质量状态转为 DEGRADED / RELOCALIZE，保留可解释候选"
+        },
+        {
+          "kind": "threshold",
+          "text": "路段决策符合标注"
+        }
+      ],
+      "threshold": "路段决策符合标注",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T08",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC11,TC12,TC13,TC14,TC16",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 23,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC14",
+      "requirement_ids": [
+        "R05"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "时钟偏移与连接恢复",
+      "preconditions": "准备含测量年龄的帧",
+      "steps": "改变手机墙钟，断连后恢复并重建时差估计",
+      "expected_result": "测量年龄采用测量源年龄和接收时钟，重连完成时序校验",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "测量年龄采用测量源年龄和接收时钟，重连完成时序校验"
+        },
+        {
+          "kind": "threshold",
+          "text": "时序夹具全部匹配"
+        }
+      ],
+      "threshold": "时序夹具全部匹配",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T08",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC11,TC12,TC13,TC14,TC16",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 24,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC15",
+      "requirement_ids": [
+        "R06"
+      ],
+      "priority": "P0",
+      "level": "系统",
+      "name": "目的地确认",
+      "preconditions": "有效定位已到达",
+      "steps": "选择目的地，核对名称和坐标后确认",
+      "expected_result": "ESP32 接收确认后的目的地并发起一次规划",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "ESP32 接收确认后的目的地并发起一次规划"
+        },
+        {
+          "kind": "threshold",
+          "text": "规划请求 1 个"
+        }
+      ],
+      "threshold": "规划请求 1 个",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 25,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC16",
+      "requirement_ids": [
+        "R06"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "起点时效",
+      "preconditions": "已缓存历史起点",
+      "steps": "位置过期后确认目的地，再提供新有效位置",
+      "expected_result": "先进入 WAIT_FIX，新位置到达后进入 ROUTING",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "先进入 WAIT_FIX，新位置到达后进入 ROUTING"
+        },
+        {
+          "kind": "threshold",
+          "text": "起点来源和时间可追溯"
+        }
+      ],
+      "threshold": "起点来源和时间可追溯",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T08",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC11,TC12,TC13,TC14,TC16",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 26,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC17",
+      "requirement_ids": [
+        "R07"
+      ],
+      "priority": "P0",
+      "level": "服务",
+      "name": "高德 MCP 能力探测",
+      "preconditions": "测试 Key 与网络配置完成",
+      "steps": "连接真实服务，记录协议版本和工具 schema",
+      "expected_result": "生成服务能力清单，步行工具名称和字段已登记",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "生成服务能力清单，步行工具名称和字段已登记"
+        },
+        {
+          "kind": "threshold",
+          "text": "协议及 schema 证据齐全"
+        }
+      ],
+      "threshold": "协议及 schema 证据齐全",
+      "environment": "ESP32＋高德 MCP",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T09",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC17,TC18,TC19,TC43 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 27,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC18",
+      "requirement_ids": [
+        "R07"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "协议版本适配",
+      "preconditions": "准备服务版本夹具",
+      "steps": "分别回放协商版本对应的生命周期和头字段",
+      "expected_result": "客户端按对应版本完成工具发现和调用",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "客户端按对应版本完成工具发现和调用"
+        },
+        {
+          "kind": "threshold",
+          "text": "版本夹具全部匹配"
+        }
+      ],
+      "threshold": "版本夹具全部匹配",
+      "environment": "本地 MCP 夹具服务",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T09",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC17,TC18,TC19,TC43 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 28,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC19",
+      "requirement_ids": [
+        "R08"
+      ],
+      "priority": "P0",
+      "level": "服务",
+      "name": "真实步行路线请求",
+      "preconditions": "已确认香港起终点与坐标",
+      "steps": "调用步行工具并保存原始脱敏响应",
+      "expected_result": "获得距离、分段、折线和转向动作，生成候选路线",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "获得距离、分段、折线和转向动作，生成候选路线"
+        },
+        {
+          "kind": "threshold",
+          "text": "首次路线时间记录；目标 P95 ≤15 s"
+        }
+      ],
+      "threshold": "首次路线时间记录；目标 P95 ≤15 s",
+      "environment": "ESP32＋高德 MCP",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T09",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC17,TC18,TC19,TC43 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 29,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC20",
+      "requirement_ids": [
+        "R08"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "工具调用错误",
+      "preconditions": "准备 MCP 工具错误与 RPC 错误夹具",
+      "steps": "回放工具级错误、RPC 错误和空路线",
+      "expected_result": "返回 ROUTE_ERROR 及具体原因，活动状态保持一致",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "返回 ROUTE_ERROR 及具体原因，活动状态保持一致"
+        },
+        {
+          "kind": "threshold",
+          "text": "错误码与夹具一致"
+        }
+      ],
+      "threshold": "错误码与夹具一致",
+      "environment": "本地 MCP 夹具服务",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T10",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC20,TC21,TC22",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 30,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC21",
+      "requirement_ids": [
+        "R09"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "JSON 与 SSE 分片",
+      "preconditions": "准备同一路线两种包装",
+      "steps": "以普通 JSON 和任意分片 SSE 回放",
+      "expected_result": "得到相同规范化路线及请求关联 ID",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "得到相同规范化路线及请求关联 ID"
+        },
+        {
+          "kind": "threshold",
+          "text": "规范化结果一致"
+        }
+      ],
+      "threshold": "规范化结果一致",
+      "environment": "本地 MCP 夹具服务",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T10",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC20,TC21,TC22",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 31,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC22",
+      "requirement_ids": [
+        "R09"
+      ],
+      "priority": "P0",
+      "level": "容量",
+      "name": "响应与路线容量边界",
+      "preconditions": "已有活动路线",
+      "steps": "输入上限内、等于上限及超出上限的响应/点数/路段",
+      "expected_result": "合规候选可提交，容量状态明确且缓冲回收",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "合规候选可提交，容量状态明确且缓冲回收"
+        },
+        {
+          "kind": "threshold",
+          "text": "256 KiB；2048 点；256 段"
+        }
+      ],
+      "threshold": "256 KiB；2048 点；256 段",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T10",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC20,TC21,TC22",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 32,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC23",
+      "requirement_ids": [
+        "R10"
+      ],
+      "priority": "P0",
+      "level": "数据",
+      "name": "坐标转换语义",
+      "preconditions": "准备 WGS84 手机点及已核对路线点",
+      "steps": "执行 Provider 边界转换并重放同一路线",
+      "expected_result": "每份数据记录坐标系与转换来源，路线叠合可核对",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "每份数据记录坐标系与转换来源，路线叠合可核对"
+        },
+        {
+          "kind": "threshold",
+          "text": "转换次数和坐标标签一致"
+        }
+      ],
+      "threshold": "转换次数和坐标标签一致",
+      "environment": "离线夹具＋地图核对",
+      "mode": "mixed",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T11",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC23",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 33,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC24",
+      "requirement_ids": [
+        "R10"
+      ],
+      "priority": "P0",
+      "level": "场地",
+      "name": "香港路线和入口",
+      "preconditions": "准备三条待核对实际路线",
+      "steps": "核对直路、路口及天桥/地道连接，登记入口",
+      "expected_result": "保存每条路线的坐标与连接点判定",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "保存每条路线的坐标与连接点判定"
+        },
+        {
+          "kind": "threshold",
+          "text": "三条路线各两轮"
+        }
+      ],
+      "threshold": "三条路线各两轮",
+      "environment": "iPhone＋ESP32＋现场记录",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B04",
+      "window": "H20–H22",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 34,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC25",
+      "requirement_ids": [
+        "R11"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "直路连续进度",
+      "preconditions": "路线和标注位置夹具齐备",
+      "steps": "按正常步速输入连续位置",
+      "expected_result": "所在路段与沿路线进度符合标注",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "所在路段与沿路线进度符合标注"
+        },
+        {
+          "kind": "threshold",
+          "text": "全部标注检查点一致"
+        }
+      ],
+      "threshold": "全部标注检查点一致",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T12",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC25,TC26,TC27",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 35,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC26",
+      "requirement_ids": [
+        "R11"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "平行道路与交叉点",
+      "preconditions": "路线包含相邻路与交叉点",
+      "steps": "在歧义区域输入带噪位置与可信 course",
+      "expected_result": "保持多候选或进入 RELOCALIZE，输出符合标注",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "保持多候选或进入 RELOCALIZE，输出符合标注"
+        },
+        {
+          "kind": "threshold",
+          "text": "歧义段动作输出符合标注"
+        }
+      ],
+      "threshold": "歧义段动作输出符合标注",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T12",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC25,TC26,TC27",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 36,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC27",
+      "requirement_ids": [
+        "R11"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "用户真实回走",
+      "preconditions": "路线存在已走路段",
+      "steps": "输入持续回走轨迹",
+      "expected_result": "进入回走判断并更新进度或重规划决策",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "进入回走判断并更新进度或重规划决策"
+        },
+        {
+          "kind": "threshold",
+          "text": "状态与回走夹具一致"
+        }
+      ],
+      "threshold": "状态与回走夹具一致",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T12",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC25,TC26,TC27",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 37,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC28",
+      "requirement_ids": [
+        "R12"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "路口转弯全流程",
+      "preconditions": "已匹配接近路口",
+      "steps": "输入预告点、确认动作和进入新路段的轨迹",
+      "expected_result": "依次产生 APPROACH、ALIGN_CONFIRM、TURN、VERIFY、FOLLOW",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "依次产生 APPROACH、ALIGN_CONFIRM、TURN、VERIFY、FOLLOW"
+        },
+        {
+          "kind": "threshold",
+          "text": "状态和事件顺序一致"
+        }
+      ],
+      "threshold": "状态和事件顺序一致",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T13",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC28,TC30",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 38,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC29",
+      "requirement_ids": [
+        "R12"
+      ],
+      "priority": "P0",
+      "level": "系统",
+      "name": "人工确认与过街交接",
+      "preconditions": "路线上有确认点",
+      "steps": "到确认点后按键确认并提供后续新位置",
+      "expected_result": "事件记录 manual_confirm 来源，确认点状态正确恢复",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "事件记录 manual_confirm 来源，确认点状态正确恢复"
+        },
+        {
+          "kind": "threshold",
+          "text": "确认来源字段齐全"
+        }
+      ],
+      "threshold": "确认来源字段齐全",
+      "environment": "iPhone＋ESP32＋Pico",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T19",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC29,TC44,TC45,TC55 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 39,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC30",
+      "requirement_ids": [
+        "R12"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "转弯事件去重",
+      "preconditions": "正在接近同一路口",
+      "steps": "重复发送相同测量和 ACK，触发重播命令",
+      "expected_result": "事件 ID 去重，显式重播使用当前有效指令",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "事件 ID 去重，显式重播使用当前有效指令"
+        },
+        {
+          "kind": "threshold",
+          "text": "事件计数与夹具一致"
+        }
+      ],
+      "threshold": "事件计数与夹具一致",
+      "environment": "电脑模拟主机＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T13",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC28,TC30",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 40,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC31",
+      "requirement_ids": [
+        "R13"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "持续偏航确认",
+      "preconditions": "路线活动且位置有效",
+      "steps": "注入连续独立有效偏航点",
+      "expected_result": "确认偏航后发起一个有效重规划请求",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "确认偏航后发起一个有效重规划请求"
+        },
+        {
+          "kind": "threshold",
+          "text": "至少三次有效测量且跨度 ≥3 s"
+        }
+      ],
+      "threshold": "至少三次有效测量且跨度 ≥3 s",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T14",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC31,TC32",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 41,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC32",
+      "requirement_ids": [
+        "R13"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "重规划冷却与响应乱序",
+      "preconditions": "准备延迟不同的路线响应",
+      "steps": "连续触发偏航并交错返回候选",
+      "expected_result": "单个有效请求和冷却生效，提交当前版本候选",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "单个有效请求和冷却生效，提交当前版本候选"
+        },
+        {
+          "kind": "threshold",
+          "text": "重规划冷却 15 s"
+        }
+      ],
+      "threshold": "重规划冷却 15 s",
+      "environment": "本地 MCP 夹具服务",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T14",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC31,TC32",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 42,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC33",
+      "requirement_ids": [
+        "R14"
+      ],
+      "priority": "P0",
+      "level": "系统",
+      "name": "规划中取消",
+      "preconditions": "路线请求正在等待",
+      "steps": "发送 cancel 后返回规划响应",
+      "expected_result": "状态为 IDLE，响应记为失效，输出属于当前会话",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "状态为 IDLE，响应记为失效，输出属于当前会话"
+        },
+        {
+          "kind": "threshold",
+          "text": "cancel ACK ≤500 ms"
+        }
+      ],
+      "threshold": "cancel ACK ≤500 ms",
+      "environment": "本地 MCP 夹具＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T15",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC02,TC33,TC34,TC35",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 43,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC34",
+      "requirement_ids": [
+        "R14"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "切换目的地",
+      "preconditions": "A 路线活动",
+      "steps": "确认 B 目的地并交错输入 A/B 响应",
+      "expected_result": "当前目的地和路线版本一致，A 事件记录失效",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "当前目的地和路线版本一致，A 事件记录失效"
+        },
+        {
+          "kind": "threshold",
+          "text": "活动会话一致"
+        }
+      ],
+      "threshold": "活动会话一致",
+      "environment": "电脑模拟主机＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T15",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC02,TC33,TC34,TC35",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 44,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC35",
+      "requirement_ids": [
+        "R14"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "迟到导航事件",
+      "preconditions": "主机已记录版本 2",
+      "steps": "传入版本 1 的转弯事件并请求重播",
+      "expected_result": "输出端丢弃失效事件，重播引用当前版本",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "输出端丢弃失效事件，重播引用当前版本"
+        },
+        {
+          "kind": "threshold",
+          "text": "失效事件有效输出 0 次"
+        }
+      ],
+      "threshold": "失效事件有效输出 0 次",
+      "environment": "电脑模拟主机",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T15",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC02,TC33,TC34,TC35",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 45,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC36",
+      "requirement_ids": [
+        "R15"
+      ],
+      "priority": "P0",
+      "level": "接口",
+      "name": "安全暂停与恢复",
+      "preconditions": "许可租约有效，导航活动",
+      "steps": "主机发送 pause，位置改变后发送 resume",
+      "expected_result": "进入 PAUSED，恢复后按新位置生成提示",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "进入 PAUSED，恢复后按新位置生成提示"
+        },
+        {
+          "kind": "threshold",
+          "text": "pause ACK ≤500 ms"
+        }
+      ],
+      "threshold": "pause ACK ≤500 ms",
+      "environment": "电脑模拟主机＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T16",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC36,TC37,TC58",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 46,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC37",
+      "requirement_ids": [
+        "R15"
+      ],
+      "priority": "P0",
+      "level": "接口",
+      "name": "许可租约到期",
+      "preconditions": "已启用团队集成模式",
+      "steps": "暂停主机心跳，随后恢复心跳并确认继续",
+      "expected_result": "租约到期进入 PAUSED，恢复通过新状态和位置校验",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "租约到期进入 PAUSED，恢复通过新状态和位置校验"
+        },
+        {
+          "kind": "threshold",
+          "text": "许可租约 3 s"
+        }
+      ],
+      "threshold": "许可租约 3 s",
+      "environment": "电脑模拟主机＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T16",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC36,TC37,TC58",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 47,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC38",
+      "requirement_ids": [
+        "R16"
+      ],
+      "priority": "P0",
+      "level": "回放",
+      "name": "终点附近单点漂移",
+      "preconditions": "仍处于路线前段",
+      "steps": "输入靠近终点的孤立漂移点",
+      "expected_result": "匹配依据路线进度进入质量判断，保留活动会话",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "匹配依据路线进度进入质量判断，保留活动会话"
+        },
+        {
+          "kind": "threshold",
+          "text": "到达决策符合夹具"
+        }
+      ],
+      "threshold": "到达决策符合夹具",
+      "environment": "电脑回放＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T17",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC38,TC39 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 48,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC39",
+      "requirement_ids": [
+        "R16"
+      ],
+      "priority": "P0",
+      "level": "系统",
+      "name": "最后路段和入口确认",
+      "preconditions": "已进入最后路段且位置有效",
+      "steps": "输入连续终段位置，再确认入口",
+      "expected_result": "先 ARRIVAL_NEAR，再 ARRIVED，结束当前会话",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "先 ARRIVAL_NEAR，再 ARRIVED，结束当前会话"
+        },
+        {
+          "kind": "threshold",
+          "text": "终段有效测量 ≥3 次"
+        }
+      ],
+      "threshold": "终段有效测量 ≥3 次",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T17",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC38,TC39 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 49,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC40",
+      "requirement_ids": [
+        "R17"
+      ],
+      "priority": "P0",
+      "level": "真机",
+      "name": "BLE 离开后重连",
+      "preconditions": "导航会话活动",
+      "steps": "手机离开通信范围后返回",
+      "expected_result": "交换身份及摘要，位置恢复后重新确认导航阶段",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "交换身份及摘要，位置恢复后重新确认导航阶段"
+        },
+        {
+          "kind": "threshold",
+          "text": "恢复确认目标 ≤10 s（链路建立后）"
+        }
+      ],
+      "threshold": "恢复确认目标 ≤10 s（链路建立后）",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T18",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC40,TC41,TC42 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 50,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC41",
+      "requirement_ids": [
+        "R17"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "手机会话重建",
+      "preconditions": "ESP32 保存活动摘要",
+      "steps": "重启手机 App 并创建新来源会话",
+      "expected_result": "序号按来源会话隔离，恢复状态可追溯",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "序号按来源会话隔离，恢复状态可追溯"
+        },
+        {
+          "kind": "threshold",
+          "text": "恢复摘要字段完整"
+        }
+      ],
+      "threshold": "恢复摘要字段完整",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T18",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC40,TC41,TC42 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 51,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC42",
+      "requirement_ids": [
+        "R18"
+      ],
+      "priority": "P0",
+      "level": "台架",
+      "name": "Wi-Fi 与 MCP 恢复",
+      "preconditions": "位置流和活动路线齐备",
+      "steps": "关闭再恢复上游网络，观察重试与状态",
+      "expected_result": "位置任务继续，服务状态明确，恢复后处理当前请求",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "位置任务继续，服务状态明确，恢复后处理当前请求"
+        },
+        {
+          "kind": "threshold",
+          "text": "连接 5 s；读取 15 s；重试上限 2 次"
+        }
+      ],
+      "threshold": "连接 5 s；读取 15 s；重试上限 2 次",
+      "environment": "iPhone＋ESP32＋测试网络",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T18",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC40,TC41,TC42 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 52,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC43",
+      "requirement_ids": [
+        "R18"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "服务认证与证书状态",
+      "preconditions": "准备认证与 TLS 状态夹具",
+      "steps": "输入凭据错误、证书异常和配额响应",
+      "expected_result": "输出可识别服务状态并结束该请求生命周期",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "输出可识别服务状态并结束该请求生命周期"
+        },
+        {
+          "kind": "threshold",
+          "text": "错误状态与夹具一致"
+        }
+      ],
+      "threshold": "错误状态与夹具一致",
+      "environment": "本地服务夹具＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T09",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC17,TC18,TC19,TC43 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 53,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC44",
+      "requirement_ids": [
+        "R19"
+      ],
+      "priority": "P0",
+      "level": "接口",
+      "name": "主机事件与 ACK",
+      "preconditions": "电脑打开 USB CDC",
+      "steps": "执行开始、转向、暂停、取消并回送 ACK",
+      "expected_result": "事件字段、顺序、有效期和 ACK 关联一致",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "事件字段、顺序、有效期和 ACK 关联一致"
+        },
+        {
+          "kind": "threshold",
+          "text": "事件 TTL 2 s；帧 ≤1024 B"
+        }
+      ],
+      "threshold": "事件 TTL 2 s；帧 ≤1024 B",
+      "environment": "电脑模拟主机＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T19",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC29,TC44,TC45,TC55 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 54,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC45",
+      "requirement_ids": [
+        "R19"
+      ],
+      "priority": "P0",
+      "level": "台架",
+      "name": "Pico 按键确认",
+      "preconditions": "Pico 确认协议已配置",
+      "steps": "按键短按、抖动、长按并重放事件",
+      "expected_result": "确认事件去重且绑定当前导航阶段",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "确认事件去重且绑定当前导航阶段"
+        },
+        {
+          "kind": "threshold",
+          "text": "按键结果与夹具一致"
+        }
+      ],
+      "threshold": "按键结果与夹具一致",
+      "environment": "Pico＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T19",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC29,TC44,TC45,TC55 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 55,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC46",
+      "requirement_ids": [
+        "R20"
+      ],
+      "priority": "P0",
+      "level": "诊断",
+      "name": "会话日志与重放",
+      "preconditions": "已跑完整导航轨迹",
+      "steps": "导出日志并按时间线重放",
+      "expected_result": "测量、请求、状态、事件和 ACK 可关联重建",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "测量、请求、状态、事件和 ACK 可关联重建"
+        },
+        {
+          "kind": "threshold",
+          "text": "关键事件记录覆盖 100%"
+        }
+      ],
+      "threshold": "关键事件记录覆盖 100%",
+      "environment": "电脑工具＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T20",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC46,TC47,TC48,TC56 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 56,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC47",
+      "requirement_ids": [
+        "R20"
+      ],
+      "priority": "P0",
+      "level": "诊断",
+      "name": "日志字段检查",
+      "preconditions": "网络和服务已配置",
+      "steps": "导出正常及错误会话日志",
+      "expected_result": "凭据字段输出脱敏值，位置字段与来源会话一致",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "凭据字段输出脱敏值，位置字段与来源会话一致"
+        },
+        {
+          "kind": "threshold",
+          "text": "凭据字段检查通过"
+        }
+      ],
+      "threshold": "凭据字段检查通过",
+      "environment": "电脑工具＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T20",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC46,TC47,TC48,TC56 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 57,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC48",
+      "requirement_ids": [
+        "R21"
+      ],
+      "priority": "P0",
+      "level": "性能",
+      "name": "导航控制时延",
+      "preconditions": "位置持续输入，MCP 请求并行",
+      "steps": "测量位置接收至状态更新与事件排队耗时",
+      "expected_result": "记录 P50/P95/P99 和队列峰值",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "记录 P50/P95/P99 和队列峰值"
+        },
+        {
+          "kind": "threshold",
+          "text": "P95 ≤100 ms"
+        }
+      ],
+      "threshold": "P95 ≤100 ms",
+      "environment": "ESP32＋计时日志",
+      "mode": "mixed",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T20",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC46,TC47,TC48,TC56 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 58,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC49",
+      "requirement_ids": [
+        "R21"
+      ],
+      "priority": "P0",
+      "level": "耐久",
+      "name": "两小时资源稳定性",
+      "preconditions": "开启 BLE、Wi-Fi、路线与日志",
+      "steps": "运行 2 小时并执行 20 次规划和取消循环",
+      "expected_result": "记录内存、最大连续块、复位和事件时延",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "记录内存、最大连续块、复位和事件时延"
+        },
+        {
+          "kind": "threshold",
+          "text": "内部空闲 ≥48 KiB；连续块 ≥16 KiB；PSRAM 空闲 ≥1 MiB"
+        }
+      ],
+      "threshold": "内部空闲 ≥48 KiB；连续块 ≥16 KiB；PSRAM 空闲 ≥1 MiB",
+      "environment": "iPhone＋ESP32＋MCP",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B03",
+      "window": "H18–H20",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 59,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC50",
+      "requirement_ids": [
+        "R22"
+      ],
+      "priority": "P1",
+      "level": "体验",
+      "name": "会话操作与 VoiceOver",
+      "preconditions": "iPhone App 已安装",
+      "steps": "使用 VoiceOver 完成开始、暂停、继续、重播和结束",
+      "expected_result": "控件标签、焦点顺序和状态反馈可理解",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "控件标签、焦点顺序和状态反馈可理解"
+        },
+        {
+          "kind": "threshold",
+          "text": "五项操作均形成记录"
+        }
+      ],
+      "threshold": "五项操作均形成记录",
+      "environment": "iPhone 真机",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T21",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC50,TC51 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 60,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC51",
+      "requirement_ids": [
+        "R22"
+      ],
+      "priority": "P1",
+      "level": "体验",
+      "name": "状态一致性",
+      "preconditions": "多个链路状态可切换",
+      "steps": "切换定位、BLE、Wi-Fi 与 MCP 状态",
+      "expected_result": "界面分别展示链路与导航状态，用户可执行当前操作",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "界面分别展示链路与导航状态，用户可执行当前操作"
+        },
+        {
+          "kind": "threshold",
+          "text": "界面与设备摘要一致"
+        }
+      ],
+      "threshold": "界面与设备摘要一致",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T21",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC50,TC51 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 61,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC52",
+      "requirement_ids": [
+        "R23"
+      ],
+      "priority": "P0",
+      "level": "系统",
+      "name": "设备绑定与配置恢复",
+      "preconditions": "两台可区分的测试设备标识",
+      "steps": "确认目标设备，保存配置后重启 ESP32",
+      "expected_result": "恢复已确认设备配置，身份与配置版本可核对",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "恢复已确认设备配置，身份与配置版本可核对"
+        },
+        {
+          "kind": "threshold",
+          "text": "绑定与配置记录一致"
+        }
+      ],
+      "threshold": "绑定与配置记录一致",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T07",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC01,TC09,TC52 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 62,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC53",
+      "requirement_ids": [
+        "R23"
+      ],
+      "priority": "P0",
+      "level": "协议",
+      "name": "帧边界与解析恢复",
+      "preconditions": "准备边界帧和正常帧",
+      "steps": "依次发送超长、截断、非法数值、正常消息",
+      "expected_result": "异常帧返回错误码并释放缓存，正常帧继续处理",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "异常帧返回错误码并释放缓存，正常帧继续处理"
+        },
+        {
+          "kind": "threshold",
+          "text": "缓存回收与后续解析通过"
+        }
+      ],
+      "threshold": "缓存回收与后续解析通过",
+      "environment": "电脑协议夹具＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T04",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC10,TC53",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 63,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC54",
+      "requirement_ids": [
+        "R24"
+      ],
+      "priority": "P0",
+      "level": "交接",
+      "name": "工程构建与安装",
+      "preconditions": "交接包已形成",
+      "steps": "按说明在新工作目录构建并安装到测试设备",
+      "expected_result": "版本、配置步骤、设备识别和启动结果可重现",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "版本、配置步骤、设备识别和启动结果可重现"
+        },
+        {
+          "kind": "threshold",
+          "text": "构建与安装日志齐全"
+        }
+      ],
+      "threshold": "构建与安装日志齐全",
+      "environment": "Mac＋iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T24",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC54 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B05",
+      "window": "H22–H24",
+      "executor": "AI＋验收人",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 64,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC55",
+      "requirement_ids": [
+        "R24"
+      ],
+      "priority": "P0",
+      "level": "交接",
+      "name": "团队接入演练",
+      "preconditions": "协议和示例主机已提供",
+      "steps": "集成人员下发目的地、收事件、暂停并取消",
+      "expected_result": "命令与事件按接口验收，形成签核记录",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "命令与事件按接口验收，形成签核记录"
+        },
+        {
+          "kind": "threshold",
+          "text": "接口用例记录完整"
+        }
+      ],
+      "threshold": "接口用例记录完整",
+      "environment": "电脑模拟主机＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T19",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC29,TC44,TC45,TC55 --mode device",
+          "declared_mode": "device"
+        }
+      ],
+      "status": "pending",
+      "batch": "B02",
+      "window": "H2.5–H18",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 65,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC56",
+      "requirement_ids": [
+        "R21"
+      ],
+      "priority": "P0",
+      "level": "性能",
+      "name": "容量上限与反复替换",
+      "preconditions": "路线接近容量上限",
+      "steps": "连续 20 次替换路线并监测峰值与释放",
+      "expected_result": "活动/候选双缓冲受控，替换后资源回收",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "活动/候选双缓冲受控，替换后资源回收"
+        },
+        {
+          "kind": "threshold",
+          "text": "满足内存阈值和 100 ms P95"
+        }
+      ],
+      "threshold": "满足内存阈值和 100 ms P95",
+      "environment": "本地 MCP 夹具＋ESP32",
+      "mode": "mixed",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T20",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC46,TC47,TC48,TC56 --mode mixed",
+          "declared_mode": "mixed"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 66,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC57",
+      "requirement_ids": [
+        "R10"
+      ],
+      "priority": "P0",
+      "level": "场地",
+      "name": "多层连接确认点",
+      "preconditions": "路线经过天桥或地道",
+      "steps": "到连接点进行人工确认并记录入口",
+      "expected_result": "路线进度使用连接拓扑与确认来源",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "路线进度使用连接拓扑与确认来源"
+        },
+        {
+          "kind": "threshold",
+          "text": "每个连接点证据齐全"
+        }
+      ],
+      "threshold": "每个连接点证据齐全",
+      "environment": "iPhone＋ESP32＋现场记录",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B04",
+      "window": "H20–H22",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 67,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC58",
+      "requirement_ids": [
+        "R15"
+      ],
+      "priority": "P0",
+      "level": "接口",
+      "name": "过街等待中暂停恢复",
+      "preconditions": "状态为 CROSSING_WAIT",
+      "steps": "主机暂停，链路恢复后继续导航",
+      "expected_result": "恢复到对应确认阶段，状态与待确认事件一致",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "恢复到对应确认阶段，状态与待确认事件一致"
+        },
+        {
+          "kind": "threshold",
+          "text": "状态转换与夹具一致"
+        }
+      ],
+      "threshold": "状态转换与夹具一致",
+      "environment": "电脑模拟主机＋ESP32",
+      "mode": "host",
+      "mode_basis": "implementation_routing",
+      "task_commands": [
+        {
+          "task_id": "T16",
+          "command": "python3 navigation_24h/tools/navctl.py test --cases TC36,TC37,TC58",
+          "declared_mode": "default"
+        }
+      ],
+      "status": "pending",
+      "batch": "B01",
+      "window": "H1–H17.5",
+      "executor": "AI",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 68,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC59",
+      "requirement_ids": [
+        "R02"
+      ],
+      "priority": "P0",
+      "level": "真机",
+      "name": "静止锁屏与位置年龄",
+      "preconditions": "导航会话活动且手机静止",
+      "steps": "锁屏静止 15 分钟，记录测量、心跳及恢复移动",
+      "expected_result": "心跳与新测量分别记录，移动后依据新测量恢复进度",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "心跳与新测量分别记录，移动后依据新测量恢复进度"
+        },
+        {
+          "kind": "threshold",
+          "text": "记录 15 分钟及恢复时间"
+        }
+      ],
+      "threshold": "记录 15 分钟及恢复时间",
+      "environment": "iPhone＋ESP32",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B03",
+      "window": "H18–H20",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 69,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    },
+    {
+      "id": "TC60",
+      "requirement_ids": [
+        "R08"
+      ],
+      "priority": "P0",
+      "level": "系统",
+      "name": "完整锁屏导航闭环",
+      "preconditions": "高德 MCP 和已核对路线可用",
+      "steps": "确认目的地后锁屏行走，完成转弯、附近提示和入口确认",
+      "expected_result": "全程导航事件与实际阶段一致，产生可重放验收记录",
+      "assertions": [
+        {
+          "kind": "expected_result",
+          "text": "全程导航事件与实际阶段一致，产生可重放验收记录"
+        },
+        {
+          "kind": "threshold",
+          "text": "三条路线各两轮"
+        }
+      ],
+      "threshold": "三条路线各两轮",
+      "environment": "iPhone＋ESP32＋MCP",
+      "mode": "device",
+      "mode_basis": "implementation_routing",
+      "task_commands": [],
+      "status": "pending",
+      "batch": "B04",
+      "window": "H20–H22",
+      "executor": "AI＋设备操作者",
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_测试表_24小时_v1.1.xlsx",
+        "sheet": "测试用例",
+        "row": 70,
+        "columns": {
+          "id": "A",
+          "requirement_ids": "B",
+          "priority": "C",
+          "level": "D",
+          "name": "E",
+          "preconditions": "F",
+          "steps": "G",
+          "expected_result": "H",
+          "threshold": "I",
+          "environment": "J",
+          "batch": "T",
+          "window": "U",
+          "executor": "V"
+        }
+      }
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R01",
+      "priority": "P0",
+      "name": "导航会话",
+      "acceptance": "用户启动会话后，系统生成 session_id，展示定位、BLE、Wi-Fi、MCP 与导航状态。",
+      "case_ids": [
+        "TC01",
+        "TC02"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 35
+      }
+    },
+    {
+      "id": "R02",
+      "priority": "P0",
+      "name": "iPhone 后台定位",
+      "acceptance": "用户在前台启动导航并授予精确定位，Core Location 在锁屏和切换应用期间继续提供带测量时间的位置。",
+      "case_ids": [
+        "TC03",
+        "TC04",
+        "TC05",
+        "TC06",
+        "TC59"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 36
+      }
+    },
+    {
+      "id": "R03",
+      "priority": "P0",
+      "name": "后台 BLE 位置传输",
+      "acceptance": "iPhone 作为 BLE Central，ESP32 作为 Peripheral；位置帧与心跳通过已绑定设备连接传输，状态通过通知返回。",
+      "case_ids": [
+        "TC07",
+        "TC08"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 37
+      }
+    },
+    {
+      "id": "R04",
+      "priority": "P0",
+      "name": "位置协议",
+      "acceptance": "每个位置包含来源会话、测量序号、测量时间、测量年龄、WGS84 坐标、水平精度及可选速度和 course。",
+      "case_ids": [
+        "TC09",
+        "TC10"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 38
+      }
+    },
+    {
+      "id": "R05",
+      "priority": "P0",
+      "name": "定位质量与时效",
+      "acceptance": "以独立测量和接收单调时钟更新 VALID / DEGRADED / LOST；只用有效新测量推进路线，超时进入定位等待。",
+      "case_ids": [
+        "TC11",
+        "TC12",
+        "TC13",
+        "TC14"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 39
+      }
+    },
+    {
+      "id": "R06",
+      "priority": "P0",
+      "name": "目的地确认",
+      "acceptance": "iPhone 显示目的地名称和位置，用户确认后下发 start；ESP32 使用有效起点和明确坐标系请求路线。",
+      "case_ids": [
+        "TC15",
+        "TC16"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 40
+      }
+    },
+    {
+      "id": "R07",
+      "priority": "P0",
+      "name": "MCP 服务接入",
+      "acceptance": "ESP32 通过 HTTPS Streamable HTTP 接入高德 MCP，记录服务协议版本、工具名称和输入输出 schema。",
+      "case_ids": [
+        "TC17",
+        "TC18"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 41
+      }
+    },
+    {
+      "id": "R08",
+      "priority": "P0",
+      "name": "MCP 步行路线",
+      "acceptance": "ESP32 调用发现的步行工具，携带起终点，解析路线距离、分段、折线和转向动作，生成候选路线。",
+      "case_ids": [
+        "TC19",
+        "TC20",
+        "TC60"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 42
+      }
+    },
+    {
+      "id": "R09",
+      "priority": "P0",
+      "name": "路线解析与容量",
+      "acceptance": "MCP JSON / SSE 分片以有界缓冲解析；响应、点数和路段达到配置容量时返回明确容量状态，保留有效活动路线。",
+      "case_ids": [
+        "TC21",
+        "TC22"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 43
+      }
+    },
+    {
+      "id": "R10",
+      "priority": "P0",
+      "name": "坐标与香港路线核对",
+      "acceptance": "手机原始点标记 WGS84，Provider 边界记录高德坐标转换；使用香港实际测试路线核对道路、入口和高程连接点。",
+      "case_ids": [
+        "TC23",
+        "TC24",
+        "TC57"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 44
+      }
+    },
+    {
+      "id": "R11",
+      "priority": "P0",
+      "name": "路线进度匹配",
+      "acceptance": "依据历史路段、可达步长、横向距离和可信 course 匹配路线；歧义进入 RELOCALIZE，回走进入专门判断。",
+      "case_ids": [
+        "TC25",
+        "TC26",
+        "TC27"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 45
+      }
+    },
+    {
+      "id": "R12",
+      "priority": "P0",
+      "name": "转弯状态机",
+      "acceptance": "按 FOLLOW / APPROACH / ALIGN_CONFIRM / TURN / VERIFY 推进；转向确认来源记为人工确认或有效行进证据。",
+      "case_ids": [
+        "TC28",
+        "TC29",
+        "TC30"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 46
+      }
+    },
+    {
+      "id": "R13",
+      "priority": "P0",
+      "name": "偏航与重规划",
+      "acceptance": "连续独立有效位置确认偏航后，合并重规划请求并应用冷却；候选路线经版本检查后原子替换。",
+      "case_ids": [
+        "TC31",
+        "TC32"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 47
+      }
+    },
+    {
+      "id": "R14",
+      "priority": "P0",
+      "name": "取消与版本失效",
+      "acceptance": "cancel 增加会话代次，关闭规划资格并撤销该会话导航事件；迟到响应按当前代次检查后丢弃。",
+      "case_ids": [
+        "TC33",
+        "TC34",
+        "TC35"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 48
+      }
+    },
+    {
+      "id": "R15",
+      "priority": "P0",
+      "name": "安全暂停接口",
+      "acceptance": "接收 pause 与许可租约，进入 PAUSED；resume 后以当前有效位置重新计算提示，输出端核对会话、版本和时效。",
+      "case_ids": [
+        "TC36",
+        "TC37",
+        "TC58"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 49
+      }
+    },
+    {
+      "id": "R16",
+      "priority": "P0",
+      "name": "目的地附近与到达",
+      "acceptance": "最后路段、持续有效位置和路线进度共同产生 ARRIVAL_NEAR；用户入口确认后产生 ARRIVED 并结束会话。",
+      "case_ids": [
+        "TC38",
+        "TC39"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 50
+      }
+    },
+    {
+      "id": "R17",
+      "priority": "P0",
+      "name": "BLE 断连恢复",
+      "acceptance": "手机会话重连后交换身份、最新测量序号及导航摘要，恢复以双方会话和新位置校验为依据。",
+      "case_ids": [
+        "TC40",
+        "TC41"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 51
+      }
+    },
+    {
+      "id": "R18",
+      "priority": "P0",
+      "name": "Wi-Fi 与 MCP 恢复",
+      "acceptance": "分别维护 Wi-Fi、TLS、MCP 状态，使用有界超时与退避重试；活动路线跟随和新路线获取分别显示状态。",
+      "case_ids": [
+        "TC42",
+        "TC43"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 52
+      }
+    },
+    {
+      "id": "R19",
+      "priority": "P0",
+      "name": "导航事件与团队接口",
+      "acceptance": "通过 USB CDC 输出结构化状态及提示事件，包含 session_id、route_version、event_id、有效期和确认来源。",
+      "case_ids": [
+        "TC44",
+        "TC45"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 53
+      }
+    },
+    {
+      "id": "R20",
+      "priority": "P0",
+      "name": "日志与证据",
+      "acceptance": "记录测量、BLE 收发、路线请求、状态转换、事件和确认的时刻；按会话导出回放与验收证据。",
+      "case_ids": [
+        "TC46",
+        "TC47"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 54
+      }
+    },
+    {
+      "id": "R21",
+      "priority": "P0",
+      "name": "资源与长时间运行",
+      "acceptance": "BLE、Wi-Fi、TLS 和导航并行期间记录可用内存、最大连续块、任务耗时、复位原因和运行时长。",
+      "case_ids": [
+        "TC48",
+        "TC49",
+        "TC56"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 55
+      }
+    },
+    {
+      "id": "R22",
+      "priority": "P1",
+      "name": "iPhone 操作体验",
+      "acceptance": "提供开始、暂停、继续、结束、重播与连接状态，关键控件带 VoiceOver 标签并显示系统定位状态。",
+      "case_ids": [
+        "TC50",
+        "TC51"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 56
+      }
+    },
+    {
+      "id": "R23",
+      "priority": "P0",
+      "name": "设备绑定与配置",
+      "acceptance": "通过设备确认完成绑定，保存网络和 MCP 配置；日志采用服务别名及脱敏字段，提供可识别的错误码。",
+      "case_ids": [
+        "TC52",
+        "TC53"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 57
+      }
+    },
+    {
+      "id": "R24",
+      "priority": "P0",
+      "name": "回放与交接包",
+      "acceptance": "交付 iOS 工程、ESP32 固件工程、协议、配置模板、轨迹夹具、测试记录与团队接入示例。",
+      "case_ids": [
+        "TC54",
+        "TC55"
+      ],
+      "source": {
+        "path": "/Users/psyche/Documents/ChatGPT/EE3070/outputs/01a1e8b7-5b31-7dc3-bd3e-8b725693f723/导航模块_PRD_v1.1.md",
+        "line": 58
+      }
+    }
+  ],
+  "batches": [
+    {
+      "id": "B01",
+      "window": "H1–H17.5",
+      "case_ids": [
+        "TC02",
+        "TC09",
+        "TC10",
+        "TC11",
+        "TC12",
+        "TC13",
+        "TC14",
+        "TC16",
+        "TC18",
+        "TC20",
+        "TC21",
+        "TC22",
+        "TC23",
+        "TC25",
+        "TC26",
+        "TC27",
+        "TC28",
+        "TC30",
+        "TC31",
+        "TC32",
+        "TC33",
+        "TC34",
+        "TC35",
+        "TC36",
+        "TC37",
+        "TC38",
+        "TC43",
+        "TC44",
+        "TC46",
+        "TC47",
+        "TC48",
+        "TC53",
+        "TC56",
+        "TC58"
+      ],
+      "executor": "AI",
+      "actions": "每个实现任务随附回放/协议/异常夹具；H17.5–H18 执行全量主机回归。",
+      "evidence": "结构化断言、原始输入、实际输出、执行命令和退出码。",
+      "source_row": 11
+    },
+    {
+      "id": "B02",
+      "window": "H2.5–H18",
+      "case_ids": [
+        "TC01",
+        "TC06",
+        "TC15",
+        "TC17",
+        "TC19",
+        "TC29",
+        "TC39",
+        "TC40",
+        "TC41",
+        "TC42",
+        "TC45",
+        "TC50",
+        "TC51",
+        "TC52",
+        "TC55"
+      ],
+      "executor": "AI＋设备操作者",
+      "actions": "按 T05–T21 对应任务执行安装、授权、真实 MCP、重连、Pico 及 VoiceOver 检查。",
+      "evidence": "手机/固件关联日志、服务响应、设备记录和操作者确认。",
+      "source_row": 12
+    },
+    {
+      "id": "B03",
+      "window": "H18–H20",
+      "case_ids": [
+        "TC03",
+        "TC04",
+        "TC05",
+        "TC07",
+        "TC08",
+        "TC49",
+        "TC59"
+      ],
+      "executor": "AI＋设备操作者",
+      "actions": "120 分钟连续会话，按下表分段；MCP/BLE 共存统计覆盖首个 30 分钟。",
+      "evidence": "分段标签、全程原始日志、资源曲线、位置年龄及延迟分位数。",
+      "source_row": 13
+    },
+    {
+      "id": "B04",
+      "window": "H20–H22",
+      "case_ids": [
+        "TC24",
+        "TC57",
+        "TC60"
+      ],
+      "executor": "AI＋设备操作者",
+      "actions": "同一区域三条 150–300 m 路线，每条两轮；每轮预留 5–8 分钟及转场、标注和复核时间。",
+      "evidence": "六轮轨迹、路口和入口确认、路线叠合及全过程事件。",
+      "source_row": 14
+    },
+    {
+      "id": "B05",
+      "window": "H22–H24",
+      "case_ids": [
+        "TC54"
+      ],
+      "executor": "AI＋验收人",
+      "actions": "前 1 小时修复和定向复测；后 1 小时构建、安装复核、整理全部用例与需求覆盖。",
+      "evidence": "构建/安装记录、复测记录、产物 manifest、验收摘要。",
+      "source_row": 15
+    }
+  ],
+  "soak_segments": [
+    {
+      "window": "H18:00–H18:30",
+      "name": "移动锁屏 30 分钟；BLE 与 MCP 共存",
+      "case_ids": [
+        "TC03",
+        "TC07",
+        "TC08"
+      ],
+      "actions": "操作者沿核对路径移动；AI 记录位置年龄、收发序号、服务请求和资源。",
+      "source_row": 21
+    },
+    {
+      "window": "H18:30–H19:00",
+      "name": "切换应用移动 30 分钟",
+      "case_ids": [
+        "TC04"
+      ],
+      "actions": "操作者切换应用后持续移动；AI 对比前后台定位、BLE 和状态摘要。",
+      "source_row": 22
+    },
+    {
+      "window": "H19:00–H19:30",
+      "name": "低电量模式锁屏移动 30 分钟",
+      "case_ids": [
+        "TC05"
+      ],
+      "actions": "操作者启用低电量模式并移动；AI 保存位置间隔、精度和电量。",
+      "source_row": 23
+    },
+    {
+      "window": "H19:30–H19:45",
+      "name": "静止锁屏 15 分钟",
+      "case_ids": [
+        "TC59"
+      ],
+      "actions": "操作者保持静止；AI 分别记录心跳和新测量年龄。",
+      "source_row": 24
+    },
+    {
+      "window": "H19:45–H20:00",
+      "name": "恢复移动与证据汇总",
+      "case_ids": [
+        "TC49",
+        "TC59"
+      ],
+      "actions": "操作者恢复移动；AI 检查全过程资源、复位、20 次规划/取消记录和统计。",
+      "source_row": 25
+    }
+  ]
+}

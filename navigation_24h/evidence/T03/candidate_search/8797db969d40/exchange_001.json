@@ -1,0 +1,5 @@
+{
+  "http_status": 200,
+  "content_type": "application/json",
+  "raw_response": "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"protocolVersion\":\"2025-03-26\",\"capabilities\":{\"logging\":{},\"tools\":{\"listChanged\":false}},\"serverInfo\":{\"name\":\"amap-sse-server\",\"version\":\"1.0.0\"}}}"
+}
