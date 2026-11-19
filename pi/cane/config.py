@@ -10,7 +10,7 @@ import os
 import tomllib
 from dataclasses import dataclass, field, fields, is_dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 LANGUAGES = ("cmn", "yue", "en")
 
@@ -90,6 +90,8 @@ class Destination:
     aliases: list[str] = field(default_factory=list)
     lng: float = 0.0
     lat: float = 0.0
+    address: str = ""
+    coordinate_frame: Literal["WGS84", "GCJ02"] = "WGS84"
 
 
 @dataclass
@@ -102,6 +104,7 @@ class NavCfg:
     offroute_m: float = 25.0
     read_route_with_tts: bool = False
     destinations: list[Destination] = field(default_factory=list)
+    provider_coordinates_verified: bool = False
 
 
 @dataclass
@@ -109,8 +112,15 @@ class VoiceCfg:
     enabled: bool = True
     device: str = "default"
     record_s: float = 4.0
+    manual_stop: bool = False
     backend: str = "keyword"
     vosk_model_dir: str = "models"
+    candidate_selection: bool = False
+    places_python: str = "python3"
+    places_script: str = ""
+    places_source: str = "amap"
+    wake_enabled: bool = False
+    wake_phrase: str = "你好导航"
 
 
 @dataclass

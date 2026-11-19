@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>步行导航</title>
+<link rel="stylesheet" href="/phone-assets/pi-phone.css">
+
+</head>
+<body>
+<h1>步行导航</h1>
+<button id="sharing" type="button">开始共享定位</button>
+<p id="location" role="status">连接到 Pi 5 后可开始共享。</p>
+<section aria-labelledby="heading">
+  <h2 id="heading">目的地</h2>
+  <p>短按 Pico 的 K2 开始录音，说完再短按一次。</p>
+  <p id="status" role="status">等待目的地。</p>
+  <p id="action-message" role="status"></p>
+  <ol id="branches"></ol>
+  <form id="correction">
+    <label for="transcript">搜索词</label>
+    <input id="transcript" type="text" maxlength="200" required autocomplete="off">
+    <button>搜索目的地</button>
+  </form>
+  <p class="note">门店资料来自 <a href="https://247.fitness/en/contact_us/stores" rel="noreferrer">24/7 FITNESS</a>。距离由 Pi 5 根据手机定位计算。</p>
+</section>
+<section aria-labelledby="origin-heading">
+  <h2 id="origin-heading">搜索出发点</h2>
+  <p id="current-origin" role="status">iPhone 当前位置</p>
+  <details id="origin-options">
+    <summary>修改出发点</summary>
+    <button type="button" id="use-iphone">用 iPhone 当前位置</button>
+    <form id="origin-form">
+      <label for="origin-text">按地点名称查找出发点</label>
+      <input id="origin-text" type="text" maxlength="80" required autocomplete="off">
+      <button>查找出发点</button>
+    </form>
+    <p id="origin-status" role="status"></p>
+    <ol id="origins"></ol>
+  </details>
+</section>
+<script src="/phone-assets/pi-phone.js" defer></script>
+</body>
+</html>

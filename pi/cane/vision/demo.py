@@ -286,7 +286,18 @@ class Demo:
             return self.jpeg
 
 
-def handler_for(demo):
+def handler_for(demo, *, dashboard=False, local_dashboard=False):
+    assets = {}
+    if dashboard or local_dashboard:
+        directory = Path(__file__).with_name("dashboard")
+        for route, file, mime in (
+            ("/", directory / "index.html", "text/html; charset=utf-8"),
+            ("/dashboard.css", directory / "dashboard.css", "text/css; charset=utf-8"),
+            ("/dashboard.js", directory / "dashboard.js", "text/javascript; charset=utf-8"),
+            ("/chart.js", ROOT / "distance_mac_viewer/chart.js", "text/javascript; charset=utf-8"),
+        ):
+            assets[route] = (file.read_bytes(), mime)
+
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
             pass
@@ -299,14 +310,35 @@ def handler_for(demo):
             self.end_headers()
             self.wfile.write(data)
 
+        def local_request(self):
+            host = self.headers.get("Host", "").partition(":")[0].lower()
+            return self.client_address[0] == "127.0.0.1" and host in {"127.0.0.1", "localhost"}
+
+        def local_path(self, path):
+            if local_dashboard and path.startswith("/assistant/") and self.local_request():
+                return path[len("/assistant"):]
+            return None
+
+        def json_reply(self, payload, status=200):
+            self.reply(json.dumps(payload).encode(), "application/json", status)
+
         def do_GET(self):
             path = self.path.split("?", 1)[0]
+            local_path = self.local_path(path)
+            is_monitor = dashboard or local_path is not None
+            path = local_path if local_path is not None else path
             try:
-                if path == "/":
+                if is_monitor and path in assets:
+                    self.reply(*assets[path])
+                elif path == "/":
                     self.reply(PAGE, "text/html; charset=utf-8")
                 elif path == "/status":
-                    self.reply(json.dumps(demo.status()).encode(), "application/json")
-                elif path == '/audio-outputs' and hasattr(demo, 'audio_outputs'):
+                    status = demo.dashboard_status() if is_monitor else demo.status()
+                    assistant = getattr(demo, "assistant", None)
+                    if is_monitor and assistant and self.local_request():
+                        status["assistant"] = assistant.status()
+                    self.json_reply(status)
+                elif not is_monitor and path == '/audio-outputs' and hasattr(demo, 'audio_outputs'):
                     try:
                         self.reply(json.dumps(demo.audio_outputs.status()).encode(), 'application/json')
                     except RuntimeError as exc:
@@ -336,7 +368,37 @@ def handler_for(demo):
                 pass
 
         def do_POST(self):
-            if self.path == '/audio-output' and hasattr(demo, 'audio_outputs'):
+            local_path = self.local_path(self.path)
+            assistant = getattr(demo, "assistant", None)
+            if (local_path == "/ptt" or dashboard and self.path == "/ptt") and assistant and self.local_request():
+                from .assistant_provider import AssistantError
+                if self.headers.get("Content-Type", "").split(";", 1)[0] != "application/json":
+                    self.json_reply({"error":"invalid_request"}, 415)
+                    return
+                try:
+                    length = int(self.headers.get("Content-Length", "0"))
+                    if not 0 < length <= 256:
+                        raise ValueError("Invalid request length")
+                    self.connection.settimeout(2)
+                    data = json.loads(self.rfile.read(length))
+                    if not isinstance(data, dict) or data.get("action") not in ("press", "release", "cancel", "wake"):
+                        raise ValueError("Invalid button action")
+                    if data["action"] == "wake":
+                        if not getattr(assistant, "dashboard_test", False):
+                            raise AssistantError("test_disabled")
+                        self.json_reply({"request_id":assistant.test_wake()}, 202)
+                    elif data["action"] == "press":
+                        self.json_reply({"request_id":assistant.press()}, 202)
+                    else:
+                        accepted = assistant.release(data.get("request_id"), cancelled=data["action"] == "cancel")
+                        self.json_reply({"accepted":accepted}, 202 if accepted else 409)
+                except (ValueError, OSError):
+                    self.json_reply({"error":"invalid_request"}, 400)
+                except AssistantError as exc:
+                    self.json_reply({"error":str(exc)}, 409 if str(exc) == "busy" else 503)
+            elif dashboard or local_path is not None:
+                self.reply(b"Read-only dashboard", "text/plain", 405)
+            elif self.path == '/audio-output' and hasattr(demo, 'audio_outputs'):
                 if self.headers.get('Content-Type', '').split(';')[0] != 'application/json':
                     self.reply(b'{"error":"JSON required"}', 'application/json', 415)
                     return

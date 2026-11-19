@@ -13,7 +13,13 @@ class Priority(enum.IntEnum):
     SAFETY = 1    # obstacle, head-level, step, rough ground
     SYSTEM = 2    # boot, battery, network, mode changes
     NAV = 3       # turns, crossing hand-off, arrival
-    INFO = 4      # read-backs, confirmations
+    INFO = 5      # read-backs, confirmations
+    ASSISTANT_NAV = 6  # on-demand navigation reply
+    ASSISTANT = 7      # on-demand scene description
+
+    @property
+    def is_assistant(self) -> bool:
+        return self >= Priority.ASSISTANT_NAV
 
     @property
     def is_safety(self) -> bool:
@@ -26,7 +32,7 @@ class Direction(enum.Enum):
     RIGHT = "right"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class SensorFrame:
     """One sample set from the Pico. Distances in metres, None = invalid."""
 
@@ -38,19 +44,20 @@ class SensorFrame:
     pico_ms: int = 0
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ButtonEvent:
     t: float
     button: str   # ok | dest | repeat | mode
     kind: str     # short | long
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class OutputRequest:
     """A request to the single output arbiter.
 
     prompt_id names a pre-generated clip (see prompts.CATALOG). text is only
     used for live TTS route read-back (NAV/INFO, never safety).
+    The arbiter creates a timestamped copy on first submission.
     """
 
     prompt_id: str

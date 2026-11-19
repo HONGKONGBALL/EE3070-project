@@ -24,6 +24,18 @@ def test_safety_preempts_nav(audio, clock):
     assert audio.played[-1] == ["obstacle_front"]
 
 
+def test_integrated_crowd_alert_interrupts_navigation_and_survives_destination_cancel(audio, clock):
+    arb = OutputArbiter(audio, clock=clock, info_preempts_navigation=True)
+    assert arb.submit(req("turn_left", Priority.NAV))
+    assert arb.submit(req("crowd_ahead", Priority.INFO, event_id="run:crowd-1"))
+    arb.discard_information()
+    assert audio.stopped == 1
+    assert arb.current.prompt_id == "crowd_ahead"
+    audio.finish()
+    assert arb.tick() is None
+    assert audio.played == [["turn_left"], ["crowd_ahead"]]
+
+
 def test_nav_does_not_preempt_safety_and_waits_for_hold(audio, clock):
     arb = make(audio, clock)
     arb.submit(req("obstacle_front", Priority.SAFETY))

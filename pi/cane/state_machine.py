@@ -1,18 +1,8 @@
-"""Top-level cane state machine.
+"""Navigation state, user pause and independently retained alignment gates.
 
-    BOOT ──boot_done──► READY ──motion_start──► WALKING ──motion_stop──► STOPPED
-                          ▲                        ▲  ◄────motion_start────┘
-                          │                        │
-     any ──fault──► FAULT ┘(recovered)   CROSSING ─┘ (crossing_confirmed -> STOPPED)
-
-CROSSING (street-crossing hand-off) is entered from READY/WALKING/STOPPED when
-the route reaches a crossing. The cane never decides whether it is safe to
-cross: it waits for the user to press OK.
-
-`aligned` tracks whether the user has stopped and faced ahead since the last
-time orientation was lost. Left/right commands are only allowed when aligned.
-Safety assessment runs in every state; the state only gates NAV behaviour and
-which sensors run (stereo depth only while stationary).
+PAUSED suppresses navigation only: the app continues sensor safety checks.
+Fault recovery restores a user pause, and a paused crossing still requires its
+own confirmation after resume. Resume always loses the previous alignment.
 """
 
 from __future__ import annotations
@@ -20,7 +10,7 @@ from __future__ import annotations
 import enum
 import time
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, assert_never
 
 
 class State(enum.Enum):
@@ -29,11 +19,20 @@ class State(enum.Enum):
     WALKING = "WALKING"
     STOPPED = "STOPPED"
     CROSSING = "CROSSING"
+    PAUSED = "PAUSED"
     FAULT = "FAULT"
 
     @property
     def stationary(self) -> bool:
         return self in (State.READY, State.STOPPED, State.CROSSING)
+
+
+class FlagEvent(enum.StrEnum):
+    ALIGNED = "aligned"
+    ORIENTATION_LOST = "orientation_lost"
+    PAUSE = "pause"
+    RESUME = "resume"
+    NAV_CANCEL = "nav_cancel"
 
 
 _S = State
@@ -52,12 +51,11 @@ TRANSITIONS: dict[tuple[State, str], State] = {
 for _st in State:
     if _st is not State.FAULT:
         TRANSITIONS[(_st, "fault")] = State.FAULT
+    if _st in (State.READY, State.WALKING, State.STOPPED, State.CROSSING):
+        TRANSITIONS[(_st, "pause")] = State.PAUSED
 
-# events that change flags but not the state
-FLAG_EVENTS = {"aligned", "orientation_lost"}
 
-
-@dataclass
+@dataclass(frozen=True, slots=True)
 class Transition:
     t: float
     event: str
@@ -66,11 +64,16 @@ class Transition:
 
 
 class CaneStateMachine:
+    """Mutable event accumulator, called only by the application loop."""
+
     def __init__(self, clock: Callable[[], float] = time.monotonic) -> None:
         self._clock = clock
         self.state = State.BOOT
         self.aligned = False
+        self.paused = False
         self.test_mode = False
+        self._paused_state = State.STOPPED
+        self._fault_state = State.READY
         self.entered_at = clock()
         self.log: list[Transition] = []
         self._listeners: list[Callable[[Transition], None]] = []
@@ -82,26 +85,62 @@ class CaneStateMachine:
         return self._clock() - self.entered_at
 
     def handle(self, event: str) -> bool:
-        """Apply an event. Returns True if the state or a flag changed."""
-        if event == "aligned":
-            if self.state.stationary and self.state is not State.CROSSING and not self.aligned:
-                self.aligned = True
-                return True
-            return False
-        if event == "orientation_lost":
-            changed = self.aligned
-            self.aligned = False
-            return changed
-
+        """Apply a valid event; physical resume conditions are checked by app."""
+        try:
+            special = FlagEvent(event)
+        except ValueError:
+            special = None
+        if special is not None:
+            result = self._flag_event(special)
+            if result is not None:
+                return result
         dst = TRANSITIONS.get((self.state, event))
         if dst is None:
             return False
+        if event == "fault":
+            self._fault_state = self.state
+        if event == "recovered":
+            if self.paused:
+                dst = State.PAUSED
+            elif self._fault_state is State.CROSSING:
+                dst = State.CROSSING
+        return self._transition(event, dst)
+
+    def _flag_event(self, event: FlagEvent) -> bool | None:
+        """Return None when the transition table must also process the event."""
+        match event:
+            case FlagEvent.ALIGNED:
+                if self.state.stationary and self.state is not State.CROSSING and not self.aligned:
+                    self.aligned = True
+                    return True
+                return False
+            case FlagEvent.ORIENTATION_LOST:
+                changed, self.aligned = self.aligned, False
+                return changed
+            case FlagEvent.PAUSE:
+                if not self.paused:
+                    self._paused_state = self.state
+                self.paused = True
+                self.aligned = False
+            case FlagEvent.RESUME:
+                if self.state is not State.PAUSED:
+                    return False
+                self.paused = False
+                dst = State.CROSSING if self._paused_state is State.CROSSING else State.STOPPED
+                return self._transition(event.value, dst)
+            case FlagEvent.NAV_CANCEL:
+                self._paused_state = State.STOPPED
+            case unreachable:
+                assert_never(unreachable)
+        return None
+
+    def _transition(self, event: str, dst: State) -> bool:
         tr = Transition(self._clock(), event, self.state, dst)
-        self.state = dst
-        self.entered_at = tr.t
-        if dst in (State.CROSSING, State.FAULT, State.READY) and event != "boot_done":
-            # after a crossing or a fault, the user must re-align before turns
-            self.aligned = False
+        self.state, self.entered_at = dst, tr.t
+        if event != "boot_done":
+            self.aligned = False if dst in (
+                State.CROSSING, State.FAULT, State.READY, State.PAUSED, State.STOPPED
+            ) else self.aligned
         self.log.append(tr)
         for fn in self._listeners:
             fn(tr)
@@ -109,7 +148,7 @@ class CaneStateMachine:
 
     @property
     def nav_allowed(self) -> bool:
-        return self.state in (State.READY, State.WALKING, State.STOPPED)
+        return not self.paused and self.state in (State.READY, State.WALKING, State.STOPPED)
 
     @property
     def turns_allowed(self) -> bool:

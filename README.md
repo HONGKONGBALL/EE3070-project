@@ -234,7 +234,7 @@ USB CDC 串口，每行一条 JSON：
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
-pip install -e ".[web,test]"
+pip install -e ".[web,test,vision,camera-v2]"
 pytest                                   # 单元测试
 python -m cane --sim --config config/config.example.toml
 # 浏览器打开 http://127.0.0.1:8080/ 看诊断网页
@@ -243,6 +243,10 @@ python -m cane --sim --config config/config.example.toml
 `--sim` 用模拟 Pico（随机障碍）和打印代替播放，不调高德（除非设置了 `AMAP_KEY`）。
 
 ### 5.2 树莓派 5
+
+[iPhone 定位与 Pico K2 语音导航联调](docs/pi5-iphone-navigation.md)
+
+[树莓派摄像头、语音助手和步行导航的统一入口](docs/pi-unified.md)
 
 ```bash
 sudo apt install -y python3-venv python3-opencv alsa-utils i2c-tools
