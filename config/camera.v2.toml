@@ -32,7 +32,10 @@ request_timeout_s = 8
 asr_timeout_s = 6
 # Local Ollama mode uses the existing voice modules on PYTHONPATH.
 # With microphone = "default", local Ollama mode selects AirPods by name.
+# Push-to-talk only. Keep both wake options off for this configuration.
 wake_enabled = false
+# Stationary demo only. Suspend camera model inference while Ollama generates.
+demo_exclusive_vision = false
 # Set ptt_gpio to the BCM number of a dedicated Pi button wired to GND.
 dashboard_wake_test = false
 wake_confidence = 0.70

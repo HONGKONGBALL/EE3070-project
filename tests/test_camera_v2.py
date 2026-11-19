@@ -3,6 +3,7 @@
 from dataclasses import replace
 from pathlib import Path
 import json
+from threading import Condition, Event, Thread
 import time
 import tomllib
 
@@ -63,6 +64,62 @@ def test_replay_cannot_consume_real_pico_or_attach_timeline_to_live_camera():
         V2({'source':{'video':'fixture.avi'},'distance':{'mode':'pico'}})
     with pytest.raises(ValueError,match='explicit replay'):
         V2({'simulation':{'timeline':'fixture.json'},'distance':{'mode':'none'}})
+
+
+def test_demo_exclusive_vision_drains_detection_and_resumes_after_error(monkeypatch):
+    from types import SimpleNamespace
+    from cane.vision.v2 import V2
+
+    app = object.__new__(V2)
+    app.condition, app.prediction_condition, app.stopped = Condition(), Condition(), Event()
+    app.vision_pause_requested, app.active_predictions = False, 0
+    app.config, app.results, app.task_states = {}, {}, {}
+    app.run_id, app.log = "test", lambda *args, **kwargs: None
+    app.camera = SimpleNamespace(next_frame=lambda previous: (np.zeros((8, 8, 3)), previous + 1, time.monotonic()))
+    monkeypatch.setattr("cane.vision.v2.assess_frame", lambda image: {"usable": True})
+    first_prediction, finish_prediction = Event(), Event()
+    exclusive, finish_exclusive, resumed = Event(), Event(), Event()
+
+    def predict(image):
+        if first_prediction.is_set():
+            resumed.set()
+        else:
+            first_prediction.set()
+            finish_prediction.wait(2)
+        return {"detections": []}
+
+    def infer():
+        with pytest.raises(RuntimeError, match="provider failed"):
+            with app._exclusive_vision():
+                exclusive.set()
+                finish_exclusive.wait(2)
+                raise RuntimeError("provider failed")
+
+    cfg = {"directory": ".", "size": 8, "confidence": 0.5, "threads": 1, "max_fps": 50}
+    detector = SimpleNamespace(model_id="test", predict=predict)
+    worker = Thread(target=app._model_loop, args=("road", lambda *args: detector, cfg), daemon=True)
+    request = Thread(target=infer, daemon=True)
+    worker.start()
+    try:
+        assert first_prediction.wait(1)
+        request.start()
+        with app.prediction_condition:
+            assert app.prediction_condition.wait_for(lambda: app.vision_pause_requested, timeout=0.2)
+        assert not exclusive.is_set()
+        finish_prediction.set()
+        assert exclusive.wait(1)
+        assert not resumed.wait(0.1)
+        finish_exclusive.set()
+        assert resumed.wait(1)
+        request.join(timeout=1)
+        assert not request.is_alive()
+    finally:
+        finish_prediction.set()
+        finish_exclusive.set()
+        app.stopped.set()
+        with app.prediction_condition:
+            app.prediction_condition.notify_all()
+        worker.join(timeout=1)
 
 
 def test_scene_cut_expires_old_result_track_and_queued_speech():

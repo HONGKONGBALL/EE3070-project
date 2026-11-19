@@ -1,5 +1,7 @@
 from contextlib import contextmanager
+import io
 from threading import Event
+import time
 from types import SimpleNamespace
 
 import pytest
@@ -133,3 +135,125 @@ def test_disconnected_microphone_leaves_status_available():
         assert assistant.status()["error"] == "microphone_unavailable"
     finally:
         assistant.close()
+
+
+def test_ptt_idle_hold_empty_and_bounce_do_not_request_ollama(monkeypatch):
+    opening, recorded, idle = Event(), Event(), Event()
+    transcribed = []
+    requests = []
+    spoken = []
+    audio = SimpleNamespace(busy=lambda: False, sink=SimpleNamespace(enabled=True))
+
+    @contextmanager
+    def microphone():
+        opening.set()
+
+        def read(timeout):
+            recorded.set()
+            time.sleep(0.01)
+            return b"\x00\x04\x00\xfc" * 320
+
+        yield read
+
+    assistant = WakeAssistant({"wake_enabled": False, "dashboard_wake_test": False}, None, audio,
+                              microphone=microphone,
+                              speech=SimpleNamespace(transcribe=lambda pcm: transcribed.append(pcm) or ""),
+                              provider=SimpleNamespace(answer_question=lambda *args: requests.append(args)))
+    original_state = assistant._state
+
+    def state(name, error=""):
+        original_state(name, error)
+        if name == "PASSIVE_LISTENING":
+            idle.set()
+
+    monkeypatch.setattr(assistant, "_state", state)
+    monkeypatch.setattr(assistant, "_speak", lambda text, **kwargs: spoken.append(text))
+    assistant.start()
+    try:
+        assert not opening.wait(0.05)
+        token = assistant.press()
+        assert recorded.wait(1)
+        assert not transcribed and not requests
+        with pytest.raises(AssistantError, match="busy"):
+            assistant.press()
+        assert assistant.release(token)
+        assert not assistant.release(token)
+        assert idle.wait(2)
+        assert len(transcribed) == 1
+        assert not requests and not spoken
+    finally:
+        assistant.close()
+
+
+@pytest.mark.parametrize("cancelled", [False, True])
+@pytest.mark.parametrize("demo", [False, True])
+def test_ptt_sends_one_shared_frame_and_drops_cancelled_model_response(monkeypatch, cancelled, demo):
+    from PIL import Image
+
+    frame = io.BytesIO()
+    Image.new("RGB", (16, 16), "white").save(frame, format="JPEG")
+    snapshots, requests, spoken, pauses = [], [], [], []
+
+    @contextmanager
+    def exclusive_vision():
+        pauses.append("pause")
+        try:
+            yield
+        finally:
+            pauses.append("resume")
+
+    def snapshot(camera):
+        snapshots.append(camera)
+        return frame.getvalue(), 41, time.monotonic()
+
+    def infer(question, image):
+        requests.append((question, image.size))
+        assert pauses == (["pause"] if demo else [])
+        with pytest.raises(AssistantError, match="busy"):
+            assistant.press()
+        if cancelled:
+            assert not assistant.release("other request", cancelled=True)
+            assert assistant.release(token, cancelled=True)
+            assert not assistant.release(token, cancelled=True)
+        return SimpleNamespace(success=True, answer="A chair. Another sentence.")
+
+    audio = SimpleNamespace(sink=SimpleNamespace(enabled=True))
+    assistant = WakeAssistant({}, object(), audio, microphone=object(), provider=SimpleNamespace(answer_question=infer),
+                              exclusive_vision=exclusive_vision if demo else None)
+    monkeypatch.setattr("cane.vision.wake_assistant.shared_jpeg", snapshot)
+    monkeypatch.setattr(assistant, "_transcribe", lambda pcm: "what is in front of me")
+    monkeypatch.setattr(assistant, "_speak", lambda text, **kwargs: spoken.append(text) or True)
+    token = assistant.press()
+    assert assistant.release(token)
+    assistant._turn("ptt", b"")
+    assert snapshots == [assistant.camera]
+    assert requests == [("What is in front of me?", (16, 16))]
+    expected = ["Stand still. Camera alerts will pause."] if demo else []
+    assert spoken == expected + ([] if cancelled else ["A chair."])
+    assert pauses == (["pause", "resume"] if demo else [])
+    assert assistant.answer == ("" if cancelled else "A chair.")
+
+
+def test_ptt_navigation_reuses_adapter_without_calling_ollama(monkeypatch):
+    navigation_requests = []
+    nav = MockNavigationAdapter()
+    monkeypatch.setattr(
+        nav, "plan_route", lambda destination: navigation_requests.append(destination) or SimpleNamespace(message="Route planned."))
+    monkeypatch.setattr(
+        nav, "get_next_instruction", lambda: navigation_requests.append("next") or SimpleNamespace(message="Turn right."))
+
+    @contextmanager
+    def microphone():
+        yield object()
+
+    assistant = WakeAssistant({}, None, SimpleNamespace(sink=SimpleNamespace(enabled=True)), microphone=microphone,
+                              navigation=nav, provider=object())
+    transcripts = iter(["Navigate to CityU Library", "Yes", "What's my next turn?"])
+    monkeypatch.setattr(assistant, "_transcribe", lambda pcm: next(transcripts))
+    monkeypatch.setattr(assistant, "_capture", lambda mic: b"")
+    spoken = []
+    monkeypatch.setattr(assistant, "_speak", lambda text, **kwargs: spoken.append(text) or True)
+    assistant._turn("ptt", b"")
+    assistant._turn("ptt", b"")
+    assert navigation_requests == ["CityU Library", "next"]
+    assert spoken == ["Do you want to navigate to CityU Library?", "Route planned.", "Turn right."]

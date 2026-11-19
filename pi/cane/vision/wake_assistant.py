@@ -1,7 +1,7 @@
 """The local spoken assistant runs independently of the vision worker."""
 
 from collections import deque
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from functools import cached_property
 import io
 import logging
@@ -35,11 +35,12 @@ def short_visual_answer(text):
 
 class WakeAssistant:
     def __init__(self, config, camera, audio, *, microphone=None, speech=None, provider=None,
-                 detector=None, navigation=None):
+                 detector=None, navigation=None, exclusive_vision=None):
         self.camera, self.audio = camera, audio
         self.microphone = microphone if microphone is not None else self._microphone(config.get("microphone", "default"))
         self.models = Path(config.get("speech_models_dir", "voice/models"))
         self._speech, self._provider = speech, provider
+        self.exclusive_vision = exclusive_vision
         self.ollama_port = config.get("ollama_port", 11434)
         self.request_timeout = config.get("request_timeout_s", 20)
         self.navigation = navigation if navigation is not None else MockNavigationAdapter()
@@ -123,6 +124,7 @@ class WakeAssistant:
             return {"state": self.state, "error": self.error, "mode": "ollama", "request_id": self.request_id,
                     "wake_enabled": self.wake_enabled, "wake_phrase": DISPLAY_PHRASE,
                     "dashboard_wake_test": self.dashboard_test, "recent_states": list(self.recent),
+                    "demo_exclusive_vision": self.exclusive_vision is not None,
                     "ptt_gpio_unavailable": self.ptt_gpio is not None and self.gpio_button is None,
                     "frame_id": self.frame_id, "answer": self.answer if fresh else "",
                     "answer_language": "en", "question_language": "en"}
@@ -170,16 +172,23 @@ class WakeAssistant:
 
     def release(self, request_id, *, cancelled=False):
         with self.lock:
-            if not request_id or request_id != self.request_id or self.released:
+            if not request_id or request_id != self.request_id or self.trigger != "ptt" or self.cancelled:
                 return False
-            if self.trigger != "ptt":
+            if self.released and not cancelled:
                 return False
             self.released, self.cancelled = True, cancelled
-            return True
+            clip = self.clip if cancelled else None
+            if cancelled:
+                self.answer = ""
+            if clip:
+                self.playback_done.set()
+        if clip:
+            self.audio.cancel_assistant(clip)
+        return True
 
     def valid(self, event_id, now):
         with self.lock:
-            return not self.stop.is_set() and event_id == self.clip
+            return not (self.stop.is_set() or self.cancelled) and event_id == self.clip
 
     def delivery(self, event_id, action, now):
         if action in {"completed", "interrupted", "expired", "invalid", "replaced", "failed", "disabled", "rejected"}:
@@ -191,6 +200,8 @@ class WakeAssistant:
     def _speak(self, text, *, navigation=False, captured_at=None, next_state="SPEAKING"):
         from voice_audio import read_wave
 
+        if self.stop.is_set() or self.cancelled:
+            return False
         samples, rate, channels = read_wave(self.speech.synthesize(text))
         if channels != 1 or not samples:
             raise AssistantError("tts_unavailable")
@@ -201,7 +212,7 @@ class WakeAssistant:
             raise AssistantError("scene_expired")
         event_id = "assistant:" + uuid.uuid4().hex
         with self.lock:
-            if self.stop.is_set():
+            if self.stop.is_set() or self.cancelled:
                 return False
             self.clip = event_id
             self.playback_action = ""
@@ -214,7 +225,7 @@ class WakeAssistant:
                 return False
             if not self.playback_done.wait(20):
                 self.audio.cancel_assistant(event_id)
-            return self.playback_action == "completed"
+            return not self.cancelled and self.playback_action == "completed"
         finally:
             with self.lock:
                 self.clip = None
@@ -228,6 +239,8 @@ class WakeAssistant:
         silent = 0
         overlap = ptt and self.audio.busy()
         while not self.stop.is_set() and time.monotonic() < end and not (ptt and self.released):
+            if self.cancelled:
+                return b""
             block = mic(0.2)
             if not block:
                 continue
@@ -289,6 +302,8 @@ class WakeAssistant:
         return self.speech.transcribe(pcm).strip() if pcm else ""
 
     def _turn(self, kind, pcm):
+        if self.cancelled:
+            return
         if not self.audio.sink.enabled:
             raise AssistantError("audio_disabled")
         if kind == "wake":
@@ -299,11 +314,7 @@ class WakeAssistant:
             with self.microphone() as mic:
                 pcm = self._capture(mic)
         question = self._transcribe(pcm)
-        if self.stop.is_set():
-            return
-        if not question:
-            if kind == "ptt" and not self.cancelled:
-                self._speak("I didn't catch that. Try asking again.")
+        if self.stop.is_set() or self.cancelled or not question:
             return
         self._state("ROUTING_COMMAND")
         action, destination = route_command(question)
@@ -317,7 +328,8 @@ class WakeAssistant:
         if answer and self._speak(answer, navigation=action not in {"vision", "visual_safety"},
                                   captured_at=self.captured_at):
             with self.lock:
-                self.answer = answer
+                if not self.cancelled:
+                    self.answer = answer
 
     def _visual_answer(self, question):
         from PIL import Image
@@ -342,7 +354,20 @@ class WakeAssistant:
         with Image.open(io.BytesIO(jpeg)) as frame:
             if floor_question and foreground_is_dark(frame):
                 return "It's too dark to make out what's on the floor."
-            result = self.provider.answer_question(question, frame)
+            if self.stop.is_set() or self.cancelled:
+                return ""
+            if self.exclusive_vision and not self._speak("Stand still. Camera alerts will pause."):
+                return ""
+            with self.exclusive_vision() if self.exclusive_vision else nullcontext():
+                if self.stop.is_set() or self.cancelled:
+                    return ""
+                if self.exclusive_vision:
+                    self._state("PROCESSING_EXCLUSIVE")
+                result = self.provider.answer_question(question, frame)
+            if self.exclusive_vision:
+                self._state("PROCESSING")
+        if self.stop.is_set() or self.cancelled:
+            return ""
         if not result.success:
             raise AssistantError("provider_error")
         return short_visual_answer(result.answer)
@@ -356,8 +381,12 @@ class WakeAssistant:
                 return ""
             with self.microphone() as mic:
                 text = self._capture(mic)
-            if self.stop.is_set() or not confirmed(self._transcribe(text)):
+            if self.stop.is_set() or self.cancelled:
+                return ""
+            if not confirmed(self._transcribe(text)):
                 return "Navigation cancelled."
+            if self.stop.is_set() or self.cancelled:
+                return ""
             self._state("PROCESSING")
             reply = self.navigation.plan_route(destination)
             return reply.message

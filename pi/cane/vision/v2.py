@@ -2,6 +2,7 @@
 
 import argparse
 from collections import deque
+from contextlib import contextmanager
 import json
 import logging
 import os
@@ -30,6 +31,7 @@ from .crowd import CrowdAwareness
 from .voice import VOICE
 from .v2_policy import V2Policy, task_hazards, support_potholes
 from .diagnostics import ground_diagnostic
+from .assistant_provider import AssistantError
 
 
 def load_config(path, *, mode=None, models_root=None):
@@ -97,6 +99,9 @@ class V2(Demo):
         self.audio.validator = self._request_valid
         self.audio.on_delivery = self._on_delivery
         assistant_config = config.get("assistant", {})
+        self.prediction_condition = threading.Condition()
+        self.vision_pause_requested = False
+        self.active_predictions = 0
         self.navigation = None
         if navigation_enabled:
             from .navigation import PiNavigation
@@ -108,7 +113,9 @@ class V2(Demo):
         if assistant_config.get("enabled"):
             if assistant_config.get("mode") == "ollama":
                 from .wake_assistant import WakeAssistant
-                self.assistant = WakeAssistant(assistant_config, self.camera, self.audio, navigation=self.navigation)
+                exclusive_vision = self._exclusive_vision if assistant_config.get("demo_exclusive_vision") else None
+                self.assistant = WakeAssistant(assistant_config, self.camera, self.audio, navigation=self.navigation,
+                                               exclusive_vision=exclusive_vision)
             else:
                 from .assistant import VoiceAssistant
                 self.assistant = VoiceAssistant(assistant_config, self.camera, self.audio)
@@ -159,6 +166,8 @@ class V2(Demo):
 
     def close(self):
         self.stopped.set()
+        with self.prediction_condition:
+            self.prediction_condition.notify_all()
         if self.assistant:
             self.assistant.close()
         self.camera.close()
@@ -198,6 +207,22 @@ class V2(Demo):
     def _ground_loop(self,name,factory):
         self._model_loop(name,factory,self.config[name])
 
+    @contextmanager
+    def _exclusive_vision(self):
+        with self.prediction_condition:
+            self.vision_pause_requested = True
+        try:
+            with self.prediction_condition:
+                drained = self.prediction_condition.wait_for(
+                    lambda: not self.active_predictions or self.stopped.is_set(), timeout=2)
+            if not drained or self.stopped.is_set():
+                raise AssistantError("vision_busy")
+            yield
+        finally:
+            with self.prediction_condition:
+                self.vision_pause_requested = False
+                self.prediction_condition.notify_all()
+
     def _model_loop(self,name,factory,cfg):
         completions, latencies = deque(maxlen=60),deque(maxlen=1200)
         try:
@@ -219,6 +244,10 @@ class V2(Demo):
         previous, last_error = 0, ""
         sampled_count, unsampled_frames, quality_skips, stale_results, deferred = 0,0,0,0,0
         while not self.stopped.is_set():
+            with self.prediction_condition:
+                self.prediction_condition.wait_for(lambda: not self.vision_pause_requested or self.stopped.is_set())
+                if self.stopped.is_set():
+                    break
             if name == 'persons' and not self._person_ground_fresh(time.monotonic()):
                 deferred += 1
                 with self.condition:
@@ -234,7 +263,17 @@ class V2(Demo):
             try:
                 quality=assess_frame(image)
                 if quality['usable']:
-                    output = detector.predict(image)
+                    with self.prediction_condition:
+                        if self.vision_pause_requested or self.stopped.is_set():
+                            continue
+                        self.active_predictions += 1
+                    try:
+                        output = detector.predict(image)
+                    finally:
+                        with self.prediction_condition:
+                            self.active_predictions -= 1
+                            if self.vision_pause_requested and not self.active_predictions:
+                                self.prediction_condition.notify_all()
                     if name in {'objects','persons'}:
                         output = {"detections":output}
                         if name == 'persons':
