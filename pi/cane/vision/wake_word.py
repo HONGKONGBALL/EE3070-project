@@ -61,8 +61,8 @@ def main():
     import argparse
     from pathlib import Path
 
-    from voice_audio import ASR_RATE, convert_pcm, read_wave
-    from voice_demo import LocalSpeech
+    from .local_speech import LocalSpeech
+    from .voice_audio import ASR_RATE, convert_pcm, read_wave
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--models", type=Path, required=True)

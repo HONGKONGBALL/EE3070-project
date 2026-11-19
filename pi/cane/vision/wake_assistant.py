@@ -82,7 +82,7 @@ class WakeAssistant:
     def speech(self):
         if self._speech is not None:
             return self._speech
-        from voice_demo import LocalSpeech
+        from .local_speech import LocalSpeech
 
         return LocalSpeech(self.models)
 
@@ -90,7 +90,7 @@ class WakeAssistant:
     def provider(self):
         if self._provider is not None:
             return self._provider
-        from ollama_vision import InferenceSettings, OllamaVisionProvider
+        from .ollama_vision import InferenceSettings, OllamaVisionProvider
 
         return OllamaVisionProvider(
             self.ollama_port, timeout=self.request_timeout, threads=3, settings=InferenceSettings(prompt="grounded"))
@@ -99,7 +99,7 @@ class WakeAssistant:
     def _microphone(choice):
         @contextmanager
         def open_stream():
-            from voice_audio import local_audio, select_endpoint
+            from .voice_audio import local_audio, select_endpoint
 
             try:
                 backend = local_audio()
@@ -198,7 +198,7 @@ class WakeAssistant:
                     self.playback_done.set()
 
     def _speak(self, text, *, navigation=False, captured_at=None, next_state="SPEAKING"):
-        from voice_audio import read_wave
+        from .voice_audio import read_wave
 
         if self.stop.is_set() or self.cancelled:
             return False

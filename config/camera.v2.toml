@@ -30,7 +30,7 @@ max_record_s = 8
 max_scene_age_s = 12
 request_timeout_s = 8
 asr_timeout_s = 6
-# Local Ollama mode uses the existing voice modules on PYTHONPATH.
+# Local Ollama mode uses the camera-v2 and assistant extras.
 # With microphone = "default", local Ollama mode selects AirPods by name.
 # Push-to-talk only. Keep both wake options off for this configuration.
 wake_enabled = false

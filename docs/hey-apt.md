@@ -47,7 +47,9 @@ Record positive examples with several speakers saying the same phrase, plus ordi
 
 ## Pi setup and hardware checks
 
-Use a copy of the running camera configuration for a supervised trial. Install the dependencies in the standalone runtime's `requirements-voice.txt`. Put its Python modules on `PYTHONPATH` alongside the repository's `pi` directory. Copy the English and Korean Vosk directories, Piper voice and voice JSON from `D:\Ollama\voice\models` into the directory set by `speech_models_dir`. The local service uses the existing Ollama loopback API. Start the test as the user who owns the PipeWire audio session. The microphone uses PulseAudio-compatible capture tools.
+Use a copy of the running camera configuration for a supervised trial. Install the bundled runtime from the repository root with `python -m pip install -e '.[camera-v2,assistant]'`. Start the camera service as the user who owns the PipeWire audio session and make sure `pactl` and `parec` are available. On Raspberry Pi OS they are provided by `pulseaudio-utils`.
+
+Start Ollama on `127.0.0.1:11434` with `qwen3.5:0.8b` installed. Place `vosk-model-small-en-us-0.15/`, `en_US-lessac-low.onnx` and `en_US-lessac-low.onnx.json` in the directory set by `speech_models_dir`. Add `vosk-model-small-ko-0.22/` only for the optional wake-listening mode.
 
 In the trial copy of the configuration, use these assistant settings. Retain the camera, detector and audio settings from the working configuration. Use a smaller maximum age if a stale scene should be dropped earlier.
 
