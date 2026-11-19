@@ -6,18 +6,31 @@ from functools import cached_property
 import io
 import logging
 from pathlib import Path
+import re
 import subprocess
 import threading
 import time
 import uuid
 
-from .assistant_media import shared_jpeg
+from .assistant_media import foreground_is_dark, shared_jpeg, speech_only_pcm
 from .assistant_provider import AssistantError
 from .voice_commands import MockNavigationAdapter, confirmed, route_command
 from .wake_word import DISPLAY_PHRASE, WakeDetector
 
 
 LOG = logging.getLogger(__name__)
+VISION_RETRY = "I couldn't make out the scene."
+
+
+def short_visual_answer(text):
+    sentence = re.split(r"(?<=[.!?])\s+", text.strip(), maxsplit=1)[0]
+    if not any(char.isalpha() for char in sentence):
+        return VISION_RETRY
+    if len(sentence.split()) > 24:
+        clause = re.split(r"[,;:]", sentence, maxsplit=1)[0]
+        if len(clause.split()) <= 24:
+            return clause.rstrip(".!?") + "."
+    return sentence
 
 
 class WakeAssistant:
@@ -213,12 +226,14 @@ class WakeAssistant:
         pcm = bytearray()
         heard = False
         silent = 0
+        overlap = ptt and self.audio.busy()
         while not self.stop.is_set() and time.monotonic() < end and not (ptt and self.released):
             block = mic(0.2)
             if not block:
                 continue
             if self.audio.busy():
                 # A warning can enter the microphone. Discard the incomplete utterance.
+                overlap = overlap or ptt
                 pcm.clear()
                 heard, silent = False, 0
                 continue
@@ -237,7 +252,7 @@ class WakeAssistant:
         if ptt:
             if not self.released:
                 raise AssistantError("recording_limit")
-            return bytes(pcm) if not self.cancelled else b""
+            return bytes(pcm) if not (self.cancelled or overlap) else b""
         return bytes(pcm) if heard else b""
 
     def _activation(self):
@@ -270,6 +285,7 @@ class WakeAssistant:
 
     def _transcribe(self, pcm):
         self._state("TRANSCRIBING")
+        pcm = speech_only_pcm(pcm, self.silence_level)
         return self.speech.transcribe(pcm).strip() if pcm else ""
 
     def _turn(self, kind, pcm):
@@ -283,31 +299,53 @@ class WakeAssistant:
             with self.microphone() as mic:
                 pcm = self._capture(mic)
         question = self._transcribe(pcm)
-        if not question or self.stop.is_set():
+        if self.stop.is_set():
+            return
+        if not question:
+            if kind == "ptt" and not self.cancelled:
+                self._speak("I didn't catch that. Try asking again.")
             return
         self._state("ROUTING_COMMAND")
         action, destination = route_command(question)
-        if action == "vision":
+        if action == "visual_safety":
+            answer = "I can't tell from one view whether it's safe to proceed."
+        elif action == "vision":
             self._state("PROCESSING")
-            jpeg, self.frame_id, self.captured_at = shared_jpeg(self.camera)
-            from PIL import Image
-
-            question = question[0].upper() + question[1:]
-            if question[-1] not in ".?!":
-                first_word = question.split()[0].split("'")[0].casefold()
-                question += "?" if first_word in {"what", "where", "who", "how", "which", "is", "are", "can", "could",
-                                                 "should", "do", "does"} else "."
-            with Image.open(io.BytesIO(jpeg)) as frame:
-                result = self.provider.answer_question(question, frame)
-            if not result.success:
-                raise AssistantError("provider_error")
-            answer = result.answer if any(char.isalpha() for char in result.answer) else (
-                "I couldn't make out an answer from this image.")
+            answer = self._visual_answer(question)
         else:
             answer = self._navigate(action, destination)
-        if answer and self._speak(answer, navigation=action != "vision", captured_at=self.captured_at):
+        if answer and self._speak(answer, navigation=action not in {"vision", "visual_safety"},
+                                  captured_at=self.captured_at):
             with self.lock:
                 self.answer = answer
+
+    def _visual_answer(self, question):
+        from PIL import Image
+
+        try:
+            jpeg, self.frame_id, self.captured_at = shared_jpeg(self.camera)
+        except AssistantError as exc:
+            if str(exc) == "camera_quality":
+                return VISION_RETRY
+            if str(exc) == "camera_unavailable":
+                return "The camera view is unavailable."
+            raise
+        floor_question = re.search(r"\b(?:floor|ground)\b", question, re.I)
+        object_question = re.match(r"^what(?: is|'s) (?:on|under|beside|next to) (?:the|my|this)\b", question, re.I)
+        question = question[0].upper() + question[1:]
+        if question[-1] not in ".?!":
+            first = question.split()[0].split("'")[0].casefold()
+            question += "?" if first in {"what", "where", "who", "how", "which", "is", "are", "can", "could",
+                                         "should", "do", "does"} else "."
+        if object_question:
+            question += " Give only the broad object category, without guessing the subtype."
+        with Image.open(io.BytesIO(jpeg)) as frame:
+            if floor_question and foreground_is_dark(frame):
+                return "It's too dark to make out what's on the floor."
+            result = self.provider.answer_question(question, frame)
+        if not result.success:
+            raise AssistantError("provider_error")
+        return short_visual_answer(result.answer)
 
     def _navigate(self, action, destination):
         if action == "unsupported_navigation":

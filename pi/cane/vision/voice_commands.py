@@ -5,6 +5,15 @@ import re
 from typing import Protocol
 
 
+SAFETY_QUERY = re.compile(
+    r"\b(?:safe|okay|ok) (?:for me )?to (?:cross|walk|go|enter|proceed|continue|keep walking)\b"
+    r"|\b(?:can|could|should|may) i (?:cross|walk|go|enter|proceed|continue|keep walking)\b"
+    r"|\b(?:is|does) (?:the|this|that|my) (?:way|path|route|crossing|walkway|hallway|doorway)\b[^?]{0,40}"
+    r"\b(?:safe|clear|passable)\b"
+    r"|\bam i clear to (?:cross|walk|go|enter|proceed)\b"
+)
+
+
 @dataclass(frozen=True)
 class NavigationReply:
     success: bool
@@ -43,6 +52,8 @@ def route_command(text):
     if destination and destination[1].strip():
         place = destination[1].strip()
         return "plan", "CityU Library" if normalized(place) in {"city you library", "cityu library"} else place
+    if SAFETY_QUERY.search(key):
+        return "visual_safety", None
     if key in {"stop navigation", "cancel navigation", "停止导航", "取消导航"}:
         return "stop", None
     if key in {"what's my next turn", "whats my next turn", "what is my next turn", "my next turn", "next turn",
@@ -52,7 +63,7 @@ def route_command(text):
         return "status", None
     if re.fullmatch(r"(?:(?:what's|what is) (?:my|the) )?(?:navigation|route) status", key):
         return "status", None
-    if re.search(r"\b(?:navigat\w*|destination|route|next turn|how far)\b|导航|目的地", key):
+    if re.search(r"\b(?:navigat\w*|destination|next turn)\b|导航|目的地", key):
         return "unsupported_navigation", None
     return "vision", None
 

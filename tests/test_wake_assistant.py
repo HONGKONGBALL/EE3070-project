@@ -7,8 +7,9 @@ import pytest
 from cane.arbiter import OutputArbiter
 from cane.model import OutputRequest, Priority
 from cane.vision.assistant_provider import AssistantError
+from cane.vision.assistant_media import speech_only_pcm
 from cane.vision.voice_commands import MockNavigationAdapter, confirmed, route_command
-from cane.vision.wake_assistant import WakeAssistant
+from cane.vision.wake_assistant import WakeAssistant, short_visual_answer
 from cane.vision.wake_word import PRONUNCIATION, WakeDetector
 
 
@@ -25,9 +26,23 @@ from cane.vision.wake_word import PRONUNCIATION, WakeDetector
     ("Cancel navigation", ("stop", None)),
     ("Navigate to", ("unsupported_navigation", None)),
     ("What is in front of me?", ("vision", None)),
+    ("Is the way ahead clear?", ("visual_safety", None)),
+    ("Can I cross it?", ("visual_safety", None)),
+    ("How far away is the chair?", ("vision", None)),
 ])
 def test_voice_routes(text, expected):
     assert route_command(text) == expected
+
+
+def test_pcm_keeps_speech_context_and_skips_constant_input():
+    silence = b"\x00\x00" * 6400
+    speech = b"\x00\x04\x00\xfc" * 320
+    assert speech_only_pcm(b"\x00\x04" * 6400, 220) == b""
+    assert speech_only_pcm(silence + speech + silence, 220) == silence[:5120] + speech + silence[:5120]
+
+
+def test_spoken_visual_answer_keeps_first_complete_sentence():
+    assert short_visual_answer("A chair is on your right. There is a light overhead.") == "A chair is on your right."
 
 
 def test_route_requires_affirmation_and_mock_does_not_claim_success():

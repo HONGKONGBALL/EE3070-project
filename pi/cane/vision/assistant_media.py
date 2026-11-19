@@ -15,6 +15,24 @@ from .assistant_provider import AssistantError
 RATE = 16_000
 
 
+def speech_only_pcm(pcm, silence_rms):
+    """Trim long quiet edges and skip recordings with no speech-level energy."""
+    import numpy as np
+
+    # The microphone supplies mono PCM16 at 16 kHz. Keep 160 ms around speech.
+    samples = np.frombuffer(pcm, dtype="<i2")
+    if not samples.size:
+        return b""
+    hop = RATE // 50
+    padded = np.pad(samples, (0, -len(samples) % hop)).astype(np.float32)
+    blocks = padded.reshape(-1, hop)
+    centered = blocks - blocks.mean(axis=1, keepdims=True)
+    voiced = np.flatnonzero(np.mean(centered * centered, axis=1) >= silence_rms ** 2)
+    if not voiced.size:
+        return b""
+    return samples[max(0, voiced[0] - 8) * hop:(voiced[-1] + 9) * hop].tobytes()
+
+
 class AlsaRecorder:
     """Read bounded PCM into memory while the button is held."""
 
@@ -131,3 +149,11 @@ def shared_jpeg(camera):
     if not ok:
         raise AssistantError("camera_quality")
     return jpeg.tobytes(), frame_id, captured_at
+
+
+def foreground_is_dark(image):
+    """Measure the lower-center view relevant to questions about the floor."""
+    import numpy as np
+
+    gray = np.asarray(image.convert("L").resize((160, 120)))
+    return bool(np.mean(gray[64:, 24:136] < 24) >= .85)

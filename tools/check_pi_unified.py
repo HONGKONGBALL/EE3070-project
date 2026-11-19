@@ -18,6 +18,7 @@ from gpiozero import Device
 from gpiozero.pins.mock import MockFactory
 from piper import SynthesisConfig
 
+from cane.model import OutputRequest, Priority
 from cane.nav.amap import AmapClient
 from cane.nav.coords import wgs84_to_gcj02
 from cane.vision.camera import Camera
@@ -44,20 +45,32 @@ class CameraFixture(Camera):
 
     def _run(self):
         current = cap = None
+        video_frame = None
+        source_frame = 0
         try:
             while not self.stopped.is_set():
+                tick = time.monotonic()
                 if self.video != current:
                     if cap:
                         cap.release()
                     current = self.video
                     cap = cv2.VideoCapture(str(current)) if current else None
+                    started, source_frame, video_frame = tick, 0, None
+                    if cap and not cap.isOpened():
+                        raise ValueError(f"Cannot open {current}")
                 image = self.photo
                 if cap:
-                    ok, frame = cap.read()
-                    if ok:
-                        image = frame
-                    else:
-                        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    fps = cap.get(cv2.CAP_PROP_FPS) or self.fps
+                    target = round((tick - started) * fps)
+                    if target >= source_frame:
+                        while source_frame < target and cap.grab():
+                            source_frame += 1
+                        ok, frame = cap.read()
+                        if ok:
+                            source_frame += 1
+                            video_frame = frame
+                    if video_frame is not None:
+                        image = video_frame
                 with self.condition:
                     self.frame = cv2.resize(image, (self.width, self.height))
                     self.sequence += 1
@@ -65,7 +78,7 @@ class CameraFixture(Camera):
                     self.delivered.append(self.captured_at)
                     self.error = ""
                     self.condition.notify_all()
-                self.stopped.wait(1 / self.fps)
+                self.stopped.wait(max(0, 1 / self.fps - (time.monotonic() - tick)))
         finally:
             if cap:
                 cap.release()
@@ -213,9 +226,14 @@ def main():
             assert response.status_code == 200
             wait_for(lambda: cane.location and cane.location[:3] == (*point, accuracy), "phone fix")
 
-        def command(*utterances, interrupt=False):
+        def command(*utterances, interrupt=False, overlap=False):
             before = len(trace.timeline)
             microphone.utterances = iter([synthesize_input(speech, text, synthesis) for text in utterances])
+            wait_for(lambda: not app.audio.busy(), "speaker idle")
+            if overlap:
+                assert app.audio.arbiter.submit(OutputRequest("go_straight", Priority.NAV))
+                wait_for(sink.busy, "route audio to overlap the recording")
+                sink.ends = time.monotonic() + 1
             pin = pins.pin(17)
             pin.drive_low()
             assert wait_for(lambda: microphone.active and microphone.utterance_sent.is_set(), "fixture speech capture")
@@ -227,6 +245,10 @@ def main():
                 pico.front = 35
                 wait_for(lambda: app.audio.arbiter.current and app.audio.arbiter.current.prompt_id == "stop_now",
                          "Pico proximity warning")
+                with app.condition:
+                    jpeg = app.jpeg
+                if jpeg:
+                    (args.out / "preempt-preview.jpg").write_bytes(jpeg)
                 pico.front = 300
             wait_for(lambda: voice.status()["state"] == "PASSIVE_LISTENING" and voice.request_id is None, "voice reply")
             assert not voice.status()["error"], voice.status()
@@ -266,6 +288,11 @@ def main():
             location((ORIGIN[0], 22.33656))
             report["status"] = command("What's my navigation status?")
             assert any("Walking navigation is active" in row[1] for row in report["status"])
+            report["overlap"] = command("Stop navigation.", overlap=True)
+            assert [row[0] for row in report["overlap"]] == ["tts"], report["overlap"]
+            assert "Try asking again" in report["overlap"][0][1]
+            assert navigation.status()["active"]
+            location((ORIGIN[0], 22.33656))
             report["stop"] = command("Stop navigation.")
             assert not navigation.status()["active"] and "Navigation stopped" in str(report["stop"])
             assert requests == ["/v3/direction/walking"]
