@@ -234,7 +234,7 @@ USB CDC 串口，每行一条 JSON：
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
-pip install -e ".[web,test]"
+pip install -e ".[web,test,vision,camera-v2]"
 pytest                                   # 单元测试
 python -m cane --sim --config config/config.example.toml
 # 浏览器打开 http://127.0.0.1:8080/ 看诊断网页
