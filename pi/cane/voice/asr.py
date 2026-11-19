@@ -122,17 +122,20 @@ class VoskRecognizer:
         with wave.open(str(wav_path), "rb") as wf:
             if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
                 raise ASRInputError("Vosk requires uncompressed mono 16-bit PCM WAV")
-            rec = (self._Kaldi(self._model, wf.getframerate(), self._grammar) if self._grammar
-                   else self._Kaldi(self._model, wf.getframerate()))
-            segments: list[str] = []
-            while True:
-                data = wf.readframes(4000)
-                if not data:
-                    break
-                if rec.AcceptWaveform(data):
-                    self._append_text(segments, rec.Result())
-            self._append_text(segments, rec.FinalResult())
-            return " ".join(segments)
+            return self._transcribe(iter(lambda: wf.readframes(4000), b""), wf.getframerate())
+
+    def transcribe_pcm(self, pcm: bytes, rate: int) -> str:
+        return self._transcribe((pcm[i:i + 8000] for i in range(0, len(pcm), 8000)), rate)
+
+    def _transcribe(self, chunks, rate):
+        rec = (self._Kaldi(self._model, rate, self._grammar) if self._grammar
+               else self._Kaldi(self._model, rate))
+        segments: list[str] = []
+        for chunk in chunks:
+            if rec.AcceptWaveform(chunk):
+                self._append_text(segments, rec.Result())
+        self._append_text(segments, rec.FinalResult())
+        return " ".join(segments)
 
     @staticmethod
     def _append_text(segments: list[str], payload: str) -> None:

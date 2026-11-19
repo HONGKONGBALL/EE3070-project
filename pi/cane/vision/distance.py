@@ -39,6 +39,9 @@ class NoDistanceProvider:
     def close(self): pass
     def latest(self, now): return None
 
+    def telemetry(self, now):
+        return {"source": self.source, "fresh": False, "frame": None}
+
 
 class MockDistanceProvider(NoDistanceProvider):
     """Timed, deterministic segments; a held reading has distinct 10 Hz sample IDs."""
@@ -77,14 +80,19 @@ class PicoDistanceProvider(NoDistanceProvider):
         self.link = SerialPicoLink(port, baud)
         self.direction, self.calibration_id = direction, calibration_id
         self.sample = None
+        self.telemetry_frame = None
         self.device_ms = None
         self.sequence = 0
         self.last_heartbeat = -100.0
+        self.controller_owned = False
 
     def start(self): self.link.start()
     def close(self): self.link.close()
 
     def latest(self, now):
+        if self.controller_owned:
+            self.error = "" if self.sample and self.sample.fresh(now) else "No fresh Pico distance"
+            return self.sample
         if now-self.last_heartbeat >= 0.5:
             self.link.heartbeat()
             self.last_heartbeat = now
@@ -93,24 +101,46 @@ class PicoDistanceProvider(NoDistanceProvider):
                 frame = self.link.inbox.get_nowait()
             except queue.Empty:
                 break
-            if not isinstance(frame, SensorFrame):
-                continue
-            # Device uptime is only for ordering; never subtract it from the Pi clock.
-            if self.device_ms is not None and frame.pico_ms <= self.device_ms:
-                if frame.pico_ms < self.device_ms:
-                    self.sample = None
-                    self.device_ms = frame.pico_ms
-                continue
-            self.device_ms = frame.pico_ms
-            self.sequence += 1
-            value = frame.front_m
-            valid = value is not None and math.isfinite(value) and value > 0
-            self.sample = DistanceObservation(
-                f"pico:{self.sequence}", "pico", value, valid, frame.t,
-                frame.pico_ms, direction=self.direction, calibration_id=self.calibration_id,
-                reason="" if valid else "Invalid front channel")
+            if isinstance(frame, SensorFrame):
+                self.accept(frame)
         self.error = "" if self.sample and self.sample.fresh(now) else "No fresh Pico distance"
         return self.sample
+
+    def accept(self, frame):
+        # Device uptime is only for ordering; never subtract it from the Pi clock.
+        if self.device_ms is not None and frame.pico_ms <= self.device_ms:
+            if frame.pico_ms < self.device_ms:
+                self.sample = None
+                self.telemetry_frame = None
+                self.device_ms = frame.pico_ms
+            return False
+        self.device_ms = frame.pico_ms
+        self.sequence += 1
+        value = frame.front_m
+        valid = value is not None and math.isfinite(value) and value > 0
+        self.sample = DistanceObservation(
+            f"pico:{self.sequence}", "pico", value, valid, frame.t,
+            frame.pico_ms, direction=self.direction, calibration_id=self.calibration_id,
+            reason="" if valid else "Invalid front channel")
+        self.telemetry_frame = (self.sequence, frame)
+        return True
+
+    def telemetry(self, now):
+        latest = self.telemetry_frame
+        if latest is None:
+            return super().telemetry(now)
+        sequence, frame = latest
+        age = max(0, now - frame.t)
+
+        def centimeters(value):
+            if value is not None and math.isfinite(value) and value > 0:
+                return round(value * 100, 1)
+            return None
+
+        return {"source": self.source, "fresh": age <= 0.5, "frame": sequence,
+                "age_ms": round(age * 1000), "pico_ms": frame.pico_ms,
+                "front_cm": centimeters(frame.front_m), "upper_cm": centimeters(frame.up_m),
+                "laser_cm": centimeters(frame.tfmini_m), "laser_strength": frame.tfmini_strength}
 
 
 class ProximityGate:

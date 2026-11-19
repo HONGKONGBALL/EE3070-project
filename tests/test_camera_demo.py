@@ -123,6 +123,35 @@ def test_http_does_not_return_or_capture_a_stale_image(tmp_path, monkeypatch):
         thread.join()
 
 
+def test_lan_dashboard_shares_preview_and_blocks_camera_control():
+    from cane.vision import demo
+    status = {"camera": {"ready": True}, "pico": {"fresh": True, "upper_cm": 63}}
+    sample = SimpleNamespace(dashboard_status=lambda: status, image=lambda: b"jpeg",
+                             audio_outputs=SimpleNamespace(status=lambda: {"target": "private"}))
+    server = ThreadingHTTPServer(("127.0.0.1", 0), demo.handler_for(sample, dashboard=True))
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    base = f"http://127.0.0.1:{server.server_port}"
+    try:
+        for path in ("/", "/dashboard.css", "/dashboard.js", "/chart.js"):
+            with urllib.request.urlopen(base + path) as response:
+                assert response.read()
+        with urllib.request.urlopen(base + "/status") as response:
+            assert json.load(response) == status
+        with urllib.request.urlopen(base + "/frame.jpg") as response:
+            assert response.read() == b"jpeg"
+        with pytest.raises(urllib.error.HTTPError) as error:
+            urllib.request.urlopen(base + "/audio-outputs")
+        assert error.value.code == 404
+        with pytest.raises(urllib.error.HTTPError) as error:
+            urllib.request.urlopen(urllib.request.Request(base + "/capture", data=b"", method="POST"))
+        assert error.value.code == 405
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join()
+
+
 def test_warning_log_keeps_event_kind_without_colliding_with_log_category():
     from cane.vision.demo import Demo
     app = Demo.__new__(Demo)

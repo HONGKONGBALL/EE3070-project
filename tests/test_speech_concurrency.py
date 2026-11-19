@@ -5,11 +5,25 @@ from pathlib import Path
 import subprocess
 import sys
 import threading
+import wave
 from types import TracebackType
 
 import pytest
 
-from cane.vision.speech import Speech
+from cane.vision.speech import PipeWireAudio, Speech
+
+
+def test_navigation_plays_turn_and_distance_from_english_catalog(tmp_path):
+    catalog = tmp_path / "navigation" / "en"
+    catalog.mkdir(parents=True)
+    turn, distance = b"\x01\x00" * 4, b"\x02\x00" * 3
+    for name, pcm in [("turn_right", turn), ("d_30", distance)]:
+        with wave.open(str(catalog / (name + ".wav")), "wb") as clip:
+            clip.setparams((1, 2, 22050, 0, "NONE", "not compressed"))
+            clip.writeframes(pcm)
+    sink = PipeWireAudio(tmp_path / "vision", True, "", lambda *_a, **_k: None)
+    sink.catalog = catalog
+    assert sink._join_clips(["turn_right", "d_30"]) == (22050, turn + distance)
 
 
 class ObservedControlLock:

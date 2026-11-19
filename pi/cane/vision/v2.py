@@ -3,6 +3,7 @@
 import argparse
 from collections import deque
 import json
+import logging
 import os
 from pathlib import Path
 import signal
@@ -66,9 +67,13 @@ class V2(Demo):
             raise ValueError("Vision mode must be balanced, ground or awareness")
         self.awareness_mode = self.vision_mode == 'awareness'
         self.objects_enabled = self.vision_mode == "balanced"
+        navigation_config = config.get("navigation", {})
+        navigation_enabled = bool(navigation_config.get("enabled"))
         camera_factory = (lambda _device,w,h,fps: ReplayCamera(source,w,h,fps)) if source else None
         super().__init__(config, audio_factory=lambda *args: Speech(*args,
                          ordinary_interval_s=config["audio"].get("ordinary_interval_s",1.5),
+                         haptic=(lambda pattern: self.distance.link.vibrate(pattern)) if navigation_enabled else None,
+                         info_preempts_navigation=navigation_enabled,
                          allowed_phrases={v[0] for v in VOICE.values()} if self.awareness_mode else None), camera_factory=camera_factory)
         self.config, self.input_source = config, "replay" if source else "live_camera"
         self.audio_outputs = AudioOutputControl(self.audio, config.get('_config_path'))
@@ -91,6 +96,22 @@ class V2(Demo):
                                distance["enter_m"],distance["leave_m"], config["warning"]["ground_roi"], config["warning"], self.log)
         self.audio.validator = self._request_valid
         self.audio.on_delivery = self._on_delivery
+        assistant_config = config.get("assistant", {})
+        self.navigation = None
+        if navigation_enabled:
+            from .navigation import PiNavigation
+
+            if not assistant_config.get("enabled") or assistant_config.get("mode") != "ollama":
+                raise ValueError("Integrated navigation requires the local Ollama voice assistant")
+            self.navigation = PiNavigation(navigation_config, self.distance, self.audio)
+        self.assistant = None
+        if assistant_config.get("enabled"):
+            if assistant_config.get("mode") == "ollama":
+                from .wake_assistant import WakeAssistant
+                self.assistant = WakeAssistant(assistant_config, self.camera, self.audio, navigation=self.navigation)
+            else:
+                from .assistant import VoiceAssistant
+                self.assistant = VoiceAssistant(assistant_config, self.camera, self.audio)
         self.results = {}
         self.ground_tasks={"road":RoadDetector,"pothole":RoadDetector,"semantic":SemanticDetector}
         if pothole_backend == 'yolox_onnx_research':
@@ -127,16 +148,26 @@ class V2(Demo):
         self.started_at = time.monotonic()
         self.log("start_v2", input_source=self.input_source, distance_source=self.distance.source,
                  device=self.camera.device, vision_mode=self.vision_mode, config=self.config)
-        self.distance.start()
+        if self.navigation:
+            self.navigation.start()
+        else:
+            self.distance.start()
         self.camera.start()
         for worker in self.workers: worker.start()
+        if self.assistant and self.config["assistant"].get("mode") == "ollama":
+            self.assistant.start()
 
     def close(self):
         self.stopped.set()
+        if self.assistant:
+            self.assistant.close()
         self.camera.close()
         with self.condition: self.condition.notify_all()
         for worker in self.workers: worker.join(timeout=5)
-        self.distance.close()
+        if self.navigation:
+            self.navigation.close()
+        else:
+            self.distance.close()
         self.audio.close()
         self.log("stop")
         self.logfile.close()
@@ -443,12 +474,17 @@ class V2(Demo):
         return events
 
     def _on_delivery(self, event_id, action, now):
-        if self.crowd and ':crowd-' in event_id:
+        if event_id.startswith("assistant:"):
+            if self.assistant:
+                self.assistant.delivery(event_id, action, now)
+        elif self.crowd and ':crowd-' in event_id:
             self.crowd.delivery(event_id,action,now)
         else:
             self.policy.delivery(event_id,action,now)
 
     def _request_valid(self,request):
+        if request.event_id.startswith("assistant:"):
+            return bool(self.assistant and self.assistant.valid(request.event_id, time.monotonic()))
         if getattr(self,'crowd',None) and ':crowd-' in request.event_id:
             return self.crowd.valid(request.event_id,time.monotonic())
         if request.event_id.startswith("fault:"):
@@ -554,6 +590,21 @@ class V2(Demo):
                                     "sudden_drop":"required_unverified"})
         if not self.objects_enabled:
             status.update(model="ground-vision",model_state="disabled",inference_ms=None)
+        if self.navigation:
+            status["navigation"] = self.navigation.status()
+        return status
+
+    def dashboard_status(self):
+        camera = self.camera.status()
+        now = time.monotonic()
+        with self.condition:
+            ready = bool(camera["ready"] and self.jpeg and now - self.captured_at <= 1.5)
+            alert = self.current_text if ready else ""
+        status = {"run_id": self.run_id,
+                "camera": {"ready": ready, "fps": camera["capture_fps"], "source": self.input_source},
+                "pico": self.distance.telemetry(now), "alert": alert}
+        if self.navigation:
+            status["navigation"] = self.navigation.status()
         return status
 
 
@@ -573,14 +624,31 @@ def main():
     if args.replay: config["source"] = {"video":args.replay}
     if args.no_audio: config["audio"]["enabled"] = False
     app = V2(config)
-    server = ThreadingHTTPServer((config["server"]["host"],config["server"]["port"]),handler_for(app))
+    server = ThreadingHTTPServer((config["server"]["host"],config["server"]["port"]),
+                                 handler_for(app, local_dashboard=app.assistant is not None))
+    dashboard = config.get("dashboard", {})
+    dashboard_server = dashboard_thread = None
     def stop(*_):
         raise KeyboardInterrupt
     signal.signal(signal.SIGTERM,stop)
     app.start()
-    try: server.serve_forever(poll_interval=0.1)
+    try:
+        if dashboard.get("enabled", False):
+            address = (dashboard.get("host", "127.0.0.1"), dashboard.get("port", 8011))
+            try:
+                dashboard_server = ThreadingHTTPServer(address, handler_for(app, dashboard=True))
+            except OSError as exc:
+                logging.getLogger(__name__).error("Dashboard unavailable: %s", exc)
+            else:
+                dashboard_thread = threading.Thread(target=dashboard_server.serve_forever, daemon=True)
+                dashboard_thread.start()
+        server.serve_forever(poll_interval=0.1)
     except KeyboardInterrupt: pass
     finally:
+        if dashboard_server is not None:
+            if dashboard_thread.is_alive():
+                dashboard_server.shutdown()
+            dashboard_server.server_close()
         server.server_close()
         app.close()
 

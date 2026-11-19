@@ -58,6 +58,8 @@ class OutputArbiter:
         valid_request: Callable[[OutputRequest], bool] | None = None,
         record_event: Callable[[ArbiterEvent], None] | None = None,
         ordinary_interval_s: float = 0.0,
+        info_preempts_navigation: bool = False,
+        lock=None,
     ) -> None:
         self._audio = audio
         self._haptic = haptic
@@ -68,8 +70,9 @@ class OutputArbiter:
         self._valid_request = valid_request or (lambda req: True)
         self._record_event = record_event
         self._ordinary_interval = ordinary_interval_s
+        self._info_preempts_navigation = info_preempts_navigation
         self._last_dispatch_t = -1e9
-        self._lock = threading.RLock()
+        self._lock = lock if lock is not None else threading.RLock()
         self._queue: list[tuple[int, OutputRequest]] = []
         self._seq = 0
         self._current: OutputRequest | None = None
@@ -123,8 +126,8 @@ class OutputArbiter:
     def discard_information(self) -> None:
         """Cancel destination readbacks while retaining every safety output."""
         with self._lock:
-            self._queue = [(seq, req) for seq, req in self._queue if req.priority is not Priority.INFO]
-            if self._current is not None and self._current.priority is Priority.INFO:
+            self._queue = [(seq, req) for seq, req in self._queue if req.priority is not Priority.INFO or req.event_id]
+            if self._current is not None and self._current.priority is Priority.INFO and not self._current.event_id:
                 self._audio.stop()
                 self._current = None
 
@@ -181,7 +184,7 @@ class OutputArbiter:
 
             if self._max_pending is not None and len(self._queue) >= self._max_pending:
                 worst = max(self._queue, key=self._sort_key)
-                if req.priority >= worst[1].priority:
+                if self._rank(req) >= self._rank(worst[1]):
                     self._log(now, "dropped_full", req)
                     return False
                 self._queue.remove(worst)
@@ -192,20 +195,19 @@ class OutputArbiter:
             self._log(now, "queued", req)
 
             cur = self._current
-            if (
-                req.priority.is_safety
-                and cur is not None
-                and self._audio.busy()
-                and req.priority < cur.priority
-            ):
+            if req.priority < Priority.ASSISTANT:
+                self.cancel_pending(lambda pending: pending.priority.is_assistant and pending.priority > req.priority)
+            integrated_nav = cur is not None and self._info_preempts_navigation and cur.priority is Priority.NAV
+            if (cur is not None and (req.priority.is_safety or cur.priority.is_assistant or integrated_nav)
+                    and self._audio.busy() and self._rank(req) < self._rank(cur)):
                 self._audio.stop()
                 self._log(now, "preempted", cur)
-                # the interrupted prompt is replayed later if it is still fresh
                 self._last_played.pop(cur.key, None)
-                self._seq += 1
-                self._queue.append((self._seq, cur))
-                if self._max_pending is not None and len(self._queue) > self._max_pending:
-                    self._queue.remove(max(self._queue, key=self._sort_key))
+                if not cur.priority.is_assistant and not integrated_nav:
+                    self._seq += 1
+                    self._queue.append((self._seq, cur))
+                    if self._max_pending is not None and len(self._queue) > self._max_pending:
+                        self._queue.remove(max(self._queue, key=self._sort_key))
                 self._current = None
         self.tick()
         return True
@@ -220,10 +222,14 @@ class OutputArbiter:
                 else: keep.append(item)
             self._queue = keep
 
-    @staticmethod
-    def _sort_key(item: tuple[int, OutputRequest]) -> tuple[int, int]:
+    def _rank(self, req: OutputRequest) -> float:
+        if self._info_preempts_navigation and req.priority is Priority.NAV:
+            return (int(Priority.INFO) + int(Priority.ASSISTANT_NAV)) / 2
+        return int(req.priority)
+
+    def _sort_key(self, item: tuple[int, OutputRequest]) -> tuple[float, int]:
         seq, req = item
-        return (int(req.priority), seq)
+        return (self._rank(req), seq)
 
     def tick(self) -> OutputRequest | None:
         """Dispatch the next request if the speaker is free. Returns what was played."""
@@ -251,6 +257,8 @@ class OutputArbiter:
                     continue
                 if req.priority is Priority.SAFETY and now-self._last_dispatch_t < self._ordinary_interval:
                     continue
+                if req.priority.is_assistant and any(item[1].priority < req.priority for item in self._queue):
+                    continue
                 if req.direction is not Direction.NONE and not self._orientation_ok:
                     self._queue.remove(item)
                     self._log(now, "dropped_orientation", req)
@@ -262,7 +270,8 @@ class OutputArbiter:
 
     def _dispatch(self, now: float, req: OutputRequest) -> None:
         self._current = req
-        self._last_dispatch_t = now
+        if not req.priority.is_assistant:
+            self._last_dispatch_t = now
         self._last_played[req.key] = now
         if req.priority.is_safety:
             self._last_safety_t = now

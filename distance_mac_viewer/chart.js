@@ -1,4 +1,5 @@
-export function drawChart(canvas, channels, now = Date.now()) {
+export function drawChart(canvas, channels, now = Date.now(), emptyText = '连接 Pico，或点击“查看演示”',
+                          { nowLabel = '现在', noChannels = '勾选上方通道以显示曲线' } = {}) {
   const { width, height } = canvas.getBoundingClientRect();
   if (!width) return;
   const dpr = window.devicePixelRatio || 1;
@@ -19,7 +20,7 @@ export function drawChart(canvas, channels, now = Date.now()) {
     ctx.fillText(String(Math.round(scale * step / 4)), 2, y + 3);
   }
   ctx.fillText('cm', 2, 8); ctx.fillText('−30 s', left, height - 5);
-  ctx.fillText('−15 s', (left + right) / 2 - 16, height - 5); ctx.fillText('现在', right - 24, height - 5);
+  ctx.fillText('−15 s', (left + right) / 2 - 16, height - 5); ctx.fillText(nowLabel, right - 24, height - 5);
   for (const channel of series) {
     ctx.strokeStyle = channel.color; ctx.lineWidth = 2; ctx.beginPath();
     let previousTime = null;
@@ -34,7 +35,7 @@ export function drawChart(canvas, channels, now = Date.now()) {
   }
   if (!series.some(channel => channel.points.length)) {
     ctx.font = '12px -apple-system, sans-serif'; ctx.fillStyle = '#8b9ba6'; ctx.textAlign = 'center';
-    ctx.fillText(channels.length ? '连接 Pico，或点击“查看演示”' : '勾选上方通道以显示曲线', (left + right) / 2, (top + bottom) / 2);
+    ctx.fillText(channels.length ? emptyText : noChannels, (left + right) / 2, (top + bottom) / 2);
     ctx.textAlign = 'start';
   }
 }

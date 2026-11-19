@@ -495,6 +495,13 @@ def test_pico_adapter_reuses_legacy_units_and_rejects_duplicate_and_rebooted_tim
     assert provider.latest(10.1).sample_id==first.sample_id
     provider.link.inbox.put(SensorFrame(10.2,front_m=.5,pico_ms=2))
     assert provider.latest(10.2) is None
+    assert provider.telemetry(10.2)["frame"] is None
+    provider.link.inbox.put(SensorFrame(10.3,up_m=.63,tfmini_m=.42,tfmini_strength=650,pico_ms=52))
+    assert not provider.latest(10.3).valid
+    telemetry=provider.telemetry(10.4)
+    assert telemetry["fresh"] and telemetry["front_cm"] is None
+    assert (telemetry["upper_cm"],telemetry["laser_cm"],telemetry["laser_strength"]) == (63,42,650)
+    assert not provider.telemetry(11)["fresh"]
 
 
 @pytest.mark.parametrize('puddle_enabled',[False,True])

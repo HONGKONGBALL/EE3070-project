@@ -61,6 +61,7 @@ class CaneApp(ControlsMixin, NavigationMixin, SensingMixin, VoiceMixin, StatusMi
         start_threads: bool = True,
         destination_only: bool = False,
         pi_places: PiPlaceSearch | None = None,
+        output_arbiter: OutputArbiter | None = None,
     ) -> None:
         self.cfg, self.sim, self.clock = cfg, sim, clock
         self.destination_only = destination_only
@@ -80,8 +81,9 @@ class CaneApp(ControlsMixin, NavigationMixin, SensingMixin, VoiceMixin, StatusMi
                      else AplayAudio(cfg.audio.dir, self.lang, cfg.audio.device, cfg.audio.player))
         self.audio = audio
         self.pico = pico or (SimPicoLink() if sim else SerialPicoLink(cfg.pico.port, cfg.pico.baud))
-        self.arbiter = OutputArbiter(audio, self.pico.vibrate, cfg.arbiter.safety_hold_s,
-                                     cfg.arbiter.repeat_cooldown_s, clock, record_event=self._log_output)
+        self.arbiter = output_arbiter if output_arbiter is not None else OutputArbiter(
+            audio, self.pico.vibrate, cfg.arbiter.safety_hold_s, cfg.arbiter.repeat_cooldown_s,
+            clock, record_event=self._log_output)
         self.sm = CaneStateMachine(clock)
         self.sm.test_mode = self.test_mode
         self.sm.on_transition(lambda tr: self.logbook.write(

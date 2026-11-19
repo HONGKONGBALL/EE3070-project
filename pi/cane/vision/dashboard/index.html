@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eef3f6">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./dashboard.css">
+  <title data-en="EE3070 Smart Cane · Live Monitor">EE3070 智能拐杖 · 实时监控</title>
+</head>
+<body>
+<main class="shell">
+  <header class="masthead">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><circle cx="7" cy="21" r="2" fill="currentColor"/><path d="M7 14a7 7 0 0 1 7 7M7 8a13 13 0 0 1 13 13M7 2a19 19 0 0 1 19 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      <span>EE3070 <span class="brand-divider">/</span> SENSOR LAB</span>
+    </div>
+    <div class="header-actions">
+      <span id="connection" class="badge" role="status" data-en="Connecting">连接中</span>
+      <button id="language-toggle" class="button language-toggle" type="button" lang="en" aria-label="Switch to English">EN</button>
+      <a id="view-link" class="button primary" href="#details">详情 <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <section id="overview" aria-labelledby="overview-title">
+    <div class="page-heading">
+      <div><p class="eyebrow">SMART CANE / LIVE MONITOR</p><h1 id="overview-title" tabindex="-1" data-en="Smart cane monitor">智能拐杖监控</h1></div>
+      <span class="device">Raspberry Pi 5 <span>·</span> Pico H</span>
+    </div>
+    <section class="sensors" aria-label="三路实时距离" data-en-label="Three live distance readings">
+      <article class="sensor laser" data-channel="laser">
+        <div class="sensor-heading"><div><p class="eyebrow">01 / TFMINI-S</p><h2 data-en="Laser distance">激光距离</h2></div><span aria-hidden="true" class="direction">⊙</span></div>
+        <div class="reading"><span data-reading>—</span><small>cm</small></div>
+        <div class="range" aria-hidden="true"><span data-range></span></div>
+        <div class="range-labels"><span>10 cm</span><span>1,200 cm</span></div>
+        <p class="sensor-status" data-state-label data-en="Waiting for data">等待数据</p>
+      </article>
+      <article class="sensor front" data-channel="front">
+        <div class="sensor-heading"><div><p class="eyebrow">02 / HC-SR04</p><h2 data-en="Front sonar">前方超声波</h2></div><span aria-hidden="true" class="direction">→</span></div>
+        <div class="reading"><span data-reading>—</span><small>cm</small></div>
+        <div class="range" aria-hidden="true"><span data-range></span></div>
+        <div class="range-labels"><span>2 cm</span><span>400 cm</span></div>
+        <p class="sensor-status" data-state-label data-en="Waiting for data">等待数据</p>
+      </article>
+      <article class="sensor upper" data-channel="upper">
+        <div class="sensor-heading"><div><p class="eyebrow">03 / HC-SR04</p><h2 data-en="Upper sonar">上方超声波</h2></div><span aria-hidden="true" class="direction">↑</span></div>
+        <div class="reading"><span data-reading>—</span><small>cm</small></div>
+        <div class="range" aria-hidden="true"><span data-range></span></div>
+        <div class="range-labels"><span>2 cm</span><span>400 cm</span></div>
+        <p class="sensor-status" data-state-label data-en="Waiting for data">等待数据</p>
+      </article>
+    </section>
+
+    <section class="camera-panel" aria-labelledby="camera-title">
+      <div class="panel-heading"><div><p class="eyebrow">04 / VISION</p><h2 id="camera-title" data-en="Live camera">实时摄像头</h2></div><span id="camera-status" class="badge" data-en="Waiting for video">等待画面</span></div>
+      <div class="camera-body">
+        <figure class="viewport">
+          <img id="camera" width="640" height="480" alt="树莓派实时摄像头画面及识别标记" data-en-alt="Live Raspberry Pi camera and detection overlays" hidden>
+          <figcaption id="camera-empty" data-en="Waiting for the camera feed">正在等待摄像头画面</figcaption>
+        </figure>
+        <div class="camera-summary">
+          <p class="eyebrow">VISION ALERT</p>
+          <h3 data-en="Current vision alert">当前视觉提醒</h3>
+          <p id="alert" class="alert" role="status">—</p>
+            <p id="navigation-status" hidden></p>
+          <section id="voice-assistant" class="voice-assistant" hidden aria-labelledby="assistant-title">
+            <h3 id="assistant-title" data-en="Voice assistant">语音助手</h3>
+            <button id="ptt" class="button primary" type="button" aria-describedby="ptt-status" data-en="Hold to ask">按住提问</button>
+            <button id="test-wake" class="button" type="button" hidden data-en="Test acknowledgement">测试唤醒应答</button>
+            <p id="ptt-status" role="status"></p>
+            <p id="ptt-answer" class="ptt-answer" hidden></p>
+          </section>
+          <div class="camera-meta"><span data-en="Capture rate">摄像头采集</span><span id="camera-fps" class="mono">—</span></div>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="details" aria-labelledby="details-title" hidden>
+    <div class="page-heading"><div><p class="eyebrow">SMART CANE / DIAGNOSTICS</p><h1 id="details-title" tabindex="-1" data-en="Distance details">测距详情</h1></div></div>
+    <section class="detail-panel" aria-labelledby="trend-title">
+      <div class="panel-heading detail-heading">
+        <div><h2 id="trend-title" data-en="Distance over time">距离变化</h2><p class="muted" data-en="Last 30 seconds · Browser samples">最近 30 秒 · 网页采样</p></div>
+        <div class="legend" aria-label="选择曲线" data-en-label="Select chart series">
+          <label class="laser"><input type="checkbox" value="laser" checked> <span data-en="Laser">激光</span></label>
+          <label class="front"><input type="checkbox" value="front" checked> <span data-en="Front">前方</span></label>
+          <label class="upper"><input type="checkbox" value="upper" checked> <span data-en="Upper">上方</span></label>
+        </div>
+      </div>
+      <canvas id="chart" role="img" aria-label="三路测距最近 30 秒曲线" data-en-label="Three distance channels over the last 30 seconds"></canvas>
+      <div class="detail-actions"><button id="clear" class="button" type="button" data-en="Clear chart">清空曲线</button><button id="export" class="button" type="button" data-en="Export CSV" disabled>导出 CSV</button></div>
+    </section>
+    <section class="detail-panel" aria-labelledby="diagnostics-title">
+      <h2 id="diagnostics-title" data-en="Serial diagnostics">串口诊断</h2>
+      <dl class="diagnostics">
+        <div><dt data-en="Frames received by Pi">Pi 已接收帧数</dt><dd id="packet-count">—</dd></div>
+        <div><dt data-en="Pico uptime">Pico 时间</dt><dd id="pico-clock">—</dd></div>
+        <div><dt data-en="Sample age">数据年龄</dt><dd id="packet-age">—</dd></div>
+        <div><dt data-en="Laser signal strength">激光信号强度</dt><dd id="laser-strength">—</dd></div>
+      </dl>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col" data-en="Channel">通道</th><th scope="col" data-en="Raw distance">原始距离</th><th scope="col" data-en="Status">状态</th><th scope="col" data-en="Pico wiring">Pico 接线</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">TFmini-S</th><td id="raw-laser">—</td><td id="detail-laser">—</td><td>UART1 · TX GP8 / RX GP9</td></tr>
+          <tr><th scope="row" data-en="Front sonar">前方超声波</th><td id="raw-front">—</td><td id="detail-front">—</td><td>Trig GP2 / Echo GP3</td></tr>
+          <tr><th scope="row" data-en="Upper sonar">上方超声波</th><td id="raw-upper">—</td><td id="detail-upper">—</td><td>Trig GP4 / Echo GP5</td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted footnote" data-en="The Pico sends distance and laser signal strength to the Pi over USB. Individual sonar pulse widths are unavailable.">Pico 通过 USB 将测距数据发给树莓派。当前固件上报距离和激光强度，未上报单次超声波回波宽度。</p>
+    </section>
+  </section>
+  <footer><span>EE3070 / GP7</span><span data-en="Pi local network monitor">Pi 局域网监控</span></footer>
+</main>
+<script type="module" src="./dashboard.js"></script>
+</body>
+</html>

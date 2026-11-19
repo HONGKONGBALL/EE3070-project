@@ -13,7 +13,13 @@ class Priority(enum.IntEnum):
     SAFETY = 1    # obstacle, head-level, step, rough ground
     SYSTEM = 2    # boot, battery, network, mode changes
     NAV = 3       # turns, crossing hand-off, arrival
-    INFO = 4      # read-backs, confirmations
+    INFO = 5      # read-backs, confirmations
+    ASSISTANT_NAV = 6  # on-demand navigation reply
+    ASSISTANT = 7      # on-demand scene description
+
+    @property
+    def is_assistant(self) -> bool:
+        return self >= Priority.ASSISTANT_NAV
 
     @property
     def is_safety(self) -> bool:

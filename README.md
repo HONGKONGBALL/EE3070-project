@@ -246,6 +246,8 @@ python -m cane --sim --config config/config.example.toml
 
 [iPhone 定位与 Pico K2 语音导航联调](docs/pi5-iphone-navigation.md)
 
+[树莓派摄像头、语音助手和步行导航的统一入口](docs/pi-unified.md)
+
 ```bash
 sudo apt install -y python3-venv python3-opencv alsa-utils i2c-tools
 sudo raspi-config nonint do_i2c 0        # 打开 I²C（MPU6050）

@@ -7,11 +7,43 @@ host = "127.0.0.1"
 port = 8000
 preview_fps = 12
 
+# Optional read-only dashboard. Set host to the Pi LAN address for other devices.
+[dashboard]
+enabled = false
+host = "127.0.0.1"
+port = 8011
+
 [camera]
 device = "auto"
 width = 640
 height = 480
 fps = 15
+
+[assistant]
+enabled = false
+mode = "ollama"              # ollama | mock | psyche
+microphone = "default"      # ALSA device from arecord -L
+question_language = "en"    # en | zh (Mandarin)
+answer_language = "en"      # en | zh (Mandarin)
+vosk_model_dir = "models"
+max_record_s = 8
+max_scene_age_s = 12
+request_timeout_s = 8
+asr_timeout_s = 6
+# Local Ollama mode uses the existing voice modules on PYTHONPATH.
+# With microphone = "default", local Ollama mode selects AirPods by name.
+wake_enabled = false
+# Set ptt_gpio to the BCM number of a dedicated Pi button wired to GND.
+dashboard_wake_test = false
+wake_confidence = 0.70
+speech_models_dir = "voice/models"
+ollama_port = 11434
+
+# Integrate the Pi 5 navigator using the same Pico serial link and audio output.
+[navigation]
+enabled = false
+config = "config/config.toml"
+# phone_pair = "certs/pi-phone"
 
 [model]
 directory = "models/yolo11n"
