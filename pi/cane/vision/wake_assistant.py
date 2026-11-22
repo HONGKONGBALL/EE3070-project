@@ -24,6 +24,19 @@ from .wake_word import DISPLAY_PHRASE, WakeDetector
 LOG = logging.getLogger(__name__)
 VISION_RETRY = "I couldn't make out the scene."
 TOGGLE_CHANNELS = {"vision_button", "navigation_button"}
+# A hazard warning can hold the speaker when K4 is tapped. Retry the cue until it is heard.
+ACK_WAIT_S = 3.0
+ACK_RETRY_S = 0.15
+SERVICE_UNAVAILABLE = "The vision service is unavailable."
+# Spoken locally by Piper when a cloud turn fails, so the user is not left in silence.
+CLOUD_FAILURE_SPEECH = {
+    "provider_timeout": "The vision service timed out. Please try again.",
+    "provider_busy": "The vision service is busy. Please try again.",
+    "budget_exhausted": "The daily vision limit has been reached.",
+    "scene_expired": "That took too long. Please ask again.",
+    "recording_limit": "Recording stopped. Please tap and ask again.",
+    "microphone_unavailable": "The microphone is unavailable.",
+}
 ACK = b"".join(struct.pack("<h", int(2800 * sin(2 * pi * 880 * n / 16000) *
                                     min(1, n / 80, (1280 - n) / 80))) for n in range(1280))
 
@@ -324,7 +337,7 @@ class WakeAssistant:
                 return "wake", None
             if self.trigger in TOGGLE_CHANNELS:
                 kind = self.trigger
-                if not self._play_pcm(ACK, 16000, next_state="ACKNOWLEDGING") or self.cancelled:
+                if not self._acknowledge():
                     return None, None
                 with self.microphone() as mic:
                     self._state("LISTENING_FOR_COMMAND")
@@ -349,6 +362,29 @@ class WakeAssistant:
                                 self.trigger = "wake"
                                 return "wake", None
         return None, None
+
+    def _acknowledge(self):
+        """Play the K4/K2 cue. The user starts speaking only after hearing it."""
+        deadline = time.monotonic() + ACK_WAIT_S
+        while not self.stop.is_set() and not self.cancelled:
+            if self._play_pcm(ACK, 16000, next_state="ACKNOWLEDGING"):
+                return not self.cancelled
+            # Rejected or interrupted by a higher-priority warning. Wait for the speaker.
+            if time.monotonic() >= deadline:
+                return False
+            self.stop.wait(ACK_RETRY_S)
+        return False
+
+    def _announce_failure(self, error):
+        """Tell the user out loud that a cloud turn failed. Local alerts keep priority."""
+        if not self.cloud or self.stop.is_set() or self.cancelled:
+            return
+        if error in {"audio_disabled", "busy", "tts_unavailable"}:
+            return
+        try:
+            self._speak(CLOUD_FAILURE_SPEECH.get(error, SERVICE_UNAVAILABLE), next_state="ERROR")
+        except Exception:
+            LOG.warning("Could not announce assistant failure %s", error, exc_info=True)
 
     def _transcribe(self, pcm):
         self._state("TRANSCRIBING")
@@ -381,7 +417,12 @@ class WakeAssistant:
             with self.microphone() as mic:
                 pcm = self._capture(mic)
         question = self._transcribe(pcm)
-        if self.stop.is_set() or self.cancelled or not question:
+        if self.stop.is_set() or self.cancelled:
+            return
+        if not question:
+            # A warning during recording discards the clip. In cloud mode say so instead of going silent.
+            if self.cloud:
+                self._speak("I didn't catch that. Please tap and ask again.")
             return
         if kind == "navigation_button":
             self.navigation.submit_destination(question)
@@ -487,6 +528,7 @@ class WakeAssistant:
                 self._state("COOLDOWN")
                 self.stop.wait(0.55)
             except AssistantError as exc:
+                self._announce_failure(str(exc))
                 self._state("ERROR", str(exc))
                 self.stop.wait(0.6)
             except ImportError:
@@ -494,6 +536,7 @@ class WakeAssistant:
                 self.stop.wait(1.5)
             except Exception:
                 LOG.exception("Local voice assistant failed")
+                self._announce_failure("assistant_error")
                 self._state("ERROR", "assistant_error")
                 self.stop.wait(1.5)
             finally:

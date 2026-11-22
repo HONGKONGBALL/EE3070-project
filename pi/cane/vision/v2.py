@@ -106,7 +106,8 @@ class V2(Demo):
             from .psyche_budget import RequestBudget
 
             budget = RequestBudget(assistant_config.get("request_budget_path", "logs/psyche-requests.sqlite"),
-                                   assistant_config.get("daily_request_budget", 50),
+                                   # Omit or set 0 for no local daily cap (the gateway key enforces its own).
+                                   assistant_config.get("daily_request_budget") or None,
                                    run_id=assistant_config.get("request_budget_run_id"),
                                    run_limit=assistant_config.get("request_budget_run_limit", 25))
             provider = PsycheGrokVisionProvider(assistant_config.get("request_timeout_s", 8),
