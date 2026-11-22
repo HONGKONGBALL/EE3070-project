@@ -3,13 +3,16 @@
 from collections import deque
 from contextlib import contextmanager, nullcontext
 from functools import cached_property
+from math import pi, sin
 import io
 import logging
 from pathlib import Path
 import re
+import struct
 import subprocess
 import threading
 import time
+from typing import Protocol
 import uuid
 
 from .assistant_media import foreground_is_dark, shared_jpeg, speech_only_pcm
@@ -20,6 +23,17 @@ from .wake_word import DISPLAY_PHRASE, WakeDetector
 
 LOG = logging.getLogger(__name__)
 VISION_RETRY = "I couldn't make out the scene."
+TOGGLE_CHANNELS = {"vision_button", "navigation_button"}
+ACK = b"".join(struct.pack("<h", int(2800 * sin(2 * pi * 880 * n / 16000) *
+                                    min(1, n / 80, (1280 - n) / 80))) for n in range(1280))
+
+
+class ASRProvider(Protocol):
+    def transcribe(self, pcm: bytes) -> str: ...
+
+
+class TTSProvider(Protocol):
+    def synthesize(self, text: str) -> bytes: ...
 
 
 def short_visual_answer(text):
@@ -35,17 +49,24 @@ def short_visual_answer(text):
 
 class WakeAssistant:
     def __init__(self, config, camera, audio, *, microphone=None, speech=None, provider=None,
-                 detector=None, navigation=None, exclusive_vision=None):
+                 detector=None, navigation=None, exclusive_vision=None, asr: ASRProvider | None = None,
+                 tts: TTSProvider | None = None, report=None):
         self.camera, self.audio = camera, audio
         self.microphone = microphone if microphone is not None else self._microphone(config.get("microphone", "default"))
         self.models = Path(config.get("speech_models_dir", "voice/models"))
         self._speech, self._provider = speech, provider
-        self.exclusive_vision = exclusive_vision
+        self.asr, self.tts = asr, tts
+        self.report = report
+        self.mode = config.get("mode", "ollama")
+        self.cloud = self.mode == "psyche_grok"
+        self.exclusive_vision = None if self.cloud else exclusive_vision
+        if self.cloud and provider is None:
+            raise ValueError("Psyche vision provider has not been configured")
         self.ollama_port = config.get("ollama_port", 11434)
         self.request_timeout = config.get("request_timeout_s", 20)
         self.navigation = navigation if navigation is not None else MockNavigationAdapter()
-        self.wake_enabled = bool(config.get("wake_enabled", False))
-        self.dashboard_test = bool(config.get("dashboard_wake_test", False))
+        self.wake_enabled = not self.cloud and bool(config.get("wake_enabled", False))
+        self.dashboard_test = not self.cloud and bool(config.get("dashboard_wake_test", False))
         self.ptt_gpio = config.get("ptt_gpio")
         if self.ptt_gpio is not None and (type(self.ptt_gpio) is not int or not 0 <= self.ptt_gpio <= 27):
             raise ValueError("ptt_gpio must be a Raspberry Pi BCM GPIO number")
@@ -72,6 +93,7 @@ class WakeAssistant:
         self.answer = ""
         self.frame_id = None
         self.captured_at = None
+        self.button_at = float("-inf")
 
     @cached_property
     def detector(self):
@@ -121,7 +143,7 @@ class WakeAssistant:
     def status(self):
         with self.lock:
             fresh = self.captured_at is None or time.monotonic() - self.captured_at <= self.max_age
-            return {"state": self.state, "error": self.error, "mode": "ollama", "request_id": self.request_id,
+            return {"state": self.state, "error": self.error, "mode": self.mode, "request_id": self.request_id,
                     "wake_enabled": self.wake_enabled, "wake_phrase": DISPLAY_PHRASE,
                     "dashboard_wake_test": self.dashboard_test, "recent_states": list(self.recent),
                     "demo_exclusive_vision": self.exclusive_vision is not None,
@@ -165,6 +187,27 @@ class WakeAssistant:
     def press(self):
         return self._activate("ptt")
 
+    def toggle(self, channel):
+        """Accept one Pico tap at a time. The worker owns the microphone."""
+        now = time.monotonic()
+        with self.lock:
+            if (not self.cloud or channel not in TOGGLE_CHANNELS or self.stop.is_set()
+                    or now - self.button_at < .25):
+                return False
+            if self.trigger == channel and self.state == "LISTENING_FOR_COMMAND" and not self.released:
+                self.released = True
+            elif self.trigger is None and self.state == "PASSIVE_LISTENING":
+                self._activate(channel)
+            else:
+                return False
+            self.button_at = now
+            return True
+
+    def cancel_navigation_recording(self):
+        with self.lock:
+            if self.trigger == "navigation_button":
+                self.released = self.cancelled = True
+
     def test_wake(self):
         if not self.dashboard_test:
             raise AssistantError("test_disabled")
@@ -202,9 +245,13 @@ class WakeAssistant:
 
         if self.stop.is_set() or self.cancelled:
             return False
-        samples, rate, channels = read_wave(self.speech.synthesize(text))
+        synthesize = (self.tts or self.speech).synthesize
+        samples, rate, channels = read_wave(self._timed("tts", "piper", synthesize, text))
         if channels != 1 or not samples:
             raise AssistantError("tts_unavailable")
+        return self._play_pcm(samples, rate, navigation=navigation, captured_at=captured_at, next_state=next_state)
+
+    def _play_pcm(self, samples, rate, *, navigation=False, captured_at=None, next_state="SPEAKING"):
         if self.stop.is_set():
             return False
         now = time.monotonic()
@@ -275,6 +322,13 @@ class WakeAssistant:
                 continue
             if self.trigger == "wake":
                 return "wake", None
+            if self.trigger in TOGGLE_CHANNELS:
+                kind = self.trigger
+                if not self._play_pcm(ACK, 16000, next_state="ACKNOWLEDGING") or self.cancelled:
+                    return None, None
+                with self.microphone() as mic:
+                    self._state("LISTENING_FOR_COMMAND")
+                    return kind, self._capture(mic, ptt=True)
             with self.microphone() as mic:
                 muted_until = 0
                 if self.wake_enabled:
@@ -299,7 +353,20 @@ class WakeAssistant:
     def _transcribe(self, pcm):
         self._state("TRANSCRIBING")
         pcm = speech_only_pcm(pcm, self.silence_level)
-        return self.speech.transcribe(pcm).strip() if pcm else ""
+        return self._timed("asr", "vosk", (self.asr or self.speech).transcribe, pcm).strip() if pcm else ""
+
+    def _timed(self, capability, provider, call, value):
+        if not self.report:
+            return call(value)
+        started = time.monotonic()
+        success = False
+        try:
+            result = call(value)
+            success = bool(result)
+            return result
+        finally:
+            self.report("voice_phase", request_id=self.request_id, capability=capability, provider=provider,
+                        success=success, latency_s=round(time.monotonic()-started, 3))
 
     def _turn(self, kind, pcm):
         if self.cancelled:
@@ -316,6 +383,9 @@ class WakeAssistant:
         question = self._transcribe(pcm)
         if self.stop.is_set() or self.cancelled or not question:
             return
+        if kind == "navigation_button":
+            self.navigation.submit_destination(question)
+            return
         self._state("ROUTING_COMMAND")
         action, destination = route_command(question)
         if action == "visual_safety":
@@ -323,6 +393,8 @@ class WakeAssistant:
         elif action == "vision":
             self._state("PROCESSING")
             answer = self._visual_answer(question)
+        elif self.cloud:
+            answer = "Use the navigation button for route commands."
         else:
             answer = self._navigate(action, destination)
         if answer and self._speak(answer, navigation=action not in {"vision", "visual_safety"},
@@ -332,8 +404,6 @@ class WakeAssistant:
                     self.answer = answer
 
     def _visual_answer(self, question):
-        from PIL import Image
-
         try:
             jpeg, self.frame_id, self.captured_at = shared_jpeg(self.camera)
         except AssistantError as exc:
@@ -342,6 +412,17 @@ class WakeAssistant:
             if str(exc) == "camera_unavailable":
                 return "The camera view is unavailable."
             raise
+        if self.cloud:
+            if self.stop.is_set() or self.cancelled:
+                return ""
+            answer = self.provider.describe(question, jpeg, "en", request_id=self.request_id)
+            if self.stop.is_set() or self.cancelled:
+                return ""
+            if time.monotonic() - self.captured_at >= self.max_age:
+                raise AssistantError("scene_expired")
+            return short_visual_answer(answer)
+        from PIL import Image
+
         floor_question = re.search(r"\b(?:floor|ground)\b", question, re.I)
         object_question = re.match(r"^what(?: is|'s) (?:on|under|beside|next to) (?:the|my|this)\b", question, re.I)
         question = question[0].upper() + question[1:]

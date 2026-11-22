@@ -7,6 +7,8 @@ __pycache__/
 config/config.toml
 config/*.local.toml
 *.env
+.env.*
+!.env.example
 certs/
 logs/
 audio/*/

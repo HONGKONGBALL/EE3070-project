@@ -21,7 +21,7 @@ fps = 15
 
 [assistant]
 enabled = false
-mode = "ollama"              # ollama | mock | psyche
+mode = "psyche_grok"          # cloud vision; ollama remains available for rollback
 microphone = "default"      # ALSA device from arecord -L
 question_language = "en"    # en | zh (Mandarin)
 answer_language = "en"      # en | zh (Mandarin)
@@ -30,8 +30,8 @@ max_record_s = 8
 max_scene_age_s = 12
 request_timeout_s = 8
 asr_timeout_s = 6
-# Local Ollama mode uses the camera-v2 and assistant extras.
-# With microphone = "default", local Ollama mode selects AirPods by name.
+# Install the camera-v2 and assistant extras. Choose the capture endpoint as needed.
+daily_request_budget = 50
 # Push-to-talk only. Keep both wake options off for this configuration.
 wake_enabled = false
 # Stationary demo only. Suspend camera model inference while Ollama generates.
