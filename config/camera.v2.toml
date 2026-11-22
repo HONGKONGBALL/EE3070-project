@@ -31,7 +31,8 @@ max_scene_age_s = 12
 request_timeout_s = 8
 asr_timeout_s = 6
 # Install the camera-v2 and assistant extras. Choose the capture endpoint as needed.
-daily_request_budget = 50
+# Optional local cap on cloud requests per UTC day. Omit or 0 = rely on the gateway key's limits.
+# daily_request_budget = 50
 # Push-to-talk only. Keep both wake options off for this configuration.
 wake_enabled = false
 # Stationary demo only. Suspend camera model inference while Ollama generates.

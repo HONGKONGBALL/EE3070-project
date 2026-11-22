@@ -94,7 +94,7 @@ def main():
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--run-id", default="pi-acceptance")
     parser.add_argument("--budget-db", type=Path, default=Path("logs/psyche-requests.sqlite"))
-    parser.add_argument("--daily-limit", type=int, default=50)
+    parser.add_argument("--daily-limit", type=int, default=50, help="0 disables the local daily cap")
     parser.add_argument("--request-limit", type=int, choices=range(1, 26), default=25)
     parser.add_argument("--audio-endpoints-verified", action="store_true")
     modes = parser.add_subparsers(dest="capability", required=True)
@@ -121,7 +121,7 @@ def main():
         parser.error("Choose a simple run ID and keep it for the complete test run")
     if args.capability == "tts" and (len(args.text) > 260 or args.out.exists()):
         parser.error("Choose a short prompt and a new output file")
-    budget = RequestBudget(args.budget_db, args.daily_limit, run_id=args.run_id, run_limit=args.request_limit)
+    budget = RequestBudget(args.budget_db, args.daily_limit or None, run_id=args.run_id, run_limit=args.request_limit)
     provider = PsycheGrokVisionProvider(timeout=12, budget=budget)
     record = {"request_id": uuid.uuid4().hex, "capability": args.capability}
     started = time.monotonic()

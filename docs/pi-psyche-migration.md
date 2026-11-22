@@ -39,7 +39,8 @@ dashboard_wake_test = false
 demo_exclusive_vision = false
 request_timeout_s = 8
 max_scene_age_s = 12
-daily_request_budget = 50
+# Optional local daily cap. Omit it when the gateway key already enforces limits.
+# daily_request_budget = 50
 # Acceptance only. Keep these values across capability probes and live tests.
 request_budget_run_id = "pi-acceptance"
 request_budget_run_limit = 25
