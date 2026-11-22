@@ -34,7 +34,7 @@ def main():
     front = HCSR04(C.SONAR_FRONT_TRIG, C.SONAR_FRONT_ECHO, C.SONAR_TIMEOUT_US)
     up = HCSR04(C.SONAR_UP_TRIG, C.SONAR_UP_ECHO, C.SONAR_TIMEOUT_US)
     tf = TFmini(C.TFMINI_UART, C.TFMINI_TX, C.TFMINI_RX, C.TFMINI_BAUD)
-    buttons = Buttons(C.BUTTONS, C.LONG_PRESS_MS, C.DEBOUNCE_MS)
+    buttons = Buttons(C.configured_buttons(), C.LONG_PRESS_MS, C.DEBOUNCE_MS)
     vib = PwmOut(C.VIBRATION_PIN, C.PWM_FREQ)
     light = PwmOut(C.LIGHT_PIN, C.PWM_FREQ)
     buzzer = DigitalOut(C.BUZZER_PIN, C.BUZZER_ACTIVE_HIGH)

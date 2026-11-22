@@ -188,7 +188,7 @@ class CaneApp(ControlsMixin, NavigationMixin, SensingMixin, VoiceMixin, StatusMi
                     break
                 self._on_pico(msg)
             if not self.destination_only:
-                self._check_pico(now)
+                self._check_pico(self.clock())
                 self._update_motion()
                 self._run_hazards()
                 self._check_location(now)

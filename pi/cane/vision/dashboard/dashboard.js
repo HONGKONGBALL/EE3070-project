@@ -63,6 +63,7 @@ const assistantLabels = {
   IDLE: ['就绪', 'Ready'], RECORDING: ['录音中', 'Recording'], TRANSCRIBING: ['识别语音中', 'Transcribing'],
   ANALYZING: ['分析画面中', 'Analyzing'], SPEAKING: ['正在播报', 'Speaking'], ERROR: ['出错', 'Error'],
   PASSIVE_LISTENING: ['语音助手就绪', 'Ready'], WAKE_DETECTED: ['已触发唤醒', 'Wake triggered'],
+  ACKNOWLEDGING: ['准备录音', 'Preparing to record'],
   LISTENING_FOR_COMMAND: ['正在听问题', 'Listening for command'], ROUTING_COMMAND: ['识别指令中', 'Routing command'],
   WAITING_FOR_CONFIRMATION: ['等待确认目的地', 'Waiting for destination confirmation'],
   PROCESSING: ['正在处理', 'Processing'], COOLDOWN: ['即将就绪', 'Returning to listening'],
@@ -84,6 +85,8 @@ const assistantLabels = {
   image_rejected: ['所选模型拒绝图片输入', 'The selected model rejected image input'],
   provider_auth: ['视觉服务鉴权失败', 'Vision API authentication failed'],
   provider_busy: ['视觉服务请求过多，请稍后再试', 'Vision API rate limit reached'],
+  budget_exhausted: ['已达到视觉请求限额', 'Vision request limit reached'],
+  budget_unavailable: ['无法读取视觉请求限额', 'Vision request limit unavailable'],
   provider_timeout: ['视觉服务请求超时', 'Vision request timed out'],
   provider_error: ['视觉服务暂不可用', 'Vision API unavailable'],
   vision_busy: ['摄像头检测正忙，请重试', 'Camera detection is busy. Please try again.'],
@@ -110,7 +113,8 @@ function renderAssistant(assistant) {
   if (feedback.textContent !== feedbackText) feedback.textContent = feedbackText;
   ptt.setAttribute('aria-pressed', String(Boolean(pttSession && !pttSession.action && assistant.state !== 'ERROR')));
   // Keep keyup and pointerup available while the current press is held.
-  const ready = assistant.mode === 'ollama' ? assistant.state === 'PASSIVE_LISTENING' : ['IDLE', 'ERROR'].includes(assistant.state);
+  const ready = ['ollama', 'psyche_grok'].includes(assistant.mode)
+    ? assistant.state === 'PASSIVE_LISTENING' : ['IDLE', 'ERROR'].includes(assistant.state);
   ptt.disabled = !pttSession && !ready;
   byId('test-wake').hidden = !assistant.dashboard_wake_test;
   byId('test-wake').disabled = !ready || Boolean(pttSession);

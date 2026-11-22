@@ -99,6 +99,18 @@ class V2(Demo):
         self.audio.validator = self._request_valid
         self.audio.on_delivery = self._on_delivery
         assistant_config = config.get("assistant", {})
+        assistant_mode = assistant_config.get("mode")
+        provider = budget = None
+        if assistant_config.get("enabled") and assistant_mode == "psyche_grok":
+            from .assistant_provider import PsycheGrokVisionProvider
+            from .psyche_budget import RequestBudget
+
+            budget = RequestBudget(assistant_config.get("request_budget_path", "logs/psyche-requests.sqlite"),
+                                   assistant_config.get("daily_request_budget", 50),
+                                   run_id=assistant_config.get("request_budget_run_id"),
+                                   run_limit=assistant_config.get("request_budget_run_limit", 25))
+            provider = PsycheGrokVisionProvider(assistant_config.get("request_timeout_s", 8),
+                                               budget=budget, report=self._report_cloud)
         self.prediction_condition = threading.Condition()
         self.vision_pause_requested = False
         self.active_predictions = 0
@@ -106,16 +118,25 @@ class V2(Demo):
         if navigation_enabled:
             from .navigation import PiNavigation
 
-            if not assistant_config.get("enabled") or assistant_config.get("mode") != "ollama":
-                raise ValueError("Integrated navigation requires the local Ollama voice assistant")
-            self.navigation = PiNavigation(navigation_config, self.distance, self.audio)
+            if not assistant_config.get("enabled") or assistant_mode not in {"ollama", "psyche_grok"}:
+                raise ValueError("Integrated navigation requires the shared voice assistant")
+            self.navigation = PiNavigation(navigation_config, self.distance, self.audio,
+                                           request_budget=budget if budget and budget.run_id else None,
+                                           report=self._report_cloud if provider else None)
         self.assistant = None
         if assistant_config.get("enabled"):
-            if assistant_config.get("mode") == "ollama":
+            if assistant_mode in {"ollama", "psyche_grok"}:
                 from .wake_assistant import WakeAssistant
-                exclusive_vision = self._exclusive_vision if assistant_config.get("demo_exclusive_vision") else None
+                exclusive_vision = (self._exclusive_vision if assistant_mode == "ollama"
+                                    and assistant_config.get("demo_exclusive_vision") else None)
                 self.assistant = WakeAssistant(assistant_config, self.camera, self.audio, navigation=self.navigation,
-                                               exclusive_vision=exclusive_vision)
+                                               exclusive_vision=exclusive_vision, provider=provider,
+                                               report=self._report_cloud if provider else None)
+                if assistant_mode == "psyche_grok":
+                    if self.navigation:
+                        self.navigation.attach_cloud_assistant(self.assistant)
+                    elif isinstance(self.distance, PicoDistanceProvider):
+                        self.distance.on_button = self._on_camera_button
             else:
                 from .assistant import VoiceAssistant
                 self.assistant = VoiceAssistant(assistant_config, self.camera, self.audio)
@@ -161,8 +182,16 @@ class V2(Demo):
             self.distance.start()
         self.camera.start()
         for worker in self.workers: worker.start()
-        if self.assistant and self.config["assistant"].get("mode") == "ollama":
+        if self.assistant and self.config["assistant"].get("mode") in {"ollama", "psyche_grok"}:
             self.assistant.start()
+
+    def _on_camera_button(self, button, kind):
+        if (button, kind) == ("vision", "short"):
+            self.assistant.toggle("vision_button")
+
+    def _report_cloud(self, kind, **fields):
+        if not self.stopped.is_set():
+            self.log(kind, **fields)
 
     def close(self):
         self.stopped.set()

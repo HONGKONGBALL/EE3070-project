@@ -2,13 +2,14 @@
 
 import logging
 from pathlib import Path
+import sqlite3
 import threading
 import time
 
 from ..app import CaneApp
 from ..config import load_config
 from ..model import Priority, SensorFrame
-from ..nav.amap import AmapClient
+from ..nav.amap import AmapClient, _urllib_fetch
 from ..prompts import destination_prompt_id
 from ..voice.destinations import match_destination
 from ..voice.pi_places import PiPlaceSearch
@@ -20,9 +21,31 @@ from .voice_commands import NavigationReply
 LOG = logging.getLogger(__name__)
 
 
+def measured_amap_fetch(budget, report):
+    def fetch(url, timeout):
+        started = time.monotonic()
+        success = False
+        try:
+            if budget:
+                try:
+                    allowed = budget.reserve()
+                except (OSError, sqlite3.Error):
+                    allowed = False
+                if not allowed:
+                    raise OSError("Navigation acceptance budget exhausted")
+            data = _urllib_fetch(url, timeout)
+            success = True
+            return data
+        finally:
+            report("navigation_request", provider="amap", success=success,
+                   latency_s=round(time.monotonic()-started, 3))
+    return fetch
+
+
 class SharedCane(CaneApp):
     def __init__(self, cfg, distance, audio, amap):
         self.distance = distance
+        self.cloud_assistant = None
         super().__init__(cfg, pico=distance.link, audio=audio, amap=amap,
                          pi_places=PiPlaceSearch(amap), output_arbiter=audio.arbiter)
 
@@ -37,9 +60,25 @@ class SharedCane(CaneApp):
         super()._on_pico(message)
 
     def on_button(self, button, kind):
-        # The assistant owns recording. The legacy short K2 gesture had its own recorder.
-        if (button, kind) != ("dest", "short"):
+        if (button, kind) == ("dest", "short"):
+            if self.cloud_assistant:
+                self.cloud_assistant.toggle("navigation_button")
+        elif (button, kind) == ("vision", "short") and self.cloud_assistant:
+            self.cloud_assistant.toggle("vision_button")
+        else:
+            if (button, kind) == ("dest", "long") and self.cloud_assistant:
+                self.cloud_assistant.cancel_navigation_recording()
             super().on_button(button, kind)
+
+    def status(self):
+        result = super().status()
+        if self.cloud_assistant:
+            with self.cloud_assistant.lock:
+                listening = self.cloud_assistant.trigger == "navigation_button"
+                recording = listening and self.cloud_assistant.state == "LISTENING_FOR_COMMAND"
+            result["voice"].update(available=True, reason=None, listening=listening,
+                                   recording=recording, manual_stop=True)
+        return result
 
     def _stage_destination(self, destination):
         # Provider places have no pre-generated name clip. Safari shows the selected name.
@@ -54,7 +93,7 @@ class SharedCane(CaneApp):
 
 
 class PiNavigation:
-    def __init__(self, options, distance, audio, *, amap=None):
+    def __init__(self, options, distance, audio, *, amap=None, request_budget=None, report=None):
         if not isinstance(distance, PicoDistanceProvider):
             raise ValueError("Pi navigation requires the shared Pico distance input")
         cfg = load_config(options.get("config", "config/config.toml"))
@@ -62,7 +101,10 @@ class PiNavigation:
         cfg.nav.read_route_with_tts = False
         cfg.general.language = "en"
         if amap is None and cfg.nav.enabled and cfg.secrets.amap_key:
-            amap = AmapClient(cfg.secrets.amap_key)
+            if report:
+                amap = AmapClient(cfg.secrets.amap_key, fetch=measured_amap_fetch(request_budget, report))
+            else:
+                amap = AmapClient(cfg.secrets.amap_key)
         self.phone_configured = False
         if options.get("phone_pair"):
             pair_dir = Path(options["phone_pair"])
@@ -109,6 +151,13 @@ class PiNavigation:
                     "location_valid": app._location_fresh(), "pico_ok": app._pico_ok,
                     "waiting_crossing": app.navigator.waiting_crossing is not None,
                     "route_service_configured": app.amap is not None}
+
+    def attach_cloud_assistant(self, assistant):
+        self.controller.cloud_assistant = assistant
+        self.controller.cfg.voice.candidate_selection = True
+
+    def submit_destination(self, text):
+        self.controller._jobs.put(lambda: self.controller.on_destination_text(text))
 
     def plan_route(self, destination):
         app = self.controller

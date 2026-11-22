@@ -5,7 +5,7 @@ import math
 import queue
 import time
 
-from cane.model import SensorFrame
+from cane.model import ButtonEvent, SensorFrame
 from cane.pico_link import SerialPicoLink
 
 
@@ -85,6 +85,7 @@ class PicoDistanceProvider(NoDistanceProvider):
         self.sequence = 0
         self.last_heartbeat = -100.0
         self.controller_owned = False
+        self.on_button = None
 
     def start(self): self.link.start()
     def close(self): self.link.close()
@@ -103,6 +104,8 @@ class PicoDistanceProvider(NoDistanceProvider):
                 break
             if isinstance(frame, SensorFrame):
                 self.accept(frame)
+            elif self.on_button and isinstance(frame, ButtonEvent):
+                self.on_button(frame.button, frame.kind)
         self.error = "" if self.sample and self.sample.fresh(now) else "No fresh Pico distance"
         return self.sample
 

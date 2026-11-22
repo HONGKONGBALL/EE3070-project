@@ -21,6 +21,8 @@ TFMINI_BAUD = 115200
 
 # buttons to GND, internal pull-ups
 BUTTONS = {"ok": 10, "dest": 11, "repeat": 12, "mode": 13}
+# Set to a verified unused GPIO for the dedicated vision button. GP13 is mode.
+VISION_BUTTON_PIN = None
 LONG_PRESS_MS = 800
 DEBOUNCE_MS = 30
 
@@ -43,3 +45,15 @@ POWER_REPORT_MS = 2000
 VSYS_ALARM_V = 4.2            # below this -> power-loss alarm
 LOCAL_STOP_CM = 60            # Pi dead: still vibrate for very close obstacles
 WDT_MS = 2000                 # Pico self-reset if the main loop hangs
+
+
+def configured_buttons():
+    pin = VISION_BUTTON_PIN
+    reserved = tuple(BUTTONS.values()) + (
+        SONAR_FRONT_TRIG, SONAR_FRONT_ECHO, SONAR_UP_TRIG, SONAR_UP_ECHO, TFMINI_TX, TFMINI_RX,
+        VIBRATION_PIN, LIGHT_PIN, BUZZER_PIN, LED_PIN,
+    )
+    buttons = dict(BUTTONS)
+    if type(pin) is int and 0 <= pin <= 22 and pin not in reserved:
+        buttons["vision"] = pin
+    return buttons
