@@ -75,7 +75,10 @@ class NavigationMixin:
         position = app._to_amap_fast(lng, lat)
         outputs = app.navigator.update(position[0], position[1], acc)
         new_step = app.navigator.position.step if app.navigator.position else None
-        if previous_step != new_step:
+        # Directions for a step are obsolete once the user is on another one. The first fix on a
+        # new route has no step before it: discarding then cut "navigation started" and "off
+        # route, rerouting" short, and removed what the new route had to say first.
+        if previous_step is not None and previous_step != new_step:
             app.last_nav = None
             app.arbiter.discard_navigation()
         app._handle_nav_outputs(outputs)
@@ -205,7 +208,8 @@ class NavigationMixin:
             app.logbook.write("nav", event="route", steps=len(route.steps), distance=route.distance_m)
             if route.uses_alternative:
                 app.say("walk_route_alternative", Priority.SYSTEM)
-            app._handle_nav_outputs([] if reroute else outputs)
+            # A user who left the route needs to hear at once which way the new one goes.
+            app._handle_nav_outputs(app.navigator.rerouted() if reroute else outputs)
 
         app._jobs.put(apply)
 

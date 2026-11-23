@@ -156,7 +156,7 @@ def nav():
 def test_turn_announced_once_per_threshold(nav):
     assert nav.update(*lerp(A, B, 0.1)) == []           # 90 m before the turn
     out = nav.update(*lerp(A, B, 0.55))                  # 45 m
-    assert [(o.prompt_id, o.extra_clips, o.direction) for o in out] == [("turn_right", ["dist_30"], Direction.RIGHT)]
+    assert [(o.prompt_id, o.extra_clips, o.direction) for o in out] == [("turn_right", ["dist_50"], Direction.RIGHT)]
     assert nav.update(*lerp(A, B, 0.56)) == []
     out = nav.update(*lerp(A, B, 0.85))                  # 15 m
     assert out[0].extra_clips == ["dist_10"]
@@ -188,6 +188,89 @@ def test_off_route_needs_several_fixes(nav):
     assert nav.update(*far) == []
     assert nav.update(*far) == []
     assert [o.kind for o in nav.update(*far)] == ["reroute"]
+
+
+def walk(nav, start, end, metres, step_m=1.3):
+    """One fix every step_m from start towards end. Returns every prompt on the way."""
+    length = haversine_m(*start, *end)
+    said, gone = [], 0.0
+    while gone <= metres:
+        said += [o.prompt_id for o in nav.update(*lerp(start, end, gone / length))]
+        gone += step_m
+    return said
+
+
+def test_walking_back_along_the_route_is_told_to_turn_round(nav):
+    assert walk(nav, A, B, 30) == []                     # 30 m the right way
+    back = walk(nav, lerp(A, B, 0.30), A, 25)            # then 25 m back down the same street
+    assert back == ["turn_around"]
+    assert nav.active and nav.position.off_route_m < 1   # still on the route: distance alone cannot show it
+    assert walk(nav, lerp(A, B, 0.05), B, 35) == []      # turned round: no more reminders
+
+
+def test_reminder_repeats_while_the_user_keeps_walking_back(nav):
+    walk(nav, A, B, 70)
+    assert walk(nav, lerp(A, B, 0.70), A, 50).count("turn_around") == 2
+
+
+def test_gps_jitter_while_standing_or_walking_on_is_not_walking_back(nav):
+    here = lerp(A, B, 0.30)
+    walk(nav, A, B, 30)
+    for index in range(120):                             # two minutes on the spot, 4 m of jitter each way
+        shift = (4 if index % 2 else -4) / 100
+        assert nav.update(*lerp(A, B, 0.30 + shift)) == [], index
+    assert walk(nav, here, lerp(A, B, 0.45), 15) == []
+
+
+N = (LNG0, LAT0 + 1.4 * DLAT_100M)  # 40 m north of B: where a user ends up who walks past the turn
+BACK_JSON = {"status": "1", "info": "OK", "route": {"paths": [{"distance": "100", "duration": "80", "steps": [
+    {"instruction": "向南步行40米左转", "distance": "40", "polyline": pl(N, B), "action": "左转",
+     "assistant_action": [], "road": []},
+    {"instruction": "向东步行60米到达目的地", "distance": "60", "polyline": pl(B, D), "action": [],
+     "assistant_action": "到达目的地", "road": []}]}]}}
+E = (LNG0 + 2 * DLNG_60M, LAT0 + DLAT_100M)  # 120 m east of B
+ON_JSON = {"status": "1", "info": "OK", "route": {"paths": [{"distance": "190", "duration": "150", "steps": [
+    {"instruction": "向北步行70米右转", "distance": "70", "polyline": pl(lerp(A, B, 0.3), B), "action": "右转",
+     "assistant_action": [], "road": []},
+    {"instruction": "向东步行120米到达目的地", "distance": "120", "polyline": pl(B, E), "action": [],
+     "assistant_action": "到达目的地", "road": []}]}]}}
+
+
+# The same corner as ROUTE_JSON without the crossing, which would hold the route for K1.
+CORNER_JSON = {"status": "1", "info": "OK", "route": {"paths": [{"distance": "160", "duration": "128", "steps": [
+    {"instruction": "向北步行100米右转", "distance": "100", "polyline": pl(A, B), "action": "右转",
+     "assistant_action": [], "road": []},
+    {"instruction": "向东步行60米到达目的地", "distance": "60", "polyline": pl(B, D), "action": [],
+     "assistant_action": "到达目的地", "road": []}]}]}}
+
+
+def test_user_who_walked_past_a_turn_is_told_to_turn_round_when_the_new_route_arrives():
+    n = Navigator(NavCfg(announce_m=[50, 20, 8], arrive_m=8, offroute_m=25))
+    n.start(parse_walking(CORNER_JSON), D)
+    assert walk(n, lerp(A, B, 0.6), B, 40) == ["turn_right"] * 3
+    said = walk(n, B, N, 40)                             # straight on past the turn
+    assert said == ["nav_offroute"]
+    assert n.rerouted() == []                            # nothing to say until the new route is in
+    n.start(parse_walking(BACK_JSON), D)
+    assert [(o.prompt_id, o.kind) for o in n.rerouted()] == [("turn_around", "prompt")]
+
+
+def test_new_route_that_goes_on_ahead_gives_its_first_instruction_at_once():
+    n = Navigator(NavCfg(announce_m=[50, 20, 8], arrive_m=8, offroute_m=25))
+    n.start(parse_walking(ROUTE_JSON), D)
+    walk(n, A, B, 30)                                    # heading north
+    n.invalidate()
+    n.start(parse_walking(ON_JSON), E)
+    out = n.rerouted()
+    assert [(o.prompt_id, o.extra_clips, o.direction) for o in out] == [("turn_right", ["dist_50"], Direction.RIGHT)]
+
+
+def test_new_route_with_a_turn_close_by_leaves_it_to_the_usual_announcement():
+    n = Navigator(NavCfg(announce_m=[50, 20, 8], arrive_m=8, offroute_m=25))
+    n.start(parse_walking(ROUTE_JSON), D)
+    n.invalidate()
+    n.start(parse_walking(BACK_JSON), D)                 # 40 m to the turn, and no travel direction known
+    assert n.rerouted() == []
 
 
 def test_bad_accuracy_ignored(nav):

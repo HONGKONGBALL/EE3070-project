@@ -102,6 +102,8 @@ class NavCfg:
     announce_m: list[float] = field(default_factory=lambda: [50.0, 20.0, 8.0])
     arrive_m: float = 8.0
     offroute_m: float = 25.0
+    # Walking this far back along the route gets a "turn around" prompt.
+    wrong_way_m: float = 20.0
     read_route_with_tts: bool = False
     destinations: list[Destination] = field(default_factory=list)
     provider_coordinates_verified: bool = False

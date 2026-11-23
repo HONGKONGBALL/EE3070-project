@@ -29,8 +29,16 @@ def test_left_right_prompts_vibrate():
 
 def test_distance_clip():
     assert distance_clip(3) == "dist_5"
-    assert distance_clip(27) == "dist_20"
     assert distance_clip(500) == "dist_200"
+    # The first fix under a 50, 20 or 8 m threshold is called by that threshold, not the bucket below.
+    assert distance_clip(48.5) == "dist_50"
+    assert distance_clip(18) == "dist_20"
+    assert distance_clip(7) == "dist_5"
+    # Further below a bucket the distance is still rounded down.
+    assert distance_clip(41) == "dist_30"
+    assert distance_clip(17) == "dist_10"
+    assert distance_clip(27) == "dist_30"
+    assert distance_clip(25) == "dist_20"
 
 
 def test_lead_time_uses_longest_language():
