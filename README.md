@@ -1,5 +1,7 @@
 # EE3070 智能盲杖
 
+[便携步行导航](navigation_24h/README.md)提供 iPhone 语音输入、Pico 实体按键和 XIAO ESP32S3 路线规划的部署步骤。
+
 > **Pi 视觉与声音更新（2026-11-03）**：当前版本已部署到 Pi，包含地面识别、人群聚集提醒、楼梯误报修正，以及 AirPods／USB 耳机输出切换。人群仍需至少 8 名合格聚集人物及连续确认；路况优先于人群播报。运行方式见下方，详情见 [最新实机部署](docs/pi-deployment-20261103.md)、[人群判定与验证](docs/crowd-grouping-fix.md)、[四段新视频综合测试及保留问题](docs/comprehensive-video-round-20261103.md)、[耳机输出设置](docs/pi-audio-outputs.md)。积水晚提示、混合视频中的坑洞误判和楼梯重新提醒仍有待改进，不能当作现场出行验收通过。
 
 仓库配置默认仍为 `ground`；要启用地面＋人群模块，在已有模型和环境的 Pi 项目根目录运行：

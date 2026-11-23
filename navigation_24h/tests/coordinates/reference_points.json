@@ -1,0 +1,51 @@
+{
+  "kind": "algorithm_reference",
+  "source": "https://github.com/wandergis/coordtransform/blob/606c6f3b57b6f1d60458793fea39928d2b11b637/index.js",
+  "source_sha256": "e941a1a5825c1a615eb3e986a0bfa95b5cba03f6aa89fb20cf3be33259fb897c",
+  "points": [
+    {
+      "id": "beijing_upstream_readme",
+      "wgs84": [
+        116.404,
+        39.915
+      ],
+      "gcj02": [
+        116.41024449916938,
+        39.91640428150164
+      ]
+    },
+    {
+      "id": "hk_reference_01",
+      "wgs84": [
+        114.1694,
+        22.3193
+      ],
+      "gcj02": [
+        114.17436706626148,
+        22.316550799399344
+      ]
+    },
+    {
+      "id": "hk_reference_02",
+      "wgs84": [
+        114.173,
+        22.298
+      ],
+      "gcj02": [
+        114.17795593693272,
+        22.295248981798935
+      ]
+    },
+    {
+      "id": "hk_reference_03",
+      "wgs84": [
+        114.1095,
+        22.3964
+      ],
+      "gcj02": [
+        114.11460300993123,
+        22.393720307600862
+      ]
+    }
+  ]
+}

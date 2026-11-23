@@ -1,0 +1,18 @@
+add_executable(link_tests test_frame.cpp ../../firmware/components/ble_link/frame.cpp)
+target_include_directories(link_tests PRIVATE ../../firmware/components/ble_link/include)
+target_compile_features(link_tests PRIVATE cxx_std_17)
+target_compile_options(link_tests PRIVATE -Wall -Wextra -Werror)
+add_test(NAME ble_framing COMMAND link_tests)
+set_tests_properties(ble_framing PROPERTIES LABELS "TC10;TC53")
+add_executable(pairing_policy_tests pairing_policy_tests.cpp
+  ../../firmware/components/ble_link/pairing_policy.cpp)
+target_include_directories(pairing_policy_tests PRIVATE ../../firmware/components/ble_link/include)
+target_compile_options(pairing_policy_tests PRIVATE -Wall -Wextra -Werror)
+add_test(NAME ble_pairing_policy COMMAND pairing_policy_tests)
+set_tests_properties(ble_pairing_policy PROPERTIES LABELS "pairing;ble")
+add_executable(pairing_adapter_tests pairing_adapter_tests.cpp pairing_fake.cpp
+  ../../firmware/components/ble_link/pairing_adapter.cpp ../../firmware/components/ble_link/pairing_policy.cpp)
+target_include_directories(pairing_adapter_tests PRIVATE mocks ../../firmware/components/ble_link/include)
+target_compile_options(pairing_adapter_tests PRIVATE -Wall -Wextra -Werror)
+add_test(NAME ble_pairing_adapter COMMAND pairing_adapter_tests)
+set_tests_properties(ble_pairing_adapter PROPERTIES LABELS "pairing;ble")

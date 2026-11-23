@@ -1,0 +1,10 @@
+{
+  "config_version": "navigation-1",
+  "integration_mode": false,
+  "ios": {"udid": "", "team_id": "", "bundle_id": "hk.ee3070.NavigationCompanion"},
+  "esp32": {"port": "", "board": "Seeed XIAO ESP32S3", "psram_mb": 8, "idf_path": ".toolchain/esp-idf", "tools_path": ".toolchain/espressif"},
+  "pico": {"port": "", "button_pin": 14},
+  "wifi": {"ssid": "", "password_env": "NAV_WIFI_PASSWORD"},
+  "mcp": {"alias": "amap-walking", "endpoint": "https://mcp.amap.com/mcp", "key_env": "AMAP_MAPS_API_KEY", "protocol_version": "2025-11-25", "walking_tool": "", "coordinate_frame": "GCJ02", "coordinate_verified": false, "coordinate_policy": "review_required", "coordinate_control_reference": ""},
+  "operator": {"name": "", "availability": ""}
+}

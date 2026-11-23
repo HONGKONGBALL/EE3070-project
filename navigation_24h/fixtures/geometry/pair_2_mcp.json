@@ -1,0 +1,13 @@
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"route\":{\"origin\":\"114.061677,22.543644\",\"destination\":\"114.060079,22.546725\",\"paths\":[{\"distance\":522,\"steps\":[{\"distance\":111,\"instruction\":\"向北步行111米左转\",\"orientation\":\"北\",\"duration\":89},{\"distance\":176,\"instruction\":\"沿福中路向西步行176米右转\",\"orientation\":\"西\",\"duration\":141},{\"distance\":235,\"instruction\":\"步行235米到达目的地\",\"orientation\":\"\",\"duration\":188}]}]}}"
+      }
+    ],
+    "isError": false
+  }
+}

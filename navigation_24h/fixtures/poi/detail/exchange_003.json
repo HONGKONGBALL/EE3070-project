@@ -1,0 +1,5 @@
+{
+  "http_status": 200,
+  "content_type": "application/json",
+  "raw_response": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"id\\\":\\\"B0HUY9TTL6\\\",\\\"name\\\":\\\"香港城市大学(南山村道入口)\\\",\\\"address\\\":\\\"南山村道\\\",\\\"location\\\":\\\"114.177692,22.332921\\\"}\"}],\"isError\":false}}"
+}

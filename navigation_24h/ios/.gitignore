@@ -1,0 +1,11 @@
+.build/
+DerivedData*/
+*.log
+*.xcuserstate
+xcuserdata/
+.DS_Store
+*.mobileprovision
+*.provisionprofile
+*.p12
+*.p8
+GrokDestinationCredentials.json

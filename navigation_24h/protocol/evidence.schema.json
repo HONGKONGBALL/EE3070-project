@@ -1,0 +1,63 @@
+{
+  "additionalProperties": false,
+  "description": "Observed result with its execution mode and evidence paths.",
+  "properties": {
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "result": {
+      "enum": [
+        "passed",
+        "failed",
+        "waiting_condition",
+        "partial"
+      ],
+      "title": "Result",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "host",
+        "device",
+        "mixed"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "evidence": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "observed_at": {
+      "title": "Observed At",
+      "type": "string"
+    },
+    "observation": {
+      "default": "",
+      "title": "Observation",
+      "type": "string"
+    },
+    "operator": {
+      "default": "AI",
+      "title": "Operator",
+      "type": "string"
+    },
+    "reviewed_by": {
+      "default": "",
+      "title": "Reviewed By",
+      "type": "string"
+    }
+  },
+  "required": [
+    "case_id",
+    "result",
+    "mode"
+  ],
+  "title": "CaseResult",
+  "type": "object"
+}

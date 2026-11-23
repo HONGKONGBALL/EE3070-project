@@ -1,0 +1,7 @@
+add_executable(nav_core_tests test_main.cpp fix_cases.cpp lifecycle_cases.cpp navigation_cases.cpp matcher_cases.cpp)
+target_link_libraries(nav_core_tests PRIVATE nav_core)
+target_compile_options(nav_core_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+foreach(case_id IN ITEMS TC02 TC11 TC12 TC13 TC14 TC16 TC22 TC25 TC26 TC27 TC28 TC30 TC31 TC32 TC33 TC34 TC35 TC36 TC37 TC38 TC39 TC40 TC44 TC58)
+  add_test(NAME core_${case_id} COMMAND nav_core_tests --case ${case_id})
+  set_tests_properties(core_${case_id} PROPERTIES LABELS "host_core;${case_id}")
+endforeach()

@@ -1,0 +1,275 @@
+{
+  "$defs": {
+    "ComparingStatus": {
+      "additionalProperties": false,
+      "description": "Current six-digit comparison offered to the USB operator.",
+      "properties": {
+        "type": {
+          "const": "pairing_status",
+          "title": "Type",
+          "type": "string"
+        },
+        "command_id": {
+          "maxLength": 96,
+          "title": "Command Id",
+          "type": "string"
+        },
+        "window_id": {
+          "maxLength": 96,
+          "title": "Window Id",
+          "type": "string"
+        },
+        "connection_epoch": {
+          "$ref": "#/$defs/Epoch"
+        },
+        "deadline_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Deadline Ms",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 96,
+          "title": "Reason",
+          "type": "string"
+        },
+        "accepted": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Accepted"
+        },
+        "state": {
+          "const": "COMPARING",
+          "title": "State",
+          "type": "string"
+        },
+        "number": {
+          "$ref": "#/$defs/ComparisonNumber"
+        }
+      },
+      "required": [
+        "type",
+        "command_id",
+        "window_id",
+        "connection_epoch",
+        "deadline_ms",
+        "reason",
+        "state",
+        "number"
+      ],
+      "title": "ComparingStatus",
+      "type": "object"
+    },
+    "ComparisonNumber": {
+      "maximum": 999999,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "ControlRequest": {
+      "additionalProperties": false,
+      "description": "Window lifecycle or current-state query.",
+      "properties": {
+        "type": {
+          "const": "pairing",
+          "default": "pairing",
+          "title": "Type",
+          "type": "string"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "action": {
+          "enum": [
+            "open",
+            "status",
+            "close"
+          ],
+          "title": "Action",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "title": "ControlRequest",
+      "type": "object"
+    },
+    "DecisionRequest": {
+      "additionalProperties": false,
+      "description": "Operator decision coupled to the displayed window, link and number.",
+      "properties": {
+        "type": {
+          "const": "pairing",
+          "default": "pairing",
+          "title": "Type",
+          "type": "string"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "action": {
+          "enum": [
+            "confirm",
+            "reject"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "window_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "connection_epoch": {
+          "$ref": "#/$defs/Epoch"
+        },
+        "number": {
+          "$ref": "#/$defs/ComparisonNumber"
+        }
+      },
+      "required": [
+        "action",
+        "window_id",
+        "connection_epoch",
+        "number"
+      ],
+      "title": "DecisionRequest",
+      "type": "object"
+    },
+    "Epoch": {
+      "maximum": 4294967295,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "Identifier": {
+      "maxLength": 96,
+      "minLength": 1,
+      "type": "string"
+    },
+    "PairingRequest": {
+      "discriminator": {
+        "mapping": {
+          "close": "#/$defs/ControlRequest",
+          "confirm": "#/$defs/DecisionRequest",
+          "open": "#/$defs/ControlRequest",
+          "reject": "#/$defs/DecisionRequest",
+          "status": "#/$defs/ControlRequest"
+        },
+        "propertyName": "action"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ControlRequest"
+        },
+        {
+          "$ref": "#/$defs/DecisionRequest"
+        }
+      ]
+    },
+    "PairingStatus": {
+      "discriminator": {
+        "mapping": {
+          "APPROVED": "#/$defs/ProgressStatus",
+          "ARMED": "#/$defs/ProgressStatus",
+          "AUTHORIZED": "#/$defs/ProgressStatus",
+          "CANDIDATE": "#/$defs/ProgressStatus",
+          "CLOSED": "#/$defs/ProgressStatus",
+          "COMPARING": "#/$defs/ComparingStatus"
+        },
+        "propertyName": "state"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ComparingStatus"
+        },
+        {
+          "$ref": "#/$defs/ProgressStatus"
+        }
+      ]
+    },
+    "ProgressState": {
+      "enum": [
+        "CLOSED",
+        "ARMED",
+        "CANDIDATE",
+        "APPROVED",
+        "AUTHORIZED"
+      ],
+      "type": "string"
+    },
+    "ProgressStatus": {
+      "additionalProperties": false,
+      "description": "Pairing window lifecycle and secure authorization progress.",
+      "properties": {
+        "type": {
+          "const": "pairing_status",
+          "title": "Type",
+          "type": "string"
+        },
+        "command_id": {
+          "maxLength": 96,
+          "title": "Command Id",
+          "type": "string"
+        },
+        "window_id": {
+          "maxLength": 96,
+          "title": "Window Id",
+          "type": "string"
+        },
+        "connection_epoch": {
+          "$ref": "#/$defs/Epoch"
+        },
+        "deadline_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Deadline Ms",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 96,
+          "title": "Reason",
+          "type": "string"
+        },
+        "accepted": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Accepted"
+        },
+        "state": {
+          "$ref": "#/$defs/ProgressState"
+        }
+      },
+      "required": [
+        "type",
+        "command_id",
+        "window_id",
+        "connection_epoch",
+        "deadline_ms",
+        "reason",
+        "state"
+      ],
+      "title": "ProgressStatus",
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/PairingRequest"
+    },
+    {
+      "$ref": "#/$defs/PairingStatus"
+    }
+  ]
+}
