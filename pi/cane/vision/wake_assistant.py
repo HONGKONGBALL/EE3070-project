@@ -58,8 +58,13 @@ TEXT = {
            "use_navigation_button": "导航请用K2按键。",
            "camera_unavailable": "摄像头画面不可用。"},
 }
-ACK = b"".join(struct.pack("<h", int(2800 * sin(2 * pi * 880 * n / 16000) *
-                                    min(1, n / 80, (1280 - n) / 80))) for n in range(1280))
+def _tone(frequency, samples, level=12000):
+    return b"".join(struct.pack("<h", int(level * sin(2 * pi * frequency * n / 16000) *
+                                          min(1, n / 160, (samples - n) / 160))) for n in range(samples))
+
+
+# 0.35 s of silence lets a Bluetooth sink wake up. The rising two-tone cue is loud enough for earbuds.
+ACK = bytes(2 * 5600) + _tone(880, 2880) + _tone(1320, 3520)
 
 
 class ASRProvider(Protocol):
@@ -120,6 +125,19 @@ class WakeAssistant:
         self.command_timeout = float(config.get("max_record_s", 8))
         self.max_age = float(config.get("max_scene_age_s", 12))
         self.silence_level = float(config.get("silence_rms", 220))
+        # Optional sherpa-onnx speech stack: SenseVoice recognition and Silero end-of-speech detection.
+        self.endpoint = None
+        if config.get("asr_backend", "vosk") == "sensevoice":
+            from .sherpa_speech import SenseVoiceRecognizer, SpeechEndpoint
+
+            directory = Path(config.get("asr_model_dir", self.models / "sense-voice"))
+            if self.asr is None:
+                self.asr = SenseVoiceRecognizer(directory, self.question_language,
+                                                int(config.get("asr_threads", 2)))
+            if config.get("auto_endpoint", True):
+                self.endpoint = SpeechEndpoint(directory / "silero_vad.onnx",
+                                               float(config.get("endpoint_silence_s", 0.8)))
+            threading.Thread(target=self._warm_up, daemon=True, name="cane-speech-warmup").start()
         self._detector = detector
         self.confidence = float(config.get("wake_confidence", 0.70))
         if not (1 <= self.command_timeout <= 20 and 1 <= self.max_age <= 30
@@ -198,6 +216,7 @@ class WakeAssistant:
                     "ptt_gpio_unavailable": self.ptt_gpio is not None and self.gpio_button is None,
                     "frame_id": self.frame_id, "answer": self.answer if fresh else "",
                     "answer_language": self.answer_language, "question_language": self.question_language,
+                    "heard": getattr(self, "heard", ""),
                     "destination_dialogue": self.dialogue.status() if self.dialogue else None}
 
     def start(self):
@@ -334,6 +353,11 @@ class WakeAssistant:
         heard = False
         silent = 0
         overlap = ptt and self.audio.busy()
+        # With a speech endpoint, a K2 or K4 turn also ends by itself when the user stops talking.
+        endpoint = self.endpoint if ptt and self.trigger in TOGGLE_CHANNELS else None
+        ended = False
+        if endpoint is not None:
+            endpoint.reset()
         while not self.stop.is_set() and time.monotonic() < end and not (ptt and self.released):
             if self.cancelled:
                 return b""
@@ -345,9 +369,14 @@ class WakeAssistant:
                 overlap = overlap or ptt
                 pcm.clear()
                 heard, silent = False, 0
+                if endpoint is not None:
+                    endpoint.reset()
                 continue
             pcm.extend(block)
             if ptt:
+                if endpoint is not None and endpoint.feed(block):
+                    ended = True
+                    break
                 continue
             values = np.frombuffer(block, dtype="<i2").astype(np.float32)
             if np.sqrt(np.mean(values * values)) >= self.silence_level:
@@ -359,8 +388,11 @@ class WakeAssistant:
         if self.stop.is_set():
             return b""
         if ptt:
-            if not self.released:
-                raise AssistantError("recording_limit")
+            if not (self.released or ended):
+                if endpoint is None:
+                    raise AssistantError("recording_limit")
+                # Time ran out. Keep what was said, or report that nothing was heard.
+                return bytes(pcm) if endpoint.heard and not (self.cancelled or overlap) else b""
             return bytes(pcm) if not (self.cancelled or overlap) else b""
         return bytes(pcm) if heard else b""
 
@@ -398,6 +430,14 @@ class WakeAssistant:
                                 self.trigger = "wake"
                                 return "wake", None
         return None, None
+
+    def _warm_up(self):
+        """Load the speech models at start so the first K2 turn is not slow."""
+        try:
+            getattr(self.asr, "recognizer", None)
+            self.speech.voice
+        except Exception:
+            LOG.warning("Speech warm-up failed", exc_info=True)
 
     def _acknowledge(self):
         """Play the K4/K2 cue. The user starts speaking only after hearing it."""
@@ -457,6 +497,7 @@ class WakeAssistant:
             with self.microphone() as mic:
                 pcm = self._capture(mic)
         question = self._transcribe(pcm)
+        self.heard = question  # shown in /assistant/status for bench checks
         if self.stop.is_set() or self.cancelled:
             return
         if not question:
