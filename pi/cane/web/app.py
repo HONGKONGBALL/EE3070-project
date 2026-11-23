@@ -220,6 +220,7 @@ def serve(ctrl: Controller, web_cfg: WebSettings, phone_token: str | None, *,
     phone page over HTTPS on the hotspot interface (if a certificate exists)."""
     import logging
     import threading
+    import time
 
     import uvicorn
 
@@ -233,6 +234,15 @@ def serve(ctrl: Controller, web_cfg: WebSettings, phone_token: str | None, *,
     else:
         logging.getLogger(__name__).warning("no TLS certificate (%s); phone page disabled - run tools/make_cert.sh",
                                             web_cfg.certfile)
+    def run(config):
+        # The hotspot address can appear after the service starts at boot. uvicorn exits the thread
+        # when it cannot bind, so keep trying until the phone page is reachable.
+        while True:
+            try:
+                uvicorn.Server(config).run()
+                return
+            except SystemExit:
+                time.sleep(3)
+
     for c in servers:
-        s = uvicorn.Server(c)
-        threading.Thread(target=s.run, daemon=True, name=f"web-{c.port}").start()
+        threading.Thread(target=run, args=(c,), daemon=True, name=f"web-{c.port}").start()
