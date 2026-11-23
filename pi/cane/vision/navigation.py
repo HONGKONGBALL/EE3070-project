@@ -19,6 +19,12 @@ from .voice_commands import NavigationReply
 
 
 LOG = logging.getLogger(__name__)
+# The cane has four keys and the firmware has no vision pin yet, so a short press of the
+# fourth key (GP13, "mode") is K4. A long press still toggles test mode.
+VISION_TAPS = {("vision", "short"), ("mode", "short")}
+RANGE_WARNINGS = {"stop_now", "obstacle_front", "obstacle_head", "drop_ahead", "step_up_ahead"}
+# A range warning seen this recently is the same obstacle, not a new one.
+SAME_WARNING_S = 0.5
 
 
 def measured_amap_fetch(budget, report):
@@ -46,8 +52,21 @@ class SharedCane(CaneApp):
     def __init__(self, cfg, distance, audio, amap):
         self.distance = distance
         self.cloud_assistant = None
+        self._warning_seen = {}
         super().__init__(cfg, pico=distance.link, audio=audio, amap=amap,
                          pi_places=PiPlaceSearch(amap), output_arbiter=audio.arbiter)
+
+    def say(self, prompt_id, priority=None, **options):
+        if prompt_id in RANGE_WARNINGS and self.cloud_assistant:
+            # Repeating "stop" every second would cut the cue, the recording and the answer of a K2 or
+            # K4 turn the user asked for. During a turn, a warning for the same obstacle stays quiet.
+            # A new kind of warning, or the same one after a gap, still interrupts.
+            now = self.clock()
+            seen = self._warning_seen.get(prompt_id, float("-inf"))
+            self._warning_seen[prompt_id] = now
+            if now - seen < SAME_WARNING_S and self.cloud_assistant.in_turn():
+                return False
+        return super().say(prompt_id, priority, **options)
 
     def _on_pico(self, message):
         if isinstance(message, SensorFrame):
@@ -63,7 +82,7 @@ class SharedCane(CaneApp):
         if (button, kind) == ("dest", "short"):
             if self.cloud_assistant:
                 self.cloud_assistant.toggle("navigation_button")
-        elif (button, kind) == ("vision", "short") and self.cloud_assistant:
+        elif (button, kind) in VISION_TAPS and self.cloud_assistant:
             self.cloud_assistant.toggle("vision_button")
         else:
             if (button, kind) == ("dest", "long") and self.cloud_assistant:
@@ -164,6 +183,25 @@ class PiNavigation:
     def attach_cloud_assistant(self, assistant):
         self.controller.cloud_assistant = assistant
         self.controller.cfg.voice.candidate_selection = True
+
+    def range_report(self):
+        """The cane's own view of the way ahead, for "can I walk" answers. None without fresh readings."""
+        app = self.controller
+        with app._state_lock:
+            frame = app.frame if app._pico_ok else None
+            if frame is None or app.clock() - frame.t > app.cfg.pico.timeout_s:
+                return None
+            hazards = app.hazards
+            front = hazards.valid_distance(frame.front_m)
+            if hazards.tf.role == "front" and frame.tfmini_strength >= hazards.tf.min_strength:
+                laser = hazards.valid_distance(frame.tfmini_m)
+                if laser is not None:
+                    front = laser if front is None else min(front, laser)
+            head = hazards.valid_distance(frame.up_m)
+            near = max(hazards.h.stop_distance_m, hazards.warn_distance("obstacle_front"))
+            return {"front_m": front, "head_m": head,
+                    "front_blocked": front is not None and front <= near,
+                    "head_blocked": head is not None and head <= hazards.h.head_warn_m}
 
     def find_places(self, query):
         """Search AMap near the iPhone and return places with their straight-line distance."""

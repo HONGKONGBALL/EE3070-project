@@ -200,3 +200,134 @@ def test_navigation_fetch_reports_and_respects_the_acceptance_budget(tmp_path):
     with pytest.raises(OSError):
         fetch("https://example.invalid", 1)
     assert reports[0][0] == "navigation_request" and reports[0][1]["success"] is False
+
+
+# K4 "can I walk ahead": the frame and the cane's range readings decide together.
+
+class Ranges:
+    """Stands in for PiNavigation: only the range report the assistant reads."""
+
+    def __init__(self, front_m=None, front_blocked=False):
+        self.report = {"front_m": front_m, "head_m": None, "front_blocked": front_blocked, "head_blocked": False}
+
+    def range_report(self):
+        return self.report
+
+
+ZH = {"question_language": "zh", "answer_language": "zh", "destination_dialogue": False}
+
+
+def walk_harness(monkeypatch, reply, ranges, *, config=None):
+    seen = []
+
+    def describe(question, jpeg, language, *, request_id=None, prompt=None):
+        seen.append((question, prompt))
+        if isinstance(reply, Exception):
+            raise reply
+        return reply
+
+    harness = Harness(monkeypatch, describe, transcript="前面可以走吗？", navigation=ranges,
+                      config={**ZH, "walkable_answers": True, **(config or {})})
+    return harness, seen
+
+
+@pytest.mark.parametrize("text", ["前面可以走吗？", "我能不能过去", "可以继续往前走吗", "这条路走得通吗", "前面有没有障碍",
+                                  "can I walk ahead?"])
+def test_walk_questions_are_recognised_in_mandarin_and_english(text):
+    assert wake_assistant.route_command(text) == ("visual_safety", None)
+
+
+@pytest.mark.parametrize("text", ["前面是什么？", "我左边有什么", "这是什么颜色", "你能看到前面走过来的人吗"])
+def test_scene_questions_are_not_walk_questions(text):
+    assert wake_assistant.route_command(text) == ("vision", None)
+
+
+def test_walk_question_sends_the_frame_with_the_range_readings(monkeypatch):
+    harness, seen = walk_harness(monkeypatch, "可以走，前面是空旷的走廊。后面还有一扇门。", Ranges(front_m=2.5))
+    with harness as h:
+        h.ask()
+    assert seen == [("前面可以走吗？\n[手杖测距: 前方250厘米]", wake_assistant.WALK_PROMPT)]
+    assert h.spoken == ["可以走，前面是空旷的走廊。"]
+
+
+def test_silent_range_sensors_are_reported_as_no_reading(monkeypatch):
+    harness, seen = walk_harness(monkeypatch, "不可以走，画面太暗。", Ranges())
+    with harness as h:
+        h.ask()
+    assert seen[0][0] == "前面可以走吗？\n[手杖测距: 无读数]"
+
+
+def test_close_reading_overrules_a_picture_that_looks_clear(monkeypatch):
+    harness, _ = walk_harness(monkeypatch, "可以走，前面很空旷。", Ranges(front_m=0.45, front_blocked=True))
+    with harness as h:
+        h.ask()
+    assert h.spoken == ["不可以走，手杖测到前方大约45厘米有障碍。"]
+
+
+def test_close_reading_keeps_the_reply_that_names_the_obstacle(monkeypatch):
+    harness, _ = walk_harness(monkeypatch, "不可以走，前面有一把椅子。", Ranges(front_m=0.45, front_blocked=True))
+    with harness as h:
+        h.ask()
+    assert h.spoken == ["不可以走，前面有一把椅子。"]
+
+
+def test_close_reading_answers_when_the_cloud_fails(monkeypatch):
+    harness, _ = walk_harness(monkeypatch, AssistantError("provider_timeout"),
+                              Ranges(front_m=0.45, front_blocked=True))
+    with harness as h:
+        h.ask()
+    assert h.spoken == ["不可以走，手杖测到前方大约45厘米有障碍。"]
+
+
+def test_cloud_failure_without_a_close_reading_is_reported(monkeypatch):
+    harness, _ = walk_harness(monkeypatch, AssistantError("provider_timeout"), Ranges(front_m=2.5))
+    with harness as h:
+        h.ask()
+    assert h.spoken == ["云端服务超时，请再试一次。"]
+
+
+def test_walk_question_keeps_the_fixed_refusal_unless_enabled(monkeypatch):
+    harness, seen = walk_harness(monkeypatch, "可以走。", Ranges(front_m=2.5), config={"walkable_answers": False})
+    with harness as h:
+        h.ask()
+    assert not seen
+    assert h.spoken == ["只凭一个画面，我无法判断能不能安全通过。"]
+
+
+def shared_cane(monkeypatch, *, in_turn):
+    from cane.app import CaneApp
+    from cane.vision.navigation import SharedCane
+
+    said, taps = [], []
+    monkeypatch.setattr(CaneApp, "say", lambda self, prompt_id, priority=None, **options: said.append(prompt_id) or True)
+    cane = object.__new__(SharedCane)
+    cane.clock = lambda: cane.now
+    cane.now, cane._warning_seen = 100.0, {}
+    cane.cloud_assistant = SimpleNamespace(in_turn=lambda: in_turn, toggle=taps.append)
+    return cane, said, taps
+
+
+def test_fourth_key_short_press_asks_the_vision_question(monkeypatch):
+    cane, _, taps = shared_cane(monkeypatch, in_turn=False)
+    cane.on_button("mode", "short")
+    cane.on_button("vision", "short")
+    assert taps == ["vision_button", "vision_button"]
+
+
+def test_same_range_warning_stays_quiet_during_a_turn(monkeypatch):
+    cane, said, _ = shared_cane(monkeypatch, in_turn=True)
+    for _ in range(40):  # two seconds of 20 Hz frames with the same obstacle
+        cane.say("stop_now")
+        cane.now += 0.05
+    cane.say("obstacle_head")  # a new kind of warning still interrupts
+    cane.now += 1.0
+    cane.say("stop_now")  # the obstacle left and came back
+    assert said == ["stop_now", "obstacle_head", "stop_now"]
+
+
+def test_range_warning_repeats_outside_a_turn(monkeypatch):
+    cane, said, _ = shared_cane(monkeypatch, in_turn=False)
+    for _ in range(3):
+        cane.say("stop_now")
+        cane.now += 0.05
+    assert said == ["stop_now"] * 3

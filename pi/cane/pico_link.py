@@ -127,7 +127,7 @@ class SerialPicoLink(PicoLinkBase):
     def _open(self):
         import serial  # pyserial
 
-        return serial.Serial(self.port, self.baud, timeout=0.2)
+        return serial.Serial(self.port, self.baud, timeout=0.2, write_timeout=0.05)
 
     def _reader(self) -> None:
         while not self._stop.is_set():

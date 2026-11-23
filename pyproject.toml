@@ -16,6 +16,7 @@ vision = ["numpy>=1.24", "opencv-python-headless>=4.8"]
 camera = ["ncnn==1.0.20261020", "numpy>=1.24"]
 camera-v2 = ["ncnn==1.0.20261020", "numpy>=1.24", "onnxruntime==1.31.0", "Pillow==11.1.0"]
 asr = ["vosk>=0.3.45"]
+sensevoice = ["sherpa-onnx>=2.0", "numpy>=1.24"]
 iphone = ["fastapi>=0.110", "uvicorn>=0.29", "vosk>=0.3.45", "httpx2[http2,brotli,zstd]>=2.16,<3"]
 assistant = [
     "vosk>=0.3.45",
