@@ -274,6 +274,7 @@ class Walker:
 
     def walk(self):
         self.trail = [self.position]
+        self.heard_seen = len(self.w.sink.heard)  # the start-up prompts were answered before the walk
         self.adopt_route()
         limit = time.monotonic() + self.args.max_minutes * 60
         while time.monotonic() < limit:
@@ -422,10 +423,15 @@ def write_report(recorder, walker, place, outcome, args, path):
                 add("  之后没有得到新路线。")
                 problems.append("偏离后没有得到新路线")
             else:
-                first = next((event for event in recorder.events if event.t > miss.replanned and event.kind != "reroute"), None)
+                # What the new route said first. Its guidance comes before the first fix, so it belongs to no step.
+                after = [event for event in recorder.events if event.t >= miss.noticed.t and event is not miss.noticed
+                         and event.kind == "prompt"][:2]
                 add(f"  {miss.replanned - miss.noticed.t:.0f} 秒后得到新路线（{miss.new.distance_m:.0f} 米，{len(miss.new.steps)} 段）。"
-                    + (f"新路线的第一条提示：「{NAMES.get(first.prompt, first.prompt)}」，在新路线生成后 {first.t - miss.replanned:.0f} 秒。"
-                       if first else "之后没有新的提示。"))
+                    + ("新路线先播：" + "，然后".join(
+                        f"「{NAMES.get(event.prompt, event.prompt)}」（偏离提示后 {event.t - miss.noticed.t:.0f} 秒"
+                        f"{'' if event.spoken else '，未播出'}）" for event in after) + "。" if after else "之后没有新的提示。"))
+                if not after or after[0].t - miss.noticed.t > 10:
+                    problems.append("重新规划后 10 秒内没有任何指引")
     glitch = walker.windows.get("glitch")
     if glitch:
         add("GPS 跳点：单个偏离约 70 米的定位点" + ("触发了重新规划（不应该）。" if glitch.rerouted else "没有触发重新规划，导航照常。"))
@@ -524,6 +530,7 @@ def main():
                 problems, lines = write_report(recorder, walker, place, outcome, args, args.report)
                 print("\n".join(lines[:lines.index("── 时间线（秒 | 已走米数 | 事件）")]))
                 print(f"report: {args.report}")
+    sys.stdout.flush()
     os._exit(0)
 
 
