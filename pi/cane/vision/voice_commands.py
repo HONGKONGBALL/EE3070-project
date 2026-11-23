@@ -11,6 +11,9 @@ SAFETY_QUERY = re.compile(
     r"|\b(?:is|does) (?:the|this|that|my) (?:way|path|route|crossing|walkway|hallway|doorway)\b[^?]{0,40}"
     r"\b(?:safe|clear|passable)\b"
     r"|\bam i clear to (?:cross|walk|go|enter|proceed)\b"
+    # 前面可以走吗 / 能不能过去 / 这条路走得通吗 / 前面有没有障碍
+    r"|(?:能不能|可不可以|可以|能否|能)(?:直接|继续|往前|向前|直|再){0,3}(?:走|过去|过吗|过马路|通过|前进|通行)"
+    r"|走得通|走得了|过得去|安全吗|安不安全|有没有障碍|有障碍吗|挡(?:住|着|路)"
 )
 
 
