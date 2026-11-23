@@ -37,6 +37,27 @@ CLOUD_FAILURE_SPEECH = {
     "recording_limit": "Recording stopped. Please tap and ask again.",
     "microphone_unavailable": "The microphone is unavailable.",
 }
+# The same messages for a Mandarin assistant (answer_language = "zh").
+ZH_FAILURE_SPEECH = {
+    "provider_timeout": "云端服务超时，请再试一次。",
+    "provider_busy": "云端服务繁忙，请再试一次。",
+    "budget_exhausted": "今天的云端请求次数已用完。",
+    "scene_expired": "等待时间太长，请重新提问。",
+    "recording_limit": "录音已停止，请重新按键再说。",
+    "microphone_unavailable": "麦克风不可用。",
+}
+TEXT = {
+    "en": {"service_unavailable": SERVICE_UNAVAILABLE, "vision_retry": VISION_RETRY,
+           "not_caught": "I didn't catch that. Please tap and ask again.",
+           "visual_safety": "I can't tell from one view whether it's safe to proceed.",
+           "use_navigation_button": "Use the navigation button for route commands.",
+           "camera_unavailable": "The camera view is unavailable."},
+    "zh": {"service_unavailable": "云端服务不可用。", "vision_retry": "看不清画面。",
+           "not_caught": "没有听清，请重新按键再说。",
+           "visual_safety": "只凭一个画面，我无法判断能不能安全通过。",
+           "use_navigation_button": "导航请用K2按键。",
+           "camera_unavailable": "摄像头画面不可用。"},
+}
 ACK = b"".join(struct.pack("<h", int(2800 * sin(2 * pi * 880 * n / 16000) *
                                     min(1, n / 80, (1280 - n) / 80))) for n in range(1280))
 
@@ -49,10 +70,10 @@ class TTSProvider(Protocol):
     def synthesize(self, text: str) -> bytes: ...
 
 
-def short_visual_answer(text):
-    sentence = re.split(r"(?<=[.!?])\s+", text.strip(), maxsplit=1)[0]
+def short_visual_answer(text, retry=VISION_RETRY):
+    sentence = re.split(r"(?<=[.!?])\s+|(?<=[。！？])", text.strip(), maxsplit=1)[0]
     if not any(char.isalpha() for char in sentence):
-        return VISION_RETRY
+        return retry
     if len(sentence.split()) > 24:
         clause = re.split(r"[,;:]", sentence, maxsplit=1)[0]
         if len(clause.split()) <= 24:
@@ -71,6 +92,11 @@ class WakeAssistant:
         self.asr, self.tts = asr, tts
         self.report = report
         self.mode = config.get("mode", "ollama")
+        self.question_language = config.get("question_language", "en")
+        self.answer_language = config.get("answer_language", "en")
+        if self.question_language not in TEXT or self.answer_language not in TEXT:
+            raise ValueError("Assistant question_language and answer_language must be en or zh")
+        self.vosk_model, self.piper_voice = config.get("vosk_model"), config.get("piper_voice")
         self.cloud = self.mode == "psyche_grok"
         self.exclusive_vision = None if self.cloud else exclusive_vision
         if self.cloud and provider is None:
@@ -78,6 +104,13 @@ class WakeAssistant:
         self.ollama_port = config.get("ollama_port", 11434)
         self.request_timeout = config.get("request_timeout_s", 20)
         self.navigation = navigation if navigation is not None else MockNavigationAdapter()
+        # In cloud mode K2 talks with Grok to choose a place. Default on for a Mandarin assistant.
+        self.dialogue = None
+        if (self.cloud and hasattr(self.navigation, "find_places")
+                and config.get("destination_dialogue", self.answer_language == "zh")):
+            from .destination_dialogue import DestinationDialogue
+
+            self.dialogue = DestinationDialogue(provider, self.navigation)
         self.wake_enabled = not self.cloud and bool(config.get("wake_enabled", False))
         self.dashboard_test = not self.cloud and bool(config.get("dashboard_wake_test", False))
         self.ptt_gpio = config.get("ptt_gpio")
@@ -119,7 +152,9 @@ class WakeAssistant:
             return self._speech
         from .local_speech import LocalSpeech
 
-        return LocalSpeech(self.models)
+        return LocalSpeech(self.models, question_language=self.question_language,
+                           answer_language=self.answer_language, vosk_model=self.vosk_model,
+                           piper_voice=self.piper_voice)
 
     @cached_property
     def provider(self):
@@ -162,7 +197,8 @@ class WakeAssistant:
                     "demo_exclusive_vision": self.exclusive_vision is not None,
                     "ptt_gpio_unavailable": self.ptt_gpio is not None and self.gpio_button is None,
                     "frame_id": self.frame_id, "answer": self.answer if fresh else "",
-                    "answer_language": "en", "question_language": "en"}
+                    "answer_language": self.answer_language, "question_language": self.question_language,
+                    "destination_dialogue": self.dialogue.status() if self.dialogue else None}
 
     def start(self):
         self.worker.start()
@@ -382,9 +418,13 @@ class WakeAssistant:
         if error in {"audio_disabled", "busy", "tts_unavailable"}:
             return
         try:
-            self._speak(CLOUD_FAILURE_SPEECH.get(error, SERVICE_UNAVAILABLE), next_state="ERROR")
+            failures = ZH_FAILURE_SPEECH if self.answer_language == "zh" else CLOUD_FAILURE_SPEECH
+            self._speak(failures.get(error, self._text("service_unavailable")), next_state="ERROR")
         except Exception:
             LOG.warning("Could not announce assistant failure %s", error, exc_info=True)
+
+    def _text(self, key):
+        return TEXT[self.answer_language][key]
 
     def _transcribe(self, pcm):
         self._state("TRANSCRIBING")
@@ -422,20 +462,28 @@ class WakeAssistant:
         if not question:
             # A warning during recording discards the clip. In cloud mode say so instead of going silent.
             if self.cloud:
-                self._speak("I didn't catch that. Please tap and ask again.")
+                self._speak(self._text("not_caught"))
             return
         if kind == "navigation_button":
-            self.navigation.submit_destination(question)
+            if self.dialogue is None:
+                self.navigation.submit_destination(question)
+                return
+            self._state("PROCESSING")
+            answer = self.dialogue.handle(question, request_id=self.request_id)
+            if answer and self._speak(answer, navigation=True):
+                with self.lock:
+                    if not self.cancelled:
+                        self.answer = answer
             return
         self._state("ROUTING_COMMAND")
         action, destination = route_command(question)
         if action == "visual_safety":
-            answer = "I can't tell from one view whether it's safe to proceed."
+            answer = self._text("visual_safety")
         elif action == "vision":
             self._state("PROCESSING")
             answer = self._visual_answer(question)
         elif self.cloud:
-            answer = "Use the navigation button for route commands."
+            answer = self._text("use_navigation_button")
         else:
             answer = self._navigate(action, destination)
         if answer and self._speak(answer, navigation=action not in {"vision", "visual_safety"},
@@ -449,19 +497,19 @@ class WakeAssistant:
             jpeg, self.frame_id, self.captured_at = shared_jpeg(self.camera)
         except AssistantError as exc:
             if str(exc) == "camera_quality":
-                return VISION_RETRY
+                return self._text("vision_retry")
             if str(exc) == "camera_unavailable":
-                return "The camera view is unavailable."
+                return self._text("camera_unavailable")
             raise
         if self.cloud:
             if self.stop.is_set() or self.cancelled:
                 return ""
-            answer = self.provider.describe(question, jpeg, "en", request_id=self.request_id)
+            answer = self.provider.describe(question, jpeg, self.answer_language, request_id=self.request_id)
             if self.stop.is_set() or self.cancelled:
                 return ""
             if time.monotonic() - self.captured_at >= self.max_age:
                 raise AssistantError("scene_expired")
-            return short_visual_answer(answer)
+            return short_visual_answer(answer, self._text("vision_retry"))
         from PIL import Image
 
         floor_question = re.search(r"\b(?:floor|ground)\b", question, re.I)

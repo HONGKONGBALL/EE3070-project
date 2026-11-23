@@ -68,6 +68,8 @@ class SharedCane(CaneApp):
         else:
             if (button, kind) == ("dest", "long") and self.cloud_assistant:
                 self.cloud_assistant.cancel_navigation_recording()
+                if self.cloud_assistant.dialogue is not None:
+                    self.cloud_assistant.dialogue.reset()
             super().on_button(button, kind)
 
     def status(self):
@@ -99,7 +101,14 @@ class PiNavigation:
         cfg = load_config(options.get("config", "config/config.toml"))
         cfg.voice.enabled = cfg.voice.wake_enabled = False
         cfg.nav.read_route_with_tts = False
-        cfg.general.language = "en"
+        # Turn prompts are pre-recorded clips. Use the Mandarin catalog only when it has been generated.
+        language = options.get("language", "en")
+        if language not in {"en", "cmn"}:
+            raise ValueError("navigation.language must be en or cmn")
+        if language != "en" and not (Path(cfg.audio.dir) / language).is_dir():
+            LOG.warning("No %s navigation clips in %s; turn prompts stay in English", language, cfg.audio.dir)
+            language = "en"
+        cfg.general.language = language
         if amap is None and cfg.nav.enabled and cfg.secrets.amap_key:
             if report:
                 amap = AmapClient(cfg.secrets.amap_key, fetch=measured_amap_fetch(request_budget, report))
@@ -122,7 +131,7 @@ class PiNavigation:
         self.controller = SharedCane(cfg, distance, audio, amap)
         self.distance = distance
         self.distance.controller_owned = True
-        audio.sink.catalog = Path(cfg.audio.dir) / "en"
+        audio.sink.catalog = Path(cfg.audio.dir) / language
         self.thread = threading.Thread(target=self.controller.run, name="pi-navigation", daemon=True)
 
     def start(self):
@@ -155,6 +164,58 @@ class PiNavigation:
     def attach_cloud_assistant(self, assistant):
         self.controller.cloud_assistant = assistant
         self.controller.cfg.voice.candidate_selection = True
+
+    def find_places(self, query):
+        """Search AMap near the iPhone and return places with their straight-line distance."""
+        from ..voice.places import PlaceWorkerError
+        from .destination_dialogue import Place, PlacesUnavailable, distance_m
+
+        app = self.controller
+        with app._state_lock:
+            if not app.cfg.nav.enabled or app.amap is None or app.pi_places is None:
+                raise PlacesUnavailable("地图服务不可用。")
+            origin = app._search_origin_point()
+        if origin is None:
+            raise PlacesUnavailable("还没有收到手机定位。请在手机上开始共享定位。")
+        try:
+            results = app.pi_places.search(query, origin)
+        except PlaceWorkerError:
+            raise PlacesUnavailable("地图搜索失败。请检查网络后再试。") from None
+        return [Place(place.id, place.name, place.address, place.lng, place.lat,
+                      distance_m(origin, place.lng, place.lat))
+                for place in results if place.coordinate_frame == "WGS84"]
+
+    def stage_place(self, place):
+        """Hold the chosen place until K1. The dialogue has already spoken the prompt."""
+        from ..config import Destination
+        from .destination_dialogue import PlacesUnavailable
+
+        app = self.controller
+        with app._state_lock:
+            if not app._location_fresh() and app.manual_search_origin is None:
+                raise PlacesUnavailable("手机定位已过期。请让手机保持共享定位。")
+            app.destination_search.reset()
+            app.pending_dest = Destination(place.id, place.name, lng=place.lng, lat=place.lat,
+                                           address=place.address, coordinate_frame="WGS84")
+            app.arbiter.discard_information()
+
+    def clear_destination(self):
+        app = self.controller
+        with app._state_lock:
+            app.pending_dest = None
+            app.destination_search.reset()
+
+    def cancel_destination(self):
+        """Drop the chosen place, or stop the active route. Returns True when a route stopped."""
+        app = self.controller
+        with app._state_lock:
+            active = app.navigator.active or app._route_pending
+            if active:
+                app.stop_navigation(announce=False)
+            else:
+                app.pending_dest = None
+                app.destination_search.reset()
+            return active
 
     def submit_destination(self, text):
         self.controller._jobs.put(lambda: self.controller.on_destination_text(text))

@@ -17,7 +17,7 @@ class Harness:
     """A WakeAssistant in cloud mode with fake audio, microphone, speech and provider."""
 
     def __init__(self, monkeypatch, describe=None, *, rejected_cues=0, transcript="what is in front of me",
-                 navigation=None):
+                 navigation=None, config=None, chat=None):
         self.cues, self.spoken, self.questions = [], [], []
         self.rejected_cues = rejected_cues
         self.idle = threading.Event()
@@ -38,9 +38,9 @@ class Harness:
             return "A chair is ahead. A lamp is behind it."
 
         speech = SimpleNamespace(transcribe=lambda pcm: transcript)
-        self.assistant = WakeAssistant({"mode": "psyche_grok"}, object(), audio, microphone=microphone,
-                                       speech=speech, navigation=navigation,
-                                       provider=SimpleNamespace(describe=describe or default_describe))
+        self.assistant = WakeAssistant({"mode": "psyche_grok", **(config or {})}, object(), audio,
+                                       microphone=microphone, speech=speech, navigation=navigation,
+                                       provider=SimpleNamespace(describe=describe or default_describe, chat=chat))
         monkeypatch.setattr(wake_assistant, "shared_jpeg", lambda camera: (b"jpeg", 7, time.monotonic()))
         monkeypatch.setattr(wake_assistant, "ACK_RETRY_S", 0.02)
         monkeypatch.setattr(self.assistant, "_speak", lambda text, **kwargs: self.spoken.append(text) or True)

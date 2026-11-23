@@ -138,6 +138,26 @@ class OpenAICompatibleVisionProvider:
                         if isinstance(usage, dict) and type(usage.get(name)) is int and usage[name] >= 0}
 
 
+    def chat(self, messages, *, max_tokens=200):
+        """Return the raw text of a text-only chat turn. The caller parses and validates it."""
+        try:
+            credentials = self.check(model_variable="PSYCHE_CHAT_MODEL")
+        except AssistantError as error:
+            if str(error) != "missing_model":
+                raise
+            credentials = self.check()
+        result = self._request("/chat/completions", {
+            "model": credentials[1], "max_tokens": max_tokens, "stream": False, "messages": messages,
+        }, credentials=credentials)
+        try:
+            text = result["choices"][0]["message"]["content"].strip()
+        except (AttributeError, IndexError, KeyError, TypeError) as exc:
+            raise AssistantError("invalid_reply") from exc
+        if not text or credentials[0] in text:
+            raise AssistantError("invalid_reply")
+        return text
+
+
 class PsycheGrokVisionProvider(OpenAICompatibleVisionProvider):
     def __init__(self, timeout=8, *, budget, report=None, transport=None):
         super().__init__(timeout, transport=transport)
@@ -161,6 +181,22 @@ class PsycheGrokVisionProvider(OpenAICompatibleVisionProvider):
             answer, record["usage"] = self._answer(question, jpeg, language)
             record["success"] = True
             return answer
+        except AssistantError as error:
+            record["error"] = str(error)
+            raise
+        finally:
+            record["latency_s"] = round(time.monotonic() - started, 3)
+            self.last_result = record
+            if self.report:
+                self.report("psyche_request", **record)
+
+    def chat(self, messages, *, max_tokens=200, request_id=None):
+        started = time.monotonic()
+        record = {"request_id": request_id or uuid.uuid4().hex, "capability": "dialogue", "success": False}
+        try:
+            text = super().chat(messages, max_tokens=max_tokens)
+            record["success"] = True
+            return text
         except AssistantError as error:
             record["error"] = str(error)
             raise
