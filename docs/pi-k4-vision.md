@@ -64,7 +64,7 @@ SenseVoice 需要 `pip install -e '.[sensevoice]'`（装 sherpa-onnx），`asr_m
 
 | 环节 | 耗时 |
 | --- | --- |
-| 按键到提示音播完 | 1.2 秒 |
+| 按键到提示音播完 | 0.9 秒 |
 | 录音（说完自动结束） | 2.5 秒 |
 | SenseVoice 识别 | 0.6 秒 |
 | Grok 看图（3790 输入 token） | 10.5 秒 |
