@@ -18,3 +18,7 @@ calib/*.npz
 captures/
 testdata/simulation/
 testdata/stairs-*/
+
+# Local output of tools/cane_voice_samples.py and tools/cane_route_check.py
+voice-samples/
+route-check/
