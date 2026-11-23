@@ -121,12 +121,32 @@ class WindowsAudio:
             yield read
 
 class PulseAudio:
-    def endpoints(self, kind):
-        nodes = 'sources' if kind == 'input' else 'sinks'
+    @staticmethod
+    def _nodes(nodes):
         response = subprocess.run(['pactl', '-f', 'json', 'list', nodes], capture_output=True,
                                   text=True, encoding='utf-8', check=True, timeout=5)
+        return json.loads(response.stdout)
+
+    def endpoints(self, kind):
+        nodes = 'sources' if kind == 'input' else 'sinks'
         return [Endpoint(row['name'], row['description'], ASR_RATE, 1)
-                for row in json.loads(response.stdout) if not row['name'].endswith('.monitor')]
+                for row in self._nodes(nodes) if not row['name'].endswith('.monitor')]
+
+    def microphone_for_output(self, target):
+        if not target:
+            response = subprocess.run(['pactl', 'get-default-sink'], capture_output=True,
+                                      text=True, encoding='utf-8', check=True, timeout=5)
+            target = response.stdout.strip()
+        sink = next((row for row in self._nodes('sinks') if row['name'] == target), {})
+        device_id = sink.get('properties', {}).get('device.id')
+        if device_id is not None:
+            inputs = [row for row in self._nodes('sources')
+                      if not row['name'].endswith('.monitor')
+                      and row.get('properties', {}).get('device.id') == device_id]
+            if len(inputs) == 1:
+                row = inputs[0]
+                return Endpoint(row['name'], row['description'], ASR_RATE, 1)
+        raise RuntimeError('The selected audio output has no unique microphone')
 
     @contextmanager
     def stream(self, device):

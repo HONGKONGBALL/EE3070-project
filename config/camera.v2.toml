@@ -22,9 +22,10 @@ fps = 15
 [assistant]
 enabled = false
 mode = "psyche_grok"          # cloud vision; ollama remains available for rollback
-microphone = "default"      # ALSA device from arecord -L
+microphone = "default"      # Use "follow-output" on Pi to use the selected headset's microphone.
 question_language = "en"    # en | zh (Mandarin). Selects the Vosk model.
 answer_language = "en"      # en | zh (Mandarin). Selects the Piper voice and the cloud answer language.
+vision_language = "en"      # K4-only ASR, Grok replies and Piper. K2 uses the settings above.
 # K2 in psyche_grok mode: talk with Grok to choose a nearby place, then press K1. On by default
 # when answer_language = "zh". See docs/pi-grok-destination.md.
 # destination_dialogue = true
