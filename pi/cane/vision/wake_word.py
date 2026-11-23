@@ -1,9 +1,113 @@
-"""Streaming offline recognition of the Korean pronunciation of Hey APT."""
+"""The wake phrase Hey APT: streaming recognition of its Korean pronunciation, and matching it in a
+Mandarin transcript."""
 
 import json
+import unicodedata
 
 
 DISPLAY_PHRASE = "Hey APT"
+
+# The Mandarin assistant has no keyword model. It transcribes every utterance and looks for the
+# phrase at the start. SenseVoice writes 嘿，阿帕次 with whichever characters sound closest (黑阿帕次,
+# 嘿阿巴斯, 阿八兹, 阿伯子, K安帕) and sometimes drops a syllable, so each character is matched by
+# its reading. The tables below come from about a hundred recordings of the phrase by its user.
+_READINGS = {
+    # 嘿 and what it is taken for. "hei" are the ones that are rarely anything else.
+    "hey": "嘿黑嗨诶欸喂还孩海亥害骇哎唉哀埃挨矮艾碍爱",
+    "hei": "嘿黑嗨诶欸喂",
+    # 阿. "an" leaves out 啊, which also opens ordinary sentences.
+    "a": "阿啊吖安暗",
+    "an": "阿安暗",
+    "pa": "帕怕趴啪爬琶葩",
+    # 帕 heard without its puff of air or with another vowel: ba, bo, po, pao, bao, bu, fa, pai.
+    "ba": "巴八吧把罢霸拔叭芭疤扒伯柏博波拨播薄脖勃泊婆坡破泼迫颇炮泡跑抛袍刨包宝保抱报饱爆堡不布步部补捕簿发法拍派排牌",
+    "b": "巴八",
+    # 帕 heard as another stop.
+    "ta": "特他她它塔踏克可",
+    # 次: ci, si, te, ce, se, zi.
+    "ci": "次此刺词辞慈瓷磁雌赐疵茨斯思私司丝撕嘶死四肆寺嗣伺饲巳特册策侧测厕色涩瑟子字紫资姿滋咨兹淄孜籽滓渍",
+    "chi": "吃痴持池迟尺赤翅斥齿耻士氏仕车",
+    # Further readings 次 is taken for. They also start many requests, so they only count as the
+    # last syllable when nothing follows.
+    "ci?": "是事时十使市式试师失施湿诗识实石食史始世室视示适势释饰似逝誓侍拾矢驶柿"
+           "之只知指至直值制质治志支纸止织职植执址智置致枝汁脂七期其奇起气器汽弃棋旗骑齐妻欺漆启企"
+           "提题体替梯踢的得德这者折哲克可刻客课科自",
+}
+_LATIN = {
+    "hey": {"hey", "hi", "hay", "hei", "hej", "hello", "helo", "halo"},
+    "hei": {"hey", "hi", "hay", "hei", "hej", "hello", "helo", "halo"},
+    "a": {"a", "ah", "r", "ar", "uh"},
+    "pa": {"p", "pa", "pah", "par"},
+    "ci": {"t", "ts", "s", "c", "te", "tz", "z"},
+    "apt": {"apt", "apts", "apat", "apart", "appt", "apate", "apateu", "apatu", "apartment"},
+}
+_SEPARATORS = " \t，,。.！!？?、：:；;~～…—-"
+# Said instead of 嘿 by some users. The phrase may follow these two syllables.
+_GREETINGS = ("你好", "您好", "哈喽", "哈罗", "哈啰", "哈尔")
+
+
+def _sounds(unit):
+    table = _LATIN if unit.isascii() else _READINGS
+    return {name for name, members in table.items() if unit in members}
+
+
+def _wake_at(sounds, start):
+    """How many units from the start of the transcript the wake phrase takes when it begins at
+    unit start, or 0. Each unit is the set of sounds it can stand for."""
+    def has(index, name):
+        return index < len(sounds) and name in sounds[index]
+
+    def last(end):
+        """1 when the unit at end is the last syllable of the phrase."""
+        return int(has(end, "ci") or has(end, "chi") or (has(end, "ci?") and len(sounds) == end + 1))
+
+    hey, hei = has(start, "hey"), has(start, "hei")
+    at = start + 1 if hey else start
+    if has(at, "apt"):
+        return at + 1
+    a, strong = has(at, "a"), has(at, "an")
+    if a and has(at + 1, "pa"):
+        # 阿帕 alone is too little after a bare 啊: it also needs 嘿 in front or 次 behind.
+        return at + 2 + last(at + 2) if hey or last(at + 2) or strong else 0
+    if a and has(at + 1, "ba"):
+        return at + 3 if last(at + 2) and (strong or hey) else 0
+    if strong and has(at + 1, "ta"):
+        return at + 3 if last(at + 2) else 0
+    if hei and has(start + 1, "an") and (has(start + 2, "ci") or has(start + 2, "chi")):
+        return start + 3  # 嘿阿兹: 帕 was swallowed
+    if hei and (has(start + 1, "pa") or has(start + 1, "b")) and has(start + 2, "ci"):
+        return start + 3  # 嘿怕次, 嘿巴兹: 阿 ran into 嘿
+    return 0
+
+
+def spoken_wake(text):
+    """What was said after the wake phrase at the start of a transcript.
+
+    Returns "" when nothing follows the phrase and None when the transcript does not start with it.
+    """
+    text = unicodedata.normalize("NFKC", text).strip()
+    sounds, ends = [], []
+    position = 0
+    while position < len(text) and len(sounds) < 8:
+        end = position + 1
+        if text[position].isascii() and text[position].isalpha():
+            while end < len(text) and text[end].isascii() and text[end].isalpha():
+                end += 1
+        elif text[position] in _SEPARATORS:
+            position = end
+            continue
+        sounds.append(_sounds(text[position:end].lower()))
+        ends.append(end)
+        position = end
+    # One misheard syllable may come first (K安帕, 配阿帕兹), or a greeting of two.
+    length = _wake_at(sounds, 0) or _wake_at(sounds, 1)
+    if not length and "".join(char for char in text if char not in _SEPARATORS).startswith(_GREETINGS):
+        length = _wake_at(sounds, 2)
+    if not length:
+        return None
+    return text[ends[length - 1]:].lstrip(_SEPARATORS).strip()
+
+
 PRONUNCIATION = "헤이 아파트"
 GRAMMAR = (PRONUNCIATION, "아파트", "헤이", "[3]")
 # These are acoustic spellings for the second decoder, not accepted wake phrases by themselves.

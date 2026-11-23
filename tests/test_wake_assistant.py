@@ -12,7 +12,7 @@ from cane.vision.assistant_provider import AssistantError
 from cane.vision.assistant_media import speech_only_pcm
 from cane.vision.voice_commands import MockNavigationAdapter, confirmed, route_command
 from cane.vision.wake_assistant import WakeAssistant, short_visual_answer
-from cane.vision.wake_word import PRONUNCIATION, WakeDetector
+from cane.vision.wake_word import PRONUNCIATION, WakeDetector, spoken_wake
 
 
 @pytest.mark.parametrize(("text", "expected"), [
@@ -26,6 +26,13 @@ from cane.vision.wake_word import PRONUNCIATION, WakeDetector
     ("What's my navigation status?", ("status", None)),
     ("How far to my destination?", ("status", None)),
     ("Cancel navigation", ("stop", None)),
+    ("下一步怎么走", ("next", None)),
+    ("接下来往哪走", ("next", None)),
+    ("离目的地还有多远", ("status", None)),
+    ("还有多远啊", ("status", None)),
+    ("还要走多久", ("status", None)),
+    ("海岸城怎么走", ("vision", None)),
+    ("椅子还有多远", ("vision", None)),
     ("Navigate to", ("unsupported_navigation", None)),
     ("What is in front of me?", ("vision", None)),
     ("Is the way ahead clear?", ("visual_safety", None)),
@@ -51,6 +58,44 @@ def test_route_requires_affirmation_and_mock_does_not_claim_success():
     assert confirmed("Yes, please!")
     assert confirmed("Yes.") and not confirmed("yes but wait")
     assert not MockNavigationAdapter().plan_route("CityU Library").success
+
+
+@pytest.mark.parametrize(("text", "rest"), [
+    ("黑阿帕次", ""), ("嘿，阿帕次。", ""), ("嘿阿帕特", ""), ("黑阿帕斯", ""), ("阿怕是", ""), ("嘿 A P T", ""),
+    ("黑暗帕次我想去最近的地铁站", "我想去最近的地铁站"),
+    ("黑阿怕次，前面有什么？", "前面有什么?"),
+    ("阿帕次带我去麦当劳", "带我去麦当劳"),
+    ("Hey APT 我想去图书馆", "我想去图书馆"),
+    # SenseVoice dropped or misheard the first or the last syllable.
+    ("K安帕我想去最近的地铁", "我想去最近的地铁"),
+    ("安帕前面有什么", "前面有什么"),
+    ("嗯，嘿阿帕次，第一个", "第一个"),
+    ("黑怕次取消导航", "取消导航"),
+    ("嘿阿帕可以走吗", "可以走吗"),
+    ("嘿阿帕次可以走吗", "可以走吗"),
+    # What SenseVoice wrote for the user's own recordings of the phrase.
+    ("嘿阿帕兹", ""), ("阿帕斯", ""), ("配阿帕兹", ""), ("阿怕吃", ""), ("阿婆吃", ""), ("阿特兹", ""), ("阿克斯", ""),
+    ("你好阿帕斯", ""), ("HELLO 阿柏兹", ""), ("喂阿帕吃", ""),
+    ("阿巴斯带我去麦当劳", "带我去麦当劳"),
+    ("嘿阿八兹第一个", "第一个"),
+    ("嘿阿伯子前面可以走吗", "前面可以走吗"),
+    ("嘿阿兹前面可以走吗", "前面可以走吗"),
+    ("嘿巴兹前面有什么", "前面有什么"),
+    ("嘿阿发兹取消导航", "取消导航"),
+])
+def test_wake_phrase_is_found_by_its_sound_at_the_start_of_a_transcript(text, rest):
+    assert spoken_wake(text) == rest
+
+
+@pytest.mark.parametrize("text", [
+    "", "我想去最近的地铁站", "阿姨怕吃辣椒", "他怕次", "前面有什么东西", "啊怕是不行的", "啊怕什么", "第一个",
+    "黑色的帕子", "各位老师同学大家好", "害怕死了", "还安排了什么", "我饿怕了", "和阿爸去超市",
+    # Everyday openings that are close to the looser readings.
+    "阿爸吃饭了吗", "阿姨您好", "啊不是吧", "啊不吃了", "嘿不是吧", "啊法子", "饿不死", "嘿包子好吃吗", "你好阿姨",
+    "啊他吃了吗", "喂爸爸是我", "还不是因为你", "你好我想问一下", "啊八点了", "哈喽大家好",
+])
+def test_ordinary_speech_is_not_the_wake_phrase(text):
+    assert spoken_wake(text) is None
 
 
 def test_wake_grammar_means_korean_pronunciation():

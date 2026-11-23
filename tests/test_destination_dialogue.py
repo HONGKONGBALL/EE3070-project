@@ -12,7 +12,7 @@ from cane.vision.destination_dialogue import (
 from cane.vision.navigation import PiNavigation
 from cane.voice.places import PlaceWorkerError, ProviderPlace
 
-from test_psyche_cloud import Harness
+from test_psyche_cloud import Harness, SaidOnce
 
 
 ORIGIN = (114.17, 22.336)
@@ -88,6 +88,16 @@ def test_ordinal_reply_is_handled_without_the_cloud():
     dialogue.handle("麦当劳")
     assert dialogue.handle("第 二 个") == "目的地，麦当劳2号店，约200米。按K1开始导航。"
     assert len(grok.calls) == 1
+
+
+@pytest.mark.parametrize("text", ["第二个", "是第二个", "就是第二个吧", "那就第二个", "我选二", "2"])
+def test_plain_ways_of_saying_an_ordinal_need_no_cloud(text):
+    navigation = FakeNavigation([place(1, 820), place(2, 310)])
+    grok = ScriptedGrok({"action": "search", "query": "麦当劳"})
+    dialogue = DestinationDialogue(grok, navigation)
+    dialogue.handle("麦当劳")
+    dialogue.handle(text)
+    assert navigation.staged == [place(1, 820)] and len(grok.calls) == 1
 
 
 def test_a_choice_outside_the_list_is_never_staged():
@@ -181,6 +191,109 @@ def test_k2_tap_runs_the_dialogue_and_speaks_its_answer(monkeypatch):
         h.ask("navigation_button")
     assert h.spoken == ["只找到一个地点。目的地，麦当劳1号店，约450米。按K1开始导航。"]
     assert navigation.staged == [place(1, 450)]
+
+
+ZH = {"answer_language": "zh", "question_language": "zh"}
+
+
+def test_place_after_the_wake_phrase_runs_the_dialogue_without_cloud_vision(monkeypatch):
+    navigation = FakeNavigation([place(1, 450)])
+    replies = ScriptedGrok({"action": "search", "query": "地铁站"})
+    with Harness(monkeypatch, navigation=navigation, config=ZH, chat=replies.chat,
+                 detector=SaidOnce("我想去最近的地铁站")) as h:
+        assert h.idle.wait(3)
+    assert navigation.queries == ["地铁站"]
+    assert h.spoken == ["只找到一个地点。目的地，麦当劳1号店，约450米。按K1开始导航。"]
+    assert not h.questions
+    assert "与目的地无关" not in replies.calls[0][-2]["content"]  # a clear request is not second-guessed
+
+
+def test_question_after_the_wake_phrase_is_answered_from_the_camera(monkeypatch):
+    prompts = []
+
+    def describe(question, jpeg, language, *, request_id=None, prompt=None):
+        prompts.append(prompt)
+        return "前面有一把椅子。"
+
+    replies = ScriptedGrok()
+    with Harness(monkeypatch, describe, navigation=FakeNavigation(), config=ZH, chat=replies.chat,
+                 detector=SaidOnce("前面有什么")) as h:
+        assert h.idle.wait(3)
+    assert h.spoken == ["前面有一把椅子。"]
+    assert not replies.calls
+    assert "NAVIGATE" in prompts[0]
+
+
+def test_grok_hands_a_place_it_was_asked_about_over_to_the_dialogue(monkeypatch):
+    navigation = FakeNavigation([place(1, 450)])
+    replies = ScriptedGrok({"action": "search", "query": "星巴克"})
+    with Harness(monkeypatch, lambda *args, **options: "NAVIGATE", navigation=navigation, config=ZH,
+                 chat=replies.chat, detector=SaidOnce("星巴克")) as h:
+        assert h.idle.wait(3)
+    assert navigation.queries == ["星巴克"]
+    assert h.spoken == ["只找到一个地点。目的地，麦当劳1号店，约450米。按K1开始导航。"]
+
+
+def test_dialogue_passes_a_question_that_only_sounded_like_a_place_to_the_camera(monkeypatch):
+    prompts = []
+
+    def describe(question, jpeg, language, *, request_id=None, prompt=None):
+        prompts.append(prompt)
+        return "手机在你左手边的桌子上。"
+
+    navigation = FakeNavigation()
+    replies = ScriptedGrok({"action": "other"})
+    with Harness(monkeypatch, describe, navigation=navigation, config=ZH, chat=replies.chat,
+                 detector=SaidOnce("我的手机在哪")) as h:
+        assert h.idle.wait(3)
+    assert "与目的地无关" in replies.calls[0][-2]["content"]
+    assert h.spoken == ["手机在你左手边的桌子上。"]
+    assert prompts == [None]  # no second hand-over
+    assert not navigation.queries and not navigation.cleared
+
+
+def test_spoken_choice_after_the_wake_phrase_picks_from_the_places_read_out(monkeypatch):
+    navigation = FakeNavigation([place(1, 450), place(2, 300)])
+    replies = ScriptedGrok()
+    with Harness(monkeypatch, navigation=navigation, config=ZH, chat=replies.chat,
+                 detector=SaidOnce("第二个")) as h:
+        dialogue = h.assistant.dialogue
+        dialogue.candidates, dialogue.last_turn = (place(2, 300), place(1, 450)), dialogue.clock()
+        assert h.idle.wait(3)
+    assert navigation.staged == [place(1, 450)]
+    assert not replies.calls and not h.questions
+
+
+def test_walk_question_after_the_wake_phrase_never_goes_to_the_dialogue(monkeypatch):
+    replies = ScriptedGrok()
+    with Harness(monkeypatch, navigation=FakeNavigation(), config=ZH, chat=replies.chat,
+                 detector=SaidOnce("前面可以过去吗")) as h:
+        assert h.idle.wait(3)
+    assert h.spoken == ["只凭一个画面，我无法判断能不能安全通过。"]
+    assert not replies.calls
+
+
+@pytest.mark.parametrize("text", ["我想去最近的地铁站", "带我去麦当劳", "导航到海岸城", "附近有便利店吗", "厕所在哪",
+                                  "去香港城市大学", "取消", "不去了"])
+def test_wordings_that_mean_a_place(text):
+    assert DestinationDialogue(ScriptedGrok(), FakeNavigation()).wants(text)
+
+
+@pytest.mark.parametrize("text", ["前面有什么", "这是什么颜色", "帮我看看桌上有什么", "第一个", "他过去了吗", "今天星期几"])
+def test_wordings_that_do_not_mean_a_place(text):
+    assert not DestinationDialogue(ScriptedGrok(), FakeNavigation()).wants(text)
+
+
+@pytest.mark.parametrize("text", ["附近有便利店吗", "厕所在哪", "我的手机在哪"])
+def test_wordings_that_leave_doubt_are_decided_by_grok(text):
+    dialogue = DestinationDialogue(ScriptedGrok(), FakeNavigation())
+    assert dialogue.wants(text) and not dialogue.wants(text, surely=True)
+
+
+def test_other_is_only_accepted_after_the_wake_phrase():
+    assert parse_reply('{"action": "other"}', 0, allow_other=True)[0] == "other"
+    with pytest.raises(AssistantError):
+        parse_reply('{"action": "other"}', 0)
 
 
 def test_mandarin_assistant_speaks_failures_in_mandarin(monkeypatch):

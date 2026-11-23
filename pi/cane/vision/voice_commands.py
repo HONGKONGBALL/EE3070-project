@@ -60,9 +60,12 @@ def route_command(text):
     if key in {"stop navigation", "cancel navigation", "停止导航", "取消导航"}:
         return "stop", None
     if key in {"what's my next turn", "whats my next turn", "what is my next turn", "my next turn", "next turn",
-               "下一步怎么走"}:
+               "下一步怎么走"} or re.fullmatch(r"(?:下一步|接下来)(?:怎么走|往哪走?|去哪|该怎么走)[啊呀呢]?", key):
         return "next", None
-    if key in {"where am i", "how far to my destination", "how far is my destination", "我在哪里", "离目的地还有多远"}:
+    # Only about the route as a whole: "椅子还有多远" stays a question about the view.
+    if (key in {"where am i", "how far to my destination", "how far is my destination", "我在哪里", "离目的地还有多远"}
+            or re.fullmatch(r"(?:我|我们|现在)?(?:离|距离|到)?(?:目的地|终点)?"
+                            r"(?:还有多远|还要走多[久远]|还要多久|多久能?到|快到了吗|走到哪了)[啊呀呢吗]?", key)):
         return "status", None
     if re.fullmatch(r"(?:(?:what's|what is) (?:my|the) )?(?:navigation|route) status", key):
         return "status", None

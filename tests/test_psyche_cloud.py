@@ -1,4 +1,4 @@
-"""Cloud (psyche_grok) assistant: K4/K2 taps, spoken failures, ACK retry and request budget."""
+"""Cloud (psyche_grok) assistant: K4/K2 taps, the wake phrase, spoken failures, ACK retry and request budget."""
 from contextlib import contextmanager
 import threading
 import time
@@ -13,11 +13,24 @@ from cane.vision.psyche_budget import RequestBudget
 from cane.vision.wake_assistant import CLOUD_FAILURE_SPEECH, SERVICE_UNAVAILABLE, WakeAssistant
 
 
+class SaidOnce:
+    """A wake detector that hears the wake phrase once, followed by the given request."""
+
+    def __init__(self, request):
+        self.pending = [request]
+
+    def reset(self):
+        pass
+
+    def feed(self, block):
+        return self.pending.pop() if self.pending else None
+
+
 class Harness:
     """A WakeAssistant in cloud mode with fake audio, microphone, speech and provider."""
 
     def __init__(self, monkeypatch, describe=None, *, rejected_cues=0, transcript="what is in front of me",
-                 navigation=None, config=None, chat=None):
+                 navigation=None, config=None, chat=None, detector=None):
         self.cues, self.spoken, self.questions = [], [], []
         self.rejected_cues = rejected_cues
         self.idle = threading.Event()
@@ -38,7 +51,8 @@ class Harness:
             return "A chair is ahead. A lamp is behind it."
 
         speech = SimpleNamespace(transcribe=lambda pcm: transcript)
-        self.assistant = WakeAssistant({"mode": "psyche_grok", **(config or {})}, object(), audio,
+        self.assistant = WakeAssistant({"mode": "psyche_grok", "wake_enabled": detector is not None,
+                                        **(config or {})}, object(), audio, detector=detector,
                                        microphone=microphone, speech=speech, navigation=navigation,
                                        provider=SimpleNamespace(describe=describe or default_describe, chat=chat))
         monkeypatch.setattr(wake_assistant, "shared_jpeg", lambda camera: (b"jpeg", 7, time.monotonic()))
@@ -67,6 +81,12 @@ class Harness:
         self.idle.clear()
         assert assistant.toggle(channel)
         assert self.idle.wait(3)
+
+    def wait_for_state(self, state, timeout=3):
+        deadline = time.monotonic() + timeout
+        while self.assistant.state != state and time.monotonic() < deadline:
+            time.sleep(0.01)
+        assert self.assistant.state == state
 
     def __enter__(self):
         self.assistant.start()
@@ -144,6 +164,126 @@ def test_k2_long_press_cancels_a_destination_recording(monkeypatch):
         h.assistant.cancel_navigation_recording()
         assert h.idle.wait(3)
     assert not destinations and not h.spoken
+
+
+def test_question_in_one_breath_with_the_wake_phrase_is_answered_like_k4(monkeypatch):
+    with Harness(monkeypatch, detector=SaidOnce("what is in front of me")) as h:
+        assert h.idle.wait(3)
+        assert not h.assistant.error
+    assert h.questions == ["what is in front of me"]
+    assert h.spoken == ["A chair is ahead."]
+    assert len(h.cues) == 1  # the short tone, no "start speaking" cue
+
+
+def test_wake_phrase_alone_plays_the_cue_and_records_the_request(monkeypatch):
+    with Harness(monkeypatch, detector=SaidOnce("")) as h:
+        h.wait_for_state("LISTENING_FOR_COMMAND")
+        assert h.assistant.in_turn()
+        time.sleep(0.3)
+        assert h.assistant.toggle("navigation_button")  # any key ends the recording early
+        assert h.idle.wait(3)
+    assert h.questions == ["what is in front of me"]
+    assert h.spoken == ["A chair is ahead."]
+
+
+def test_wake_phrase_followed_by_silence_asks_to_say_it_again(monkeypatch):
+    with Harness(monkeypatch, transcript="", detector=SaidOnce("")) as h:
+        h.wait_for_state("LISTENING_FOR_COMMAND")
+        time.sleep(0.3)
+        assert h.assistant.toggle("vision_button")
+        assert h.idle.wait(3)
+    assert h.spoken == ["I didn't catch that. Please say it again."]
+
+
+def test_keys_still_work_while_the_cane_listens_for_the_wake_phrase(monkeypatch):
+    with Harness(monkeypatch, detector=SaidOnce(None)) as h:
+        assert h.recording.wait(2)  # passive listening holds the microphone
+        h.ask()
+    assert h.questions == ["what is in front of me"]
+    assert h.spoken == ["A chair is ahead."]
+
+
+def test_missing_microphone_while_listening_for_the_wake_phrase_stays_silent(monkeypatch):
+    opened = threading.Event()
+
+    @contextmanager
+    def missing():
+        opened.set()
+        raise AssistantError("microphone_unavailable")
+        yield
+
+    h = Harness(monkeypatch, detector=SaidOnce("hello"))
+    h.assistant.microphone = missing
+    with h:
+        assert opened.wait(2)
+        time.sleep(0.2)
+        assert h.assistant.status()["error"] == "microphone_unavailable"
+        assert h.assistant.state == "PASSIVE_LISTENING"
+    assert not h.spoken and not h.cues
+
+
+def test_broken_wake_detector_turns_itself_off_and_leaves_the_keys(monkeypatch):
+    class Broken:
+        def reset(self):
+            pass
+
+        def feed(self, block):
+            raise RuntimeError("model missing")
+
+    with Harness(monkeypatch, detector=Broken()) as h:
+        deadline = time.monotonic() + 2
+        while h.assistant.wake_enabled and time.monotonic() < deadline:
+            time.sleep(0.01)
+        assert not h.assistant.wake_enabled
+        h.ask()
+    assert h.spoken == ["A chair is ahead."]
+
+
+class Route:
+    """A navigation that reports where the active route stands."""
+
+    def __init__(self, progress):
+        self.report = progress
+
+    def progress(self):
+        return self.report
+
+
+ZH = {"answer_language": "zh", "question_language": "zh", "destination_dialogue": False}
+
+
+@pytest.mark.parametrize(("progress", "answer"), [
+    ({"located": True, "remaining_m": 1234.0, "to_turn_m": 37.0, "maneuver": "turn_left", "crossing": False,
+      "turns_ok": True}, "前方约35米左转，距离目的地还有约1.2公里。"),
+    ({"located": True, "remaining_m": 240.0, "to_turn_m": 12.0, "maneuver": "turn_right", "crossing": False,
+      "turns_ok": False}, "距离目的地还有约240米。请先站稳，按K1对正方向。"),
+    ({"located": True, "remaining_m": 14.0, "to_turn_m": 14.0, "maneuver": None, "crossing": False,
+      "turns_ok": True}, "距离目的地还有约15米。"),
+    ({"located": True, "remaining_m": 300.0, "to_turn_m": 2.0, "maneuver": "turn_left", "crossing": True,
+      "turns_ok": False}, "前方是路口。决定过街后按K1继续。"),
+    ({"located": False}, "正在等待定位。"),
+    (None, "现在没有在导航。"),
+])
+def test_how_far_is_answered_from_the_route_without_the_cloud(monkeypatch, progress, answer):
+    with Harness(monkeypatch, transcript="还有多远", navigation=Route(progress), config=ZH) as h:
+        h.ask()
+    assert h.spoken == [answer]
+    assert not h.questions
+
+
+def test_next_turn_asked_after_the_wake_phrase_is_answered_from_the_route(monkeypatch):
+    progress = {"located": True, "remaining_m": 510.0, "to_turn_m": 48.0, "maneuver": "slight_right",
+                "crossing": False, "turns_ok": True}
+    with Harness(monkeypatch, navigation=Route(progress), config=ZH, detector=SaidOnce("下一步怎么走")) as h:
+        assert h.idle.wait(3)
+    assert h.spoken == ["前方约50米向右前方走，距离目的地还有约510米。"]
+    assert not h.questions
+
+
+def test_wake_up_in_cloud_mode_needs_the_sensevoice_backend():
+    assistant = WakeAssistant({"mode": "psyche_grok", "wake_enabled": True}, None, None, microphone=object(),
+                              speech=object(), provider=object())
+    assert not assistant.wake_enabled
 
 
 def test_toggle_is_ignored_outside_cloud_mode():

@@ -16,7 +16,7 @@ from typing import Protocol
 import uuid
 
 from .assistant_media import foreground_is_dark, shared_jpeg, speech_only_pcm
-from .assistant_provider import WALK_PROMPT, AssistantError
+from .assistant_provider import SYSTEM_PROMPT, WALK_PROMPT, AssistantError
 from .voice_commands import MockNavigationAdapter, confirmed, route_command
 from .wake_word import DISPLAY_PHRASE, WakeDetector
 
@@ -24,6 +24,12 @@ from .wake_word import DISPLAY_PHRASE, WakeDetector
 LOG = logging.getLogger(__name__)
 VISION_RETRY = "I couldn't make out the scene."
 TOGGLE_CHANNELS = {"vision_button", "navigation_button"}
+# A request spoken after the wake phrase can be a question about the view or a place to go to.
+# Grok answers the first kind and hands the second kind over with one word.
+HANDOVER = "NAVIGATE"
+WAKE_PROMPT = (SYSTEM_PROMPT + " The user woke the cane by voice. If they are not asking about the view but want "
+               "to go to a place, find a place nearby, or change or cancel their destination, reply with the "
+               "single word " + HANDOVER + " and nothing else.")
 # A hazard warning can hold the speaker when K4 is tapped. Retry the cue until it is heard.
 ACK_WAIT_S = 3.0
 ACK_RETRY_S = 0.15
@@ -51,6 +57,14 @@ TEXT = {
            "not_caught": "I didn't catch that. Please tap and ask again.",
            "visual_safety": "I can't tell from one view whether it's safe to proceed.",
            "use_navigation_button": "Use the navigation button for route commands.",
+           "say_again": "I didn't catch that. Please say it again.",
+           "no_route": "No route is active.", "route_locating": "Waiting for your location.",
+           "route_crossing": "A crossing is ahead. Press K1 when you decide to cross.",
+           "route_left": "About {} to your destination.", "route_next": "{} in about {}. ",
+           "route_align": " Stand still and press K1 to confirm your heading.",
+           "metres": "{} metres", "kilometres": "{:.1f} kilometres",
+           "maneuvers": {"turn_left": "Turn left", "turn_right": "Turn right", "slight_left": "Bear left",
+                         "slight_right": "Bear right", "turn_around": "Turn around", "go_straight": "Go straight"},
            "camera_unavailable": "The camera view is unavailable.",
            "walk_no": "Do", "ranges": "Cane range readings", "no_ranges": "unavailable",
            "front": "ahead {} cm", "head": "head height {} cm",
@@ -60,6 +74,14 @@ TEXT = {
            "not_caught": "没有听清，请重新按键再说。",
            "visual_safety": "只凭一个画面，我无法判断能不能安全通过。",
            "use_navigation_button": "导航请用K2按键。",
+           "say_again": "没有听清，请再说一次。",
+           "no_route": "现在没有在导航。", "route_locating": "正在等待定位。",
+           "route_crossing": "前方是路口。决定过街后按K1继续。",
+           "route_left": "距离目的地还有约{}。", "route_next": "前方约{}{}，",
+           "route_align": "请先站稳，按K1对正方向。",
+           "metres": "{}米", "kilometres": "{:.1f}公里",
+           "maneuvers": {"turn_left": "左转", "turn_right": "右转", "slight_left": "向左前方走",
+                         "slight_right": "向右前方走", "turn_around": "掉头", "go_straight": "直行"},
            "camera_unavailable": "摄像头画面不可用。",
            "walk_no": "不", "ranges": "手杖测距", "no_ranges": "无读数",
            "front": "前方{}厘米", "head": "头部高度{}厘米",
@@ -73,6 +95,8 @@ def _tone(frequency, samples, level=12000):
 
 # 0.35 s of silence lets a Bluetooth sink wake up. The rising two-tone cue is loud enough for earbuds.
 ACK = bytes(2 * 5600) + _tone(880, 2880) + _tone(1320, 3520)
+# One short tone: a request spoken in the same breath as the wake phrase was heard.
+HEARD = bytes(2 * 5600) + _tone(1320, 2400)
 
 
 class ASRProvider(Protocol):
@@ -127,7 +151,7 @@ class WakeAssistant:
             from .destination_dialogue import DestinationDialogue
 
             self.dialogue = DestinationDialogue(provider, self.navigation)
-        self.wake_enabled = not self.cloud and bool(config.get("wake_enabled", False))
+        self.wake_enabled = bool(config.get("wake_enabled", False))
         self.dashboard_test = not self.cloud and bool(config.get("dashboard_wake_test", False))
         self.ptt_gpio = config.get("ptt_gpio")
         if self.ptt_gpio is not None and (type(self.ptt_gpio) is not int or not 0 <= self.ptt_gpio <= 27):
@@ -139,10 +163,16 @@ class WakeAssistant:
         # Optional sherpa-onnx speech stack: SenseVoice recognition and Silero end-of-speech detection.
         self.endpoint = None
         self.asr_backend = config.get("asr_backend", "vosk")
+        self.asr_directory = directory = Path(config.get("asr_model_dir", self.models / "sense-voice"))
+        self.wake_silence = float(config.get("wake_silence_s", 0.7))
+        self.wake_request = None
+        if self.cloud and self.wake_enabled and self.asr_backend != "sensevoice" and detector is None:
+            # The cloud assistant finds the wake phrase in a SenseVoice transcript.
+            LOG.warning("wake_enabled needs asr_backend = \"sensevoice\" in cloud mode; voice wake-up is off")
+            self.wake_enabled = False
         if self.asr_backend == "sensevoice":
             from .sherpa_speech import SenseVoiceRecognizer, SpeechEndpoint
 
-            directory = Path(config.get("asr_model_dir", self.models / "sense-voice"))
             if self.asr is None:
                 self.asr = SenseVoiceRecognizer(directory, self.question_language,
                                                 int(config.get("asr_threads", 2)))
@@ -173,7 +203,14 @@ class WakeAssistant:
 
     @cached_property
     def detector(self):
-        return self._detector if self._detector is not None else WakeDetector(
+        if self._detector is not None:
+            return self._detector
+        if self.cloud:
+            from .sherpa_speech import SpokenWake
+            from .wake_word import spoken_wake
+
+            return SpokenWake(self.asr_directory / "silero_vad.onnx", self.asr, spoken_wake, self.wake_silence)
+        return WakeDetector(
             self.models / "vosk-model-small-ko-0.22", lambda: self.speech.recognizer_model, self.confidence)
 
     @cached_property
@@ -229,6 +266,7 @@ class WakeAssistant:
                     "frame_id": self.frame_id, "answer": self.answer if fresh else "",
                     "answer_language": self.answer_language, "question_language": self.question_language,
                     "heard": getattr(self, "heard", ""),
+                    "wake_heard": getattr(self.__dict__.get("detector"), "heard", ""),
                     "destination_dialogue": self.dialogue.status() if self.dialogue else None}
 
     def start(self):
@@ -274,7 +312,7 @@ class WakeAssistant:
             if (not self.cloud or channel not in TOGGLE_CHANNELS or self.stop.is_set()
                     or now - self.button_at < .25):
                 return False
-            if self.trigger == channel and self.state == "LISTENING_FOR_COMMAND" and not self.released:
+            if self.trigger in (channel, "wake") and self.state == "LISTENING_FOR_COMMAND" and not self.released:
                 self.released = True
             elif self.trigger is None and self.state == "PASSIVE_LISTENING":
                 self._activate(channel)
@@ -284,9 +322,9 @@ class WakeAssistant:
             return True
 
     def in_turn(self):
-        """True from an accepted K2 or K4 tap until that turn is over."""
+        """True from an accepted K2 or K4 tap, or the wake phrase, until that turn is over."""
         with self.lock:
-            return self.trigger in TOGGLE_CHANNELS
+            return self.trigger in TOGGLE_CHANNELS or (self.cloud and self.trigger == "wake")
 
     def cancel_navigation_recording(self):
         with self.lock:
@@ -370,8 +408,8 @@ class WakeAssistant:
         heard = False
         silent = 0
         overlap = ptt and self.audio.busy()
-        # With a speech endpoint, a K2 or K4 turn also ends by itself when the user stops talking.
-        endpoint = self.endpoint if ptt and self.trigger in TOGGLE_CHANNELS else None
+        # With a speech endpoint, a K2, K4 or wake turn also ends by itself when the user stops talking.
+        endpoint = self.endpoint if ptt and self.trigger in TOGGLE_CHANNELS | {"wake"} else None
         ended = False
         if endpoint is not None:
             endpoint.reset()
@@ -427,26 +465,64 @@ class WakeAssistant:
                 with self.microphone() as mic:
                     self._state("LISTENING_FOR_COMMAND")
                     return kind, self._capture(mic, ptt=True)
-            with self.microphone() as mic:
-                muted_until = 0
-                if self.wake_enabled:
-                    self.detector.reset()
-                while not self.stop.is_set():
-                    if self.trigger == "ptt":
-                        self._state("LISTENING_FOR_COMMAND")
-                        return "ptt", self._capture(mic, ptt=True)
-                    if self.trigger == "wake":
-                        return "wake", None
-                    block = mic(0.2)
-                    if self.audio.busy():
+            if self.cloud and self.wake_enabled and not self._wake_ready():
+                continue
+            try:
+                with self.microphone() as mic:
+                    muted_until = 0
+                    if self.wake_enabled:
                         self.detector.reset()
-                        muted_until = time.monotonic() + 0.25
-                    elif block and time.monotonic() >= muted_until and self.detector.feed(block):
-                        with self.lock:
-                            if self.trigger is None and not self.stop.is_set():
-                                self.trigger = "wake"
-                                return "wake", None
+                    while not self.stop.is_set():
+                        if self.trigger == "ptt":
+                            self._state("LISTENING_FOR_COMMAND")
+                            return "ptt", self._capture(mic, ptt=True)
+                        if self.trigger == "wake":
+                            return "wake", None
+                        if self.trigger in TOGGLE_CHANNELS:
+                            break  # a key turn opens the microphone itself, after its cue
+                        block = mic(0.2)
+                        if self.audio.busy():
+                            self.detector.reset()
+                            muted_until = time.monotonic() + 0.25
+                        elif block and time.monotonic() >= muted_until:
+                            # The Korean detector answers True. The Mandarin one returns the request
+                            # that followed the phrase, which is "" when only the phrase was said.
+                            try:
+                                heard = self.detector.feed(block)
+                            except Exception:
+                                if not self.cloud:
+                                    raise
+                                LOG.exception("Voice wake-up failed and is now off. The keys still work")
+                                self.wake_enabled = False
+                                break
+                            if heard is None or heard is False:
+                                continue
+                            with self.lock:
+                                if self.trigger is None and not self.stop.is_set():
+                                    self.trigger = "wake"
+                                    self.wake_request = heard if isinstance(heard, str) else None
+                                    if self.cloud:
+                                        self.request_id = uuid.uuid4().hex
+                                        self.released = self.cancelled = False
+                                    return "wake", None
+            except AssistantError as error:
+                if not self.cloud or str(error) != "microphone_unavailable" or self.trigger:
+                    raise
+                # Nobody asked for anything, so a missing microphone is not announced. The keys
+                # still report it, and listening resumes when the microphone is back.
+                self._state("PASSIVE_LISTENING", "microphone_unavailable")
+                self.trigger_ready.wait(5)
         return None, None
+
+    def _wake_ready(self):
+        """Build the wake detector once. Without its models voice wake-up turns itself off."""
+        try:
+            self.detector
+            return True
+        except Exception:
+            LOG.exception("Voice wake-up is unavailable. The keys still work")
+            self.wake_enabled = False
+            return False
 
     def _warm_up(self):
         """Load the speech models at start so the first K2 turn is not slow."""
@@ -506,35 +582,62 @@ class WakeAssistant:
             return
         if not self.audio.sink.enabled:
             raise AssistantError("audio_disabled")
-        if kind == "wake":
+        question = None
+        if kind == "wake" and self.cloud:
+            self._state("WAKE_DETECTED")
+            question, self.wake_request = self.wake_request, None
+            if question:
+                # Said in one breath with the wake phrase. One tone tells the user it was heard.
+                self._play_pcm(HEARD, 16000, next_state="WAKE_DETECTED")
+            else:
+                if not self._acknowledge():
+                    return
+                with self.microphone() as mic:
+                    self._state("LISTENING_FOR_COMMAND")
+                    pcm = self._capture(mic, ptt=True)
+        elif kind == "wake":
             self._state("WAKE_DETECTED")
             if not self._speak("Yes?", next_state="WAKE_DETECTED"):
                 return
             self._state("LISTENING_FOR_COMMAND")
             with self.microphone() as mic:
                 pcm = self._capture(mic)
-        question = self._transcribe(pcm)
+        if not question:
+            question = self._transcribe(pcm)
         self.heard = question  # shown in /assistant/status for bench checks
         if self.stop.is_set() or self.cancelled:
             return
         if not question:
             # A warning during recording discards the clip. In cloud mode say so instead of going silent.
             if self.cloud:
-                self._speak(self._text("not_caught"))
+                self._speak(self._text("say_again" if kind == "wake" else "not_caught"))
             return
         if kind == "navigation_button":
             if self.dialogue is None:
                 self.navigation.submit_destination(question)
                 return
-            self._state("PROCESSING")
-            answer = self.dialogue.handle(question, request_id=self.request_id)
-            if answer and self._speak(answer, navigation=True):
+            self._destination_turn(question)
+            return
+        self._state("ROUTING_COMMAND")
+        action, destination = route_command(question)
+        # After the wake phrase the same turn serves both keys: a place goes to the K2 dialogue,
+        # anything else is a K4 question. A safety question always stays a K4 question.
+        voice = kind == "wake" and self.dialogue is not None
+        if self.cloud and action in {"next", "status"} and hasattr(self.navigation, "progress"):
+            # "What next" and "how far" are answered from the route itself, for K4 and for the wake phrase.
+            answer = self._route_answer()
+            if self._speak(answer, navigation=True):
                 with self.lock:
                     if not self.cancelled:
                         self.answer = answer
             return
-        self._state("ROUTING_COMMAND")
-        action, destination = route_command(question)
+        if voice and action != "visual_safety":
+            if action != "vision" or self.dialogue.wants(question):
+                # Where the wording leaves doubt, Grok may find that the request is not about a place.
+                doubt = action == "vision" and not self.dialogue.wants(question, surely=True)
+                if self._destination_turn(question, open_question=doubt):
+                    return
+                action = "vision"
         if action == "visual_safety" and self.walkable_answers:
             self._state("PROCESSING")
             answer = self._walkable_answer(question)
@@ -542,7 +645,10 @@ class WakeAssistant:
             answer = self._text("visual_safety")
         elif action == "vision":
             self._state("PROCESSING")
-            answer = self._visual_answer(question)
+            answer = self._visual_answer(question, handover=voice and not self.dialogue.wants(question))
+            if answer == HANDOVER:
+                self._destination_turn(question)
+                return
         elif self.cloud:
             answer = self._text("use_navigation_button")
         else:
@@ -552,6 +658,43 @@ class WakeAssistant:
             with self.lock:
                 if not self.cancelled:
                     self.answer = answer
+
+    def _route_answer(self):
+        """The next turn and the distance left, in a sentence."""
+        progress = self.navigation.progress()
+        if progress is None:
+            return self._text("no_route")
+        if not progress["located"]:
+            return self._text("route_locating")
+        if progress["crossing"]:
+            return self._text("route_crossing")
+
+        def spoken(metres):
+            if metres < 1000:
+                return self._text("metres").format(max(5, round(metres / 5) * 5) if metres < 100 else round(metres / 10) * 10)
+            return self._text("kilometres").format(metres / 1000)
+
+        left = self._text("route_left").format(spoken(progress["remaining_m"]))
+        maneuver = self._text("maneuvers").get(progress["maneuver"])
+        if maneuver is None:
+            return left
+        if not progress["turns_ok"]:
+            return left + self._text("route_align")
+        if self.answer_language == "zh":
+            return self._text("route_next").format(spoken(progress["to_turn_m"]), maneuver) + left
+        return self._text("route_next").format(maneuver, spoken(progress["to_turn_m"])) + left
+
+    def _destination_turn(self, question, *, open_question=False):
+        """One utterance of the destination dialogue. False when Grok says it is not about a place."""
+        self._state("PROCESSING")
+        answer = self.dialogue.handle(question, request_id=self.request_id, open_question=open_question)
+        if answer is None:
+            return False
+        if answer and self._speak(answer, navigation=True):
+            with self.lock:
+                if not self.cancelled:
+                    self.answer = answer
+        return True
 
     def _range_reading(self):
         """The cane's range readings as prompt text, and the spoken refusal when one of them is close."""
@@ -592,7 +735,7 @@ class WakeAssistant:
             raise AssistantError("scene_expired")
         return answer or self._text("vision_retry")
 
-    def _visual_answer(self, question):
+    def _visual_answer(self, question, *, handover=False):
         try:
             jpeg, self.frame_id, self.captured_at = shared_jpeg(self.camera)
         except AssistantError as exc:
@@ -604,9 +747,15 @@ class WakeAssistant:
         if self.cloud:
             if self.stop.is_set() or self.cancelled:
                 return ""
-            answer = self.provider.describe(question, jpeg, self.answer_language, request_id=self.request_id)
+            # After the wake phrase Grok may hand the request over to the destination dialogue.
+            options = {"prompt": WAKE_PROMPT} if handover else {}
+            answer = self.provider.describe(question, jpeg, self.answer_language, request_id=self.request_id,
+                                            **options)
             if self.stop.is_set() or self.cancelled:
                 return ""
+            # Asked to reply in Mandarin, Grok may translate the word.
+            if handover and answer.strip().strip(".。!！\"'“”「」").upper() in {HANDOVER, "导航"}:
+                return HANDOVER
             if time.monotonic() - self.captured_at >= self.max_age:
                 raise AssistantError("scene_expired")
             return short_visual_answer(answer, self._text("vision_retry"))

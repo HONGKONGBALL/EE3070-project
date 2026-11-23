@@ -3,6 +3,9 @@
 Grok only interprets what the user said. AMap supplies the places, the Pi checks every choice
 against the places it read out, and K1 starts the route. Grok never plans a route or gives
 directions. When the cloud is unavailable, the dialogue falls back to a plain AMap search.
+
+The utterance comes from a K2 turn or follows the wake phrase. After the wake phrase it can also
+be a question about the view: wants() is the local guess, and Grok may answer "other".
 """
 
 from __future__ import annotations
@@ -24,6 +27,9 @@ MAX_CANDIDATES = 3
 HISTORY_TURNS = 6
 IDLE_RESET_S = 120.0
 ACTIONS = {"search", "choose", "ask", "cancel", "confirm"}
+# Only offered to Grok for an utterance that followed the wake phrase.
+OTHER_NOTE = ("这句话是用户用语音唤醒手杖后直接说的，也可能与目的地无关，例如询问眼前的景物、能不能往前走，或者闲聊。"
+              '如果它与选择或取消目的地无关，只输出 {"action": "other"}。')
 
 SYSTEM_PROMPT = """你是盲人智能手杖上的目的地助手。用户看不见屏幕，只能听你说话、按手杖上的按键。
 你唯一的任务是帮用户确定一个步行目的地。你不能规划路线，不能给出方向，也不能判断道路是否安全。
@@ -44,8 +50,16 @@ SYSTEM_PROMPT = """你是盲人智能手杖上的目的地助手。用户看不�
 不要编造地点、地址或距离。地点只能来自系统给你的候选列表。"""
 
 ORDINALS = {"一": 1, "1": 1, "首": 1, "二": 2, "两": 2, "2": 2, "三": 3, "3": 3}
-_ORDINAL = re.compile(r"^(?:就|要|去|选|我要|我选)?第?([一二两三123])(?:个|家|间|处)?(?:吧|啊|呀)?$")
+_ORDINAL = re.compile(r"^(?:就|要|去|选|是|就是|那就|我要|我选)?第?([一二两三123])(?:个|家|间|处)?(?:吧|啊|呀)?$")
 _CANCEL = {"取消", "算了", "不去了", "不要了", "停止", "停止导航", "取消导航", "结束导航", "不用了"}
+# Wordings that mean a place, for an utterance that followed the wake phrase.
+_DESTINATION = re.compile(
+    r"导航|路线|目的地|出发|前往|怎么走|怎么去|怎么到|带我|送我|陪我去"
+    r"|(?:想|要|我们|咱们|我)去(?!看看|看一|问|试)|^去.{2,}|不去了")
+# Wordings that often mean a place but also fit a question about the view. Grok decides.
+_MAYBE_DESTINATION = re.compile(r"附近|周围|最近的|(?:在哪|在哪里|在哪儿|在什么地方)$")
+# Wordings that pick one of the places just read out.
+_CHOICE = re.compile(r"第[一二两三123]|[一二两三123](?:个|家|间|号)|那个|这个|最近|最远|近的|远的|确认|确定|就它|好的?$")
 
 
 @dataclass(frozen=True, slots=True)
@@ -88,7 +102,7 @@ def _compact(text):
     return re.sub(r"[\s，。！？,.!?、]+", "", text)
 
 
-def parse_reply(text, candidate_count):
+def parse_reply(text, candidate_count, *, allow_other=False):
     """Accept only one well-formed action. Anything else is treated as a failed cloud turn."""
     match = re.search(r"\{.*\}", text, re.S)
     if not match:
@@ -97,6 +111,8 @@ def parse_reply(text, candidate_count):
         data = json.loads(match[0])
     except json.JSONDecodeError:
         raise AssistantError("invalid_reply") from None
+    if allow_other and isinstance(data, dict) and data.get("action") == "other":
+        return "other", "", 0, ""
     if not isinstance(data, dict) or data.get("action") not in ACTIONS:
         raise AssistantError("invalid_reply")
     action = data["action"]
@@ -131,15 +147,32 @@ class DestinationDialogue:
         return {"candidates": [{"name": place.name, "distance_m": place.distance_m} for place in self.candidates],
                 "chosen": self.chosen.name if self.chosen else None, "last_action": self.last_action}
 
-    def handle(self, text, *, request_id=None):
-        """Return the sentence to speak for one K2 utterance."""
+    def wants(self, text, *, surely=False):
+        """The local guess for an utterance after the wake phrase: is it about choosing a place?
+
+        With surely, only wordings that leave no doubt count.
+        """
+        compact = _compact(text)
+        if _DESTINATION.search(compact) or compact in _CANCEL:
+            return True
+        listed = bool(self.candidates) and self.clock() - self.last_turn <= self.idle_reset_s
+        if listed and (_ORDINAL.fullmatch(compact) or _CHOICE.search(compact)):
+            return True
+        return not surely and bool(_MAYBE_DESTINATION.search(compact))
+
+    def handle(self, text, *, request_id=None, open_question=False):
+        """Return the sentence to speak for one utterance.
+
+        With open_question the utterance followed the wake phrase and may not be about a place.
+        The result is then None when Grok says so, and the dialogue is left untouched.
+        """
         now = self.clock()
         if now - self.last_turn > self.idle_reset_s:
             self.reset()
         elif self.chosen is not None and self.navigation.status().get("active"):
             # K1 started the route. The next utterance starts a new choice.
             self.reset()
-        self.last_turn = now
+        previous_turn, self.last_turn = self.last_turn, now
         compact = _compact(text)
         # Short, unambiguous replies are handled locally: faster, and they work without the cloud.
         ordinal = _ORDINAL.fullmatch(compact)
@@ -149,10 +182,14 @@ class DestinationDialogue:
             return self._remember(text, "cancel", self._cancel())
         try:
             action, query, choice, reply = parse_reply(
-                self.provider.chat(self._messages(text), request_id=request_id), len(self.candidates))
+                self.provider.chat(self._messages(text, open_question), request_id=request_id),
+                len(self.candidates), allow_other=open_question)
         except AssistantError as error:
             LOG.warning("Destination dialogue fell back to a local search: %s", error)
             return self._remember(text, "fallback", self._fallback(text))
+        if action == "other":
+            self.last_turn = previous_turn
+            return None
         self.history.append({"role": "user", "content": text})
         self.history.append({"role": "assistant", "content": json.dumps(
             {"action": action, "query": query, "choice": choice, "reply": reply}, ensure_ascii=False)})
@@ -179,7 +216,7 @@ class DestinationDialogue:
         self.last_action = action
         return answer
 
-    def _messages(self, text):
+    def _messages(self, text, open_question=False):
         if self.candidates:
             lines = [f"{index}. {place.name}（{place.address or '无地址'}，{spoken_distance(place.distance_m)}）"
                      for index, place in enumerate(self.candidates, 1)]
@@ -188,6 +225,8 @@ class DestinationDialogue:
             state = "目前没有候选地点。"
         if self.chosen is not None:
             state += f"\n用户已选定：{self.chosen.name}，等待按 K1 确认。"
+        if open_question:
+            state += "\n" + OTHER_NOTE
         return [{"role": "system", "content": SYSTEM_PROMPT},
                 *self.history,
                 {"role": "system", "content": state},
