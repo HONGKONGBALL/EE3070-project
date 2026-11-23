@@ -21,6 +21,7 @@ FILES: Final[frozenset[str]] = frozenset({
     "index.html", "styles.css", "app.js", "chart.js", "protocol.js", "serial.js",
     "distance_pico_stream.py", "README.md",
     "pico_diagnostics.py", "hardware.js", "hardware-protocol.js", "hardware-panel.js",
+    "camera-panel.js",
 })
 
 
@@ -48,10 +49,10 @@ class ViewerHandler(SimpleHTTPRequestHandler):
         super().do_HEAD()
 
     def end_headers(self) -> None:
-        """Keep local edits visible and permit only local scripts/resources."""
+        """Keep local edits visible; scripts stay local, images may come from the Pi preview."""
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
-        self.send_header("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'")
+        self.send_header("Content-Security-Policy", "default-src 'self'; img-src 'self' data: http:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'")
         super().end_headers()
 
 

@@ -3,6 +3,7 @@ import { drawChart } from './chart.js';
 import { PicoSerial } from './serial.js';
 import { HardwareController } from './hardware.js';
 import { createHardwarePanel } from './hardware-panel.js';
+import { createCameraPanel } from './camera-panel.js';
 
 const $ = id => document.getElementById(id);
 const channels = [
@@ -178,4 +179,5 @@ setInterval(() => {
   renderChart();
 }, 250);
 resetSession();
+createCameraPanel();
 if (!('serial' in navigator)) notice('请在电脑 Google Chrome 中打开以连接串口；当前仍可查看演示。', 'error');
