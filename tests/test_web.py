@@ -66,6 +66,7 @@ def test_diag_only_exposes_whitelisted_control_routes():
     posts = {p for p, m in routes if m in ("POST", "PUT", "DELETE", "PATCH")}
     assert posts == {
         "/api/voice/text", "/api/voice/select", "/api/phone/location", "/api/control", "/api/sim/scenario",
+        "/api/button",
     }
     assert not any("safety" in p or "veto" in p or "override" in p for p, _ in routes)
 
@@ -90,3 +91,16 @@ def test_phone_disabled_without_token(ctrl):
 def test_bad_coordinates_rejected(ctrl):
     c = TestClient(create_app(ctrl, [], "t"))
     assert c.post("/api/phone/location", json={"lng": 500, "lat": 1, "token": "t"}).status_code == 422
+
+
+def test_a_key_press_can_be_injected_only_from_the_diagnostics_side(ctrl):
+    pressed = []
+    ctrl.press_button = lambda button, kind: pressed.append((button, kind)) or {"accepted": True}
+    local = TestClient(create_app(ctrl, ["127.0.0.1/32"], None), client=("127.0.0.1", 1))
+    assert local.post("/api/button", json={"button": "dest"}).json() == {"accepted": True}
+    assert local.post("/api/button", json={"button": "mode", "kind": "long"}).status_code == 200
+    assert local.post("/api/button", json={"button": "power"}).status_code == 422
+    assert pressed == [("dest", "short"), ("mode", "long")]
+    phone = TestClient(create_app(ctrl, [], "tok123"), client=("192.168.43.10", 1))
+    assert phone.post("/api/button", json={"button": "dest"}).status_code == 403
+    assert pressed == [("dest", "short"), ("mode", "long")]

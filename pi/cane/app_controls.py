@@ -34,6 +34,13 @@ class ControlsMixin:
                 return {"accepted": False, "action": action, "error": "control_queue_full"}
         return {"accepted": True, "action": action}
 
+    def press_button(self: AppContext, button: str, kind: str) -> dict[str, object]:
+        """Queue a key press for the main loop, the way one from the Pico arrives."""
+        app = self
+        app.logbook.write("button", button=button, ev=kind, source="diagnostics")
+        app._jobs.put(lambda: app.on_button(button, kind))
+        return {"accepted": True, "button": button, "kind": kind}
+
     def _drain_controls(self: AppContext) -> None:
         app = self
         for _ in range(32):

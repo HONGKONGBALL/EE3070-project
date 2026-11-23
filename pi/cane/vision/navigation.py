@@ -113,6 +113,16 @@ class SharedCane(CaneApp):
         self.say("dest_confirm", Priority.INFO)
 
 
+class StationaryImu:
+    """Stands in for the IMU in a bench demo: it always reports a cane that is not moving."""
+
+    moving = False
+    pitch_deg = None
+
+    def window(self):
+        return []
+
+
 class PiNavigation:
     def __init__(self, options, distance, audio, *, amap=None, request_budget=None, report=None):
         if not isinstance(distance, PicoDistanceProvider):
@@ -151,6 +161,7 @@ class PiNavigation:
         self.distance = distance
         self.distance.controller_owned = True
         audio.sink.catalog = Path(cfg.audio.dir) / language
+        self.assume_stationary = bool(options.get("demo_assume_stationary", False))
         self.thread = threading.Thread(target=self.controller.run, name="pi-navigation", daemon=True)
 
     def start(self):
@@ -158,6 +169,11 @@ class PiNavigation:
 
         app = self.controller
         _attach_imu(app)
+        if app.imu is None and self.assume_stationary:
+            # Without an IMU the heading can never be confirmed, so every turn prompt becomes
+            # "stop and face ahead". For a bench demo with a simulated location only.
+            LOG.warning("demo_assume_stationary: K1 confirms the heading without an IMU. Not for real walking.")
+            app.imu = StationaryImu()
         self.thread.start()
         if self.phone_configured:
             from ..web.app import serve
@@ -202,6 +218,24 @@ class PiNavigation:
             return {"front_m": front, "head_m": head,
                     "front_blocked": front is not None and front <= near,
                     "head_blocked": head is not None and head <= hazards.h.head_warn_m}
+
+    def progress(self):
+        """Where the active route stands, for a spoken answer. None without an active route."""
+        app = self.controller
+        with app._state_lock:
+            navigator = app.navigator
+            if not navigator.active:
+                return None
+            position, remaining = navigator.position, navigator.remaining_m()
+            if position is None or remaining is None:
+                return {"located": False}
+            step = navigator.route.steps[position.step]
+            last = position.step >= len(navigator.route.steps) - 1
+            return {"located": True, "remaining_m": remaining, "to_turn_m": position.to_step_end_m,
+                    "maneuver": None if last else step.maneuver,
+                    "crossing": navigator.waiting_crossing is not None,
+                    # A left or right is only worth saying while the heading is confirmed.
+                    "turns_ok": app.arbiter.orientation_ok}
 
     def find_places(self, query):
         """Search AMap near the iPhone and return places with their straight-line distance."""
