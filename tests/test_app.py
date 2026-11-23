@@ -150,6 +150,17 @@ def start_route(app, audio, clock):
     assert app.navigator.active
 
 
+def test_start_asks_for_the_heading_and_k1_then_gives_the_first_instruction(app, audio, clock):
+    start_route(app, audio, clock)
+    flush(app, audio, clock)
+    assert audio.played[-2:] == [["nav_start"], ["nav_stop_align"]]
+    app.on_button("ok", "short")                         # standing still: the heading is confirmed
+    assert app.sm.aligned
+    flush(app, audio, clock)
+    assert audio.played[-1] == ["turn_right", "dist_100"]
+    assert ["nav_nothing_to_repeat"] not in audio.played
+
+
 def test_first_fix_on_a_route_does_not_cut_navigation_started(app, audio, clock):
     start_route(app, audio, clock)
     assert audio.played[-1] == ["nav_start"] and audio.busy()

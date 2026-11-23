@@ -208,8 +208,12 @@ class NavigationMixin:
             app.logbook.write("nav", event="route", steps=len(route.steps), distance=route.distance_m)
             if route.uses_alternative:
                 app.say("walk_route_alternative", Priority.SYSTEM)
-            # A user who left the route needs to hear at once which way the new one goes.
-            app._handle_nav_outputs(app.navigator.rerouted() if reroute else outputs)
+            # A user who left the route needs to hear at once which way the new one goes. At the
+            # start the first instruction follows "navigation started": without a confirmed
+            # heading the arbiter turns it into "stop and align", and the K1 press that confirms
+            # the heading then repeats it instead of answering "no current instruction".
+            app._handle_nav_outputs(app.navigator.rerouted() if reroute
+                                    else outputs + app.navigator.first_instruction())
 
         app._jobs.put(apply)
 

@@ -129,6 +129,15 @@ class Navigator:
             turn = abs((bearing_deg(*points[0], *ahead) - self.travel_bearing + 180) % 360 - 180)
             if turn > 120:
                 return [self._output("prompt", "turn_around")]
+        return self.first_instruction()
+
+    def first_instruction(self) -> list[NavOutput]:
+        """The first instruction of a route with its distance, for the moment the route starts.
+
+        Empty when the turn is close enough for the usual announcement to come with the next fix.
+        """
+        if self.route is None or self._suspended:
+            return []
         step = self.route.steps[0]
         length = self._step_start_m[1] if len(self._step_start_m) > 1 else 0.0
         thresholds = [value for value in self.cfg.announce_m if math.isfinite(value) and value > 0]

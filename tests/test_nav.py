@@ -265,6 +265,11 @@ def test_new_route_that_goes_on_ahead_gives_its_first_instruction_at_once():
     assert [(o.prompt_id, o.extra_clips, o.direction) for o in out] == [("turn_right", ["dist_50"], Direction.RIGHT)]
 
 
+def test_route_start_gives_the_first_instruction_with_its_distance(nav):
+    out = nav.first_instruction()
+    assert [(o.prompt_id, o.extra_clips, o.direction) for o in out] == [("turn_right", ["dist_100"], Direction.RIGHT)]
+
+
 def test_new_route_with_a_turn_close_by_leaves_it_to_the_usual_announcement():
     n = Navigator(NavCfg(announce_m=[50, 20, 8], arrive_m=8, offroute_m=25))
     n.start(parse_walking(ROUTE_JSON), D)
