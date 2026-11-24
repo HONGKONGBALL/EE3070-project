@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from ..nav.amap import AmapError, NetworkError
 from ..nav.coords import wgs84_to_gcj02
+from ..nav.ors import OrsClient
 from ..nav.providers import MapClient, map_frame
 from .destinations import normalise
 from .fitness import DirectoryUnavailable, FitnessDirectory, nearby
@@ -25,7 +26,10 @@ class PiPlaceSearch:
         self.amap = amap
         self.directory = directory or FitnessDirectory()
 
-    def search(self, query: str, origin: tuple[float, float] | None = None) -> tuple[ProviderPlace, ...]:
+    def search(self, query: str, origin: tuple[float, float] | None = None, *,
+               language: str | None = None) -> tuple[ProviderPlace, ...]:
+        """language ("zh" or "en") is the one the request was spoken in, for services whose names
+        come in two languages."""
         if normalise(query) == "247fitness" and origin is not None:
             try:
                 branches = nearby(self.directory.branches(), origin)
@@ -47,7 +51,10 @@ class PiPlaceSearch:
         if region is not None and shifted:
             region = wgs84_to_gcj02(*region)
         try:
-            places = self.amap.search_places(query, region)
+            if language in ("zh", "en") and isinstance(self.amap, OrsClient):
+                places = self.amap.search_places(query, region, english=language == "en")
+            else:
+                places = self.amap.search_places(query, region)
         except (AmapError, NetworkError) as exc:
             raise PlaceWorkerError from exc
         results = []

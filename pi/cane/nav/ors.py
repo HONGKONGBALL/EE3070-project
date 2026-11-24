@@ -53,10 +53,13 @@ CATEGORIES: Final = (
 # Said around a kind of place without naming one.
 _FILLER: Final = re.compile(
     r"^(?:最近的?|附近的?|離我最近的?|就近的?)+|(?:在哪裏?|在哪兒)$"
-    r"|^(?:(?:the|a|an|my)\s+)?(?:nearest|closest|nearby|near-by)\s+|^(?:the|a|an)\s+"
+    # nearst, ne rest: how the recognizer sometimes writes "nearest".
+    r"|^(?:(?:the|a|an|my)\s+)?(?:nearest|nearst|neares|ne+r? ?rest|closest|nearby|near-by)\s+|^(?:the|a|an)\s+"
     r"|\s+(?:near\s*by|near me|around here|close to me)$")
 # "九龍塘 Kowloon Tong": the name is tagged in both languages. One of them is spoken.
 _BILINGUAL: Final = re.compile(r"^(.*[\u3400-\u9fff）)])\s+([A-Za-z0-9][A-Za-z0-9 .,'’()&/-]*)$")
+# Words in front of "station" that do not name one. EMR is how the recognizer hears "MTR".
+_RAIL_WORDS: Final = frozenset({"mtr", "emr", "mta", "m", "t", "r", "subway", "metro", "train", "railway", "rail", "tube"})
 POI_RADIUS_M: Final = 2000  # the most the category search takes around a point
 Send: TypeAlias = Callable[[str, bytes | None, Mapping[str, str], float], bytes]
 
@@ -120,6 +123,9 @@ def category_ids(query: str) -> tuple[int, ...]:
     for words, ids in CATEGORIES:
         if wanted in words:
             return ids
+    parts = wanted.split()
+    if len(parts) > 1 and parts[-1] in ("station", "stations") and all(part in _RAIL_WORDS for part in parts[:-1]):
+        return CATEGORIES[0][1]
     return ()
 
 
@@ -207,21 +213,27 @@ class OrsClient:
             "language": self.language, "instructions": True, "units": "m"})
         return parse_route(dict(data))
 
-    def search_places(self, query: str, region: tuple[float, float] | None = None) -> tuple[AmapPlace, ...]:
-        """Places for a spoken request: a kind of place nearby, or a place by its name."""
+    def search_places(self, query: str, region: tuple[float, float] | None = None, *,
+                      english: bool | None = None) -> tuple[AmapPlace, ...]:
+        """Places for a spoken request: a kind of place nearby, or a place by its name.
+
+        english picks the half of two-language names for this one request: the language the
+        request was spoken in. By default it is the language the client was made with.
+        """
+        english = self.english if english is None else english
         query = query.strip()
         kinds = category_ids(query)
         if kinds and region is not None:
-            places = self._nearby(kinds, region)
+            places = self._nearby(kinds, region, english)
             if places:
                 return places
         for text in name_variants(query):
-            places = self._named(text, region)
+            places = self._named(text, region, english)
             if places:
                 return places
         return ()
 
-    def _nearby(self, kinds: tuple[int, ...], region: tuple[float, float]) -> tuple[AmapPlace, ...]:
+    def _nearby(self, kinds: tuple[int, ...], region: tuple[float, float], english: bool) -> tuple[AmapPlace, ...]:
         data = self._call("/pois", {
             "request": "pois", "limit": 30, "sortby": "distance", "filters": {"category_ids": list(kinds)},
             "geometry": {"buffer": POI_RADIUS_M,
@@ -230,7 +242,7 @@ class OrsClient:
         for entry in _sequence(data.get("features")) if data.get("features") is not None else []:
             feature = _mapping(entry)
             properties = _mapping(feature.get("properties") or {})
-            name = spoken_name(_text(_mapping(properties.get("osm_tags") or {}).get("name")), self.english)
+            name = spoken_name(_text(_mapping(properties.get("osm_tags") or {}).get("name")), english)
             if not name:
                 continue  # a place without a name cannot be read out or told apart
             labels = [_text(_mapping(value).get("category_name"))
@@ -243,8 +255,8 @@ class OrsClient:
             matches[place_id] = AmapPlace(place_id, name, " ".join(label for label in labels if label), *lng_lat)
         return tuple(matches.values())
 
-    def _named(self, query: str, region: tuple[float, float] | None) -> tuple[AmapPlace, ...]:
-        params = {"text": query, "size": "20", "lang": self.language.split("-")[0]}
+    def _named(self, query: str, region: tuple[float, float] | None, english: bool) -> tuple[AmapPlace, ...]:
+        params = {"text": query, "size": "20", "lang": "en" if english else "zh"}
         if region is not None:
             lng, lat = f"{region[0]:.6f}", f"{region[1]:.6f}"
             params.update({"focus.point.lon": lng, "focus.point.lat": lat, "boundary.circle.lon": lng,
@@ -263,8 +275,8 @@ class OrsClient:
             except AmapError:
                 continue
             label = _text(properties.get("label"))
-            matches[place_id] = AmapPlace(place_id, spoken_name(name, self.english),
-                                          label if self.english else to_simplified(label), *lng_lat)
+            matches[place_id] = AmapPlace(place_id, spoken_name(name, english),
+                                          label if english else to_simplified(label), *lng_lat)
         return tuple(matches.values())
 
     def convert_gps(self, lng: float, lat: float) -> tuple[float, float]:

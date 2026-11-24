@@ -236,8 +236,11 @@ class PiNavigation:
                     # A left or right is only worth saying while the heading is confirmed.
                     "turns_ok": app.arbiter.orientation_ok}
 
-    def find_places(self, query):
-        """Search AMap near the iPhone and return places with their straight-line distance."""
+    def find_places(self, query, language=None):
+        """Search the map near the iPhone and return places with their straight-line distance.
+
+        language ("zh" or "en") is the one the request was spoken in.
+        """
         from ..voice.places import PlaceWorkerError
         from .destination_dialogue import Place, PlacesUnavailable, distance_m
 
@@ -249,7 +252,8 @@ class PiNavigation:
         if origin is None:
             raise PlacesUnavailable("还没有收到手机定位。请在手机上开始共享定位。")
         try:
-            results = app.pi_places.search(query, origin)
+            results = (app.pi_places.search(query, origin, language=language) if language
+                       else app.pi_places.search(query, origin))
         except PlaceWorkerError:
             raise PlacesUnavailable("地图搜索失败。请检查网络后再试。") from None
         return [Place(place.id, place.name, place.address, place.lng, place.lat,

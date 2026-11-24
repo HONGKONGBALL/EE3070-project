@@ -75,6 +75,26 @@ Grok 模型默认用 `PSYCHE_VISION_MODEL`。如果想让文字对话用另一�
 
 注意：`answer_language = "zh"` 时，K4 的视觉回答和云端失败提示也会改成普通话。避障警告仍然用原来预录的音频，不受影响。
 
+## 用英文说目的地
+
+`[assistant] destination_language` 只管 K2：
+
+| 值 | 效果 |
+| --- | --- |
+| 不写（默认） | K2 用 `question_language` / `answer_language`，和以前一样 |
+| `"auto"` | 目的地可以用普通话或英语说，手杖用听到的那种语言回答 |
+| `"en"` / `"zh"` | K2 固定用这一种语言，其余按键不受影响 |
+
+写了这一项就会开启目的地对话，不必再写 `destination_dialogue = true`。
+
+- 识别：SenseVoice 不管设成哪种语言，听到英语都写英文、听到普通话都写中文，所以 `"auto"` 不需要再加载一份模型。只有固定成与 `question_language` 不同的语言时才会多加载一份。
+- 回答：按这句话里有没有汉字判断语言。英文回答用英文的 Piper 声音；如果 `vision_language = "en"`，就是 K4 已经加载的那一个。
+- 给 Grok 的提示词、候选地点的读法（"I found 3 places. 1: Kowloon Tong, about 320 metres..."）、本地能直接处理的说法（"the second one"、"cancel"）都有英文版。
+- 地图服务是 openrouteservice 时，地名按这句话的语言返回（Kowloon Tong / 九龙塘），见 [pi-map-provider.md](pi-map-provider.md)。高德只有中文地名。
+- 走路时的转弯提示是预先录好的，语言由 `[navigation] language` 决定，不随 K2 这句话变化。
+
+没有验证的：真实 Grok 对英文提示词的反应，以及 Pi 上真人说英语的识别效果。电脑上用合成语音试过，"MTR" 会被写成 "EMR"、"nearest" 会被写成 "nearst"，地点类别的匹配已经容纳这两种写法。
+
 ## 台架检查
 
 1. iPhone 共享定位，最好在窗边或室外。

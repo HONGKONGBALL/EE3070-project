@@ -29,8 +29,9 @@ class FakeNavigation:
         self.cleared = self.cancelled = 0
         self.active = False
 
-    def find_places(self, query):
+    def find_places(self, query, language=None):
         self.queries.append(query)
+        self.languages = [*getattr(self, "languages", []), language]
         if self.error:
             raise PlacesUnavailable(self.error)
         return self.places
@@ -368,3 +369,145 @@ def test_pi_navigation_cancel_stops_an_active_route_or_drops_the_choice():
     navigation, app = pi_navigation()
     app.pending_dest = object()
     assert not navigation.cancel_destination() and app.pending_dest is None
+
+
+# --- English at K2 -----------------------------------------------------------------------------
+
+def station(index, metres):
+    return Place(f"e{index}", f"Station {index}", "", 114.17, 22.336, metres)
+
+
+def test_english_request_is_answered_in_english():
+    navigation = FakeNavigation([station(1, 820), station(2, 310), station(3, 1530)])
+    grok = ScriptedGrok({"action": "search", "query": "MTR station"})
+    dialogue = DestinationDialogue(grok, navigation)
+    # As the recognizer writes it: upper case, with a slip.
+    first = dialogue.handle("I WANT TO GO TO THE NEAREST EMR STATION")
+    assert navigation.queries == ["MTR station"]
+    assert first == ("I found 3 places. 1: Station 2, about 310 metres. 2: Station 1, about 820 metres. "
+                     "3: Station 3, about 1.5 kilometres. Press K2 and say which one.")
+    # Grok got the English instructions and the state in English.
+    assert grok.calls[0][0]["content"].startswith("You are the destination assistant")
+    assert grok.calls[0][-2]["content"] == "There are no candidate places yet."
+    # A spoken number needs no cloud.
+    assert dialogue.handle("THE SECOND ONE.") == "Destination: Station 1, about 820 metres. Press K1 to start."
+    assert navigation.staged == [station(1, 820)] and len(grok.calls) == 1
+    assert dialogue.language == "en"
+    # The map is asked for names in the language the request was spoken in.
+    assert navigation.languages == ["en"]
+
+
+@pytest.mark.parametrize("text", ["the second one", "Second.", "number two", "2", "I'll take the second one",
+                                  "option two please", "TWO"])
+def test_plain_english_ordinals_need_no_cloud(text):
+    navigation = FakeNavigation([station(1, 820), station(2, 310)])
+    grok = ScriptedGrok({"action": "search", "query": "MTR station"})
+    dialogue = DestinationDialogue(grok, navigation)
+    dialogue.handle("MTR station")
+    dialogue.handle(text)
+    assert navigation.staged == [station(1, 820)] and len(grok.calls) == 1
+
+
+def test_english_choice_outside_the_list_and_cancel():
+    navigation = FakeNavigation([station(1, 100), station(2, 200)])
+    grok = ScriptedGrok({"action": "search", "query": "MTR station"}, {"action": "choose", "choice": 7},
+                        {"action": "confirm"})
+    dialogue = DestinationDialogue(grok, navigation)
+    dialogue.handle("MTR station")
+    assert dialogue.handle("the seventh one") == "There are only 2 places. Say a number from 1 to 2."
+    assert dialogue.handle("okay let's go") == "No destination is chosen yet. Tell me where you want to go."
+    assert dialogue.handle("Never mind.") == "All right, cancelled."
+    assert not navigation.staged and len(grok.calls) == 3
+
+
+def test_reply_language_follows_each_utterance_unless_it_is_fixed():
+    navigation = FakeNavigation([place(1, 100), place(2, 200)])
+    grok = ScriptedGrok({"action": "search", "query": "麦当劳"}, {"action": "search", "query": "McDonald's"},
+                        {"action": "search", "query": "麦当劳"})
+    dialogue = DestinationDialogue(grok, navigation)
+    assert dialogue.handle("麦当劳").startswith("找到2个地点。")
+    assert dialogue.handle("McDonald's").startswith("I found 2 places.")
+    assert grok.calls[1][0]["content"].startswith("You are the destination assistant")
+    # The language K2 is set to wins over what was heard.
+    assert dialogue.handle("McDonald's", language="zh").startswith("找到2个地点。")
+    assert grok.calls[2][0]["content"].startswith("你是盲人智能手杖上的目的地助手")
+
+
+def test_map_failure_is_spoken_in_english_for_an_english_turn():
+    navigation = FakeNavigation(error="还没有收到手机定位。请在手机上开始共享定位。")
+    dialogue = DestinationDialogue(ScriptedGrok({"action": "search", "query": "hospital"}), navigation)
+    assert dialogue.handle("the nearest hospital") == (
+        "There is no phone location yet. Start sharing your location in the phone app.")
+    nothing = DestinationDialogue(ScriptedGrok({"action": "search", "query": "hospital"}), FakeNavigation())
+    assert nothing.handle("the nearest hospital") == "I found no hospital nearby. Please try other words."
+
+
+def test_english_request_is_searched_directly_when_the_cloud_fails():
+    navigation = FakeNavigation([station(1, 450)])
+    dialogue = DestinationDialogue(ScriptedGrok(AssistantError("provider_timeout")), navigation)
+    assert dialogue.handle("Take me to Festival Walk") == (
+        "The cloud assistant is unavailable, so I searched directly. I found one place. "
+        "Destination: Station 1, about 450 metres. Press K1 to start.")
+    assert navigation.queries == ["Festival Walk"]
+
+
+def test_english_wordings_count_as_destination_requests():
+    dialogue = DestinationDialogue(ScriptedGrok(), FakeNavigation())
+    assert dialogue.wants("Take me to the library") and dialogue.wants("navigate to Festival Walk")
+    assert dialogue.wants("Cancel navigation.") and dialogue.wants("how do I get to the station")
+    assert dialogue.wants("where is the nearest toilet") and not dialogue.wants("where is the nearest toilet", surely=True)
+    assert not dialogue.wants("what is in front of me") and not dialogue.wants("is the way ahead clear")
+
+
+def test_distances_are_spoken_in_the_language_of_the_turn():
+    assert spoken_distance(314, "en") == "about 310 metres" and spoken_distance(1530, "en") == "about 1.5 kilometres"
+    assert spoken_distance(4, "en") == "about 10 metres" and spoken_distance(None, "en") == ""
+    assert spoken_distance(314) == "约310米"
+
+
+def k2_turn(monkeypatch, transcript, config, replies, places):
+    """One K2 turn through the assistant. Returns what was spoken with the language of its voice."""
+    navigation = FakeNavigation(places)
+    navigation.submit_destination = lambda text: pytest.fail("legacy destination path used")
+    said = []
+    with Harness(monkeypatch, transcript=transcript, navigation=navigation, config=config,
+                 chat=ScriptedGrok(*replies).chat) as h:
+        monkeypatch.setattr(h.assistant, "_speak",
+                            lambda text, **kwargs: said.append((text, h.assistant._reply_language)) or True)
+        h.ask("navigation_button")
+    return said
+
+
+def test_k2_set_to_auto_answers_english_in_english_and_mandarin_in_mandarin(monkeypatch):
+    auto = {**ZH, "destination_language": "auto"}
+    said = k2_turn(monkeypatch, "TAKE ME TO FESTIVAL WALK", auto, [{"action": "search", "query": "Festival Walk"}],
+                   [station(1, 450)])
+    assert said == [("I found one place. Destination: Station 1, about 450 metres. Press K1 to start.", "en")]
+    said = k2_turn(monkeypatch, "我想去海岸城", auto, [{"action": "search", "query": "海岸城"}], [place(1, 450)])
+    assert said == [("只找到一个地点。目的地，麦当劳1号店，约450米。按K1开始导航。", "zh")]
+
+
+def test_k2_without_the_setting_keeps_the_assistant_language(monkeypatch):
+    # A Mandarin cane hears English: it still answers in Mandarin, as before.
+    said = k2_turn(monkeypatch, "TAKE ME TO FESTIVAL WALK", ZH, [{"action": "search", "query": "Festival Walk"}],
+                   [station(1, 450)])
+    assert said == [("只找到一个地点。目的地，Station 1，约450米。按K1开始导航。", "zh")]
+
+
+def test_k2_set_to_english_on_a_mandarin_cane(monkeypatch):
+    said = k2_turn(monkeypatch, "THE NEAREST HOSPITAL", {**ZH, "destination_language": "en"},
+                   [{"action": "search", "query": "hospital"}], [station(1, 450), station(2, 900)])
+    assert said == [("I found 2 places. 1: Station 1, about 450 metres. 2: Station 2, about 900 metres. "
+                     "Press K2 and say which one.", "en")]
+
+
+def test_english_cane_gets_the_dialogue_once_k2_has_a_language(monkeypatch):
+    # Without destination_language an English assistant keeps the legacy path (tested above).
+    said = k2_turn(monkeypatch, "THE NEAREST HOSPITAL", {"destination_language": "auto"},
+                   [{"action": "search", "query": "hospital"}], [station(1, 450)])
+    assert said == [("I found one place. Destination: Station 1, about 450 metres. Press K1 to start.", "en")]
+
+
+def test_unknown_k2_language_is_refused(monkeypatch):
+    with pytest.raises(ValueError, match="destination_language"):
+        Harness(monkeypatch, config={**ZH, "destination_language": "fr"})

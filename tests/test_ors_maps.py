@@ -195,3 +195,27 @@ def test_cane_place_search_uses_a_nearer_anchor_and_no_coordinate_shift():
     recorded = RECORDED["stations"]["features"][2]["geometry"]["coordinates"]
     assert (places[2].name, places[2].lng, places[2].lat, places[2].coordinate_frame) == (
         "九龙塘", recorded[0], recorded[1], "WGS84")
+
+
+@pytest.mark.parametrize(("query", "ids"), [
+    # As the recognizer writes spoken English: upper case, MTR heard as EMR, nearest as "ne rest".
+    ("THE NEARST EMR STATION", (610, 597)), ("the ne rest hospital", (206,)), ("NEAREST M T R STATION", (610, 597)),
+    ("subway station", (610, 597)), ("train stations", (610, 597)),
+    # A name in front of "station" still names one station.
+    ("KOWLOON TONG STATION", ()), ("Lok Fu MTR station", ()), ("police station", (369,)),
+])
+def test_recognizer_slips_in_english_still_find_the_kind_of_place(query, ids):
+    assert category_ids(query) == ids
+
+
+def test_names_follow_the_language_the_request_was_spoken_in():
+    # A Mandarin cane whose K2 heard English: this one request gets the English names.
+    service = Service(pois=RECORDED["stations"])
+    search = PiPlaceSearch(OrsClient("secret", service))
+    assert [p.name for p in search.search("the nearest MTR station", CITYU, language="en")][:3] == [
+        "Pak Tin", "Kowloon Tong (Festival Walk)", "Kowloon Tong"]
+    assert [p.name for p in search.search("地铁站", CITYU, language="zh")][:3] == ["白田", "九龙塘（又一城）", "九龙塘"]
+    # And the other way round on an English cane.
+    english = PiPlaceSearch(OrsClient("secret", Service(pois=RECORDED["stations"]), language="en"))
+    assert [p.name for p in english.search("地铁站", CITYU, language="zh")][:2] == ["白田", "九龙塘（又一城）"]
+    assert [p.name for p in english.search("station", CITYU)][:1] == ["Pak Tin"]
