@@ -58,7 +58,13 @@ odometry_max_yaw_deg = 15.0  # turned more than this since alignment -> orientat
 
 [nav]
 enabled = true
-coord_mode = "amap_api"     # amap_api | offline_gcj02 | none   (HK needs testing)
+# Who plans the route and finds the places:
+#   amap   - the mainland. Key in AMAP_KEY. Its key does not cover Hong Kong (error 10045).
+#   ors    - openrouteservice.org, OpenStreetMap data, for Hong Kong and abroad. Free key in ORS_KEY.
+#   google - Google Maps Platform (Routes and Places). Key in GOOGLE_MAPS_KEY. Not verified live.
+# See docs/pi-map-provider.md.
+provider = "amap"
+coord_mode = "amap_api"     # amap_api | offline_gcj02 | none. Only for amap: ors and google speak WGS-84.
 provider_coordinates_verified = false
 city = "香港"
 announce_m = [50, 20, 8]    # distances before a maneuver at which to announce

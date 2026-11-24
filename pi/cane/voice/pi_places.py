@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from ..nav.amap import AmapClient, AmapError, NetworkError
+from ..nav.amap import AmapError, NetworkError
 from ..nav.coords import wgs84_to_gcj02
+from ..nav.providers import MapClient, map_frame
 from .destinations import normalise
 from .fitness import DirectoryUnavailable, FitnessDirectory, nearby
 from .places import PlaceWorkerError, ProviderPlace, public_search_region
@@ -20,7 +21,7 @@ def _wgs84(lng: float, lat: float) -> tuple[float, float]:
 
 
 class PiPlaceSearch:
-    def __init__(self, amap: AmapClient | None, directory: FitnessDirectory | None = None) -> None:
+    def __init__(self, amap: MapClient | None, directory: FitnessDirectory | None = None) -> None:
         self.amap = amap
         self.directory = directory or FitnessDirectory()
 
@@ -36,15 +37,22 @@ class PiPlaceSearch:
                 for branch in branches
             )
         if self.amap is None:
-            raise PlaceWorkerError("AMAP_KEY is required for map keyword searches")
-        region = wgs84_to_gcj02(*public_search_region(origin)) if origin is not None else None
+            raise PlaceWorkerError("A map service key is required for map keyword searches")
+        shifted = map_frame(self.amap) == "gcj02"
+        region = public_search_region(origin) if origin is not None else None
+        decimals = getattr(self.amap, "search_decimals", None)
+        if origin is not None and decimals is not None:
+            # A service whose search only reaches a couple of kilometres needs a nearer anchor.
+            region = (round(origin[0], decimals), round(origin[1], decimals))
+        if region is not None and shifted:
+            region = wgs84_to_gcj02(*region)
         try:
             places = self.amap.search_places(query, region)
         except (AmapError, NetworkError) as exc:
             raise PlaceWorkerError from exc
         results = []
         for place in places:
-            lng, lat = _wgs84(place.lng, place.lat)
+            lng, lat = _wgs84(place.lng, place.lat) if shifted else (place.lng, place.lat)
             results.append(ProviderPlace(id=place.id[:128], name=place.name[:256], address=place.address[:512],
                                          lng=lng, lat=lat, coordinate_frame="WGS84"))
         return tuple(results)

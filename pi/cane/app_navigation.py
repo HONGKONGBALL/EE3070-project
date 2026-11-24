@@ -10,6 +10,7 @@ from .config import Destination
 from .model import Priority
 from .nav.amap import AmapError, NetworkError, WalkingRouteBlocked, WalkingRouteUnavailable
 from .nav.coords import wgs84_to_gcj02
+from .nav.providers import map_frame
 from .nav.navigator import NavOutput
 from .power import PowerStage
 from .state_machine import State
@@ -37,6 +38,8 @@ class NavigationMixin:
 
     def _to_amap(self: AppContext, lng: float, lat: float) -> tuple[float, float]:
         app = self
+        if map_frame(app.amap) == "wgs84":
+            return lng, lat  # the service speaks the frame of the fix
         mode = app.cfg.nav.coord_mode
         if mode == "offline_gcj02":
             return wgs84_to_gcj02(lng, lat)
@@ -48,6 +51,8 @@ class NavigationMixin:
 
     def _to_amap_fast(self: AppContext, lng: float, lat: float) -> tuple[float, float]:
         app = self
+        if map_frame(app.amap) == "wgs84":
+            return lng, lat
         if app.cfg.nav.coord_mode == "offline_gcj02":
             return wgs84_to_gcj02(lng, lat)
         if app.cfg.nav.coord_mode == "amap_api" and app._coord_offset is not None:

@@ -9,7 +9,8 @@ import time
 from ..app import CaneApp
 from ..config import load_config
 from ..model import Priority, SensorFrame
-from ..nav.amap import AmapClient, _urllib_fetch
+from ..nav.amap import _urllib_fetch
+from ..nav.providers import map_client
 from ..prompts import destination_prompt_id
 from ..voice.destinations import match_destination
 from ..voice.pi_places import PiPlaceSearch
@@ -138,11 +139,9 @@ class PiNavigation:
             LOG.warning("No %s navigation clips in %s; turn prompts stay in English", language, cfg.audio.dir)
             language = "en"
         cfg.general.language = language
-        if amap is None and cfg.nav.enabled and cfg.secrets.amap_key:
-            if report:
-                amap = AmapClient(cfg.secrets.amap_key, fetch=measured_amap_fetch(request_budget, report))
-            else:
-                amap = AmapClient(cfg.secrets.amap_key)
+        if amap is None and cfg.nav.enabled:
+            # The request budget counts AMap requests. Google requests are not metered here.
+            amap = map_client(cfg, fetch=measured_amap_fetch(request_budget, report) if report else None)
         self.phone_configured = False
         if options.get("phone_pair"):
             pair_dir = Path(options["phone_pair"])
