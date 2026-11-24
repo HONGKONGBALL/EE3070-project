@@ -190,7 +190,8 @@ def test_fixes_are_not_shifted_for_a_service_that_speaks_wgs84(mode):
 
 def test_place_search_passes_coordinates_through_unshifted():
     post = Recorder(PLACES)
-    places = PiPlaceSearch(GoogleClient("secret", post)).search("地铁站", ORIGIN)
+    places = PiPlaceSearch(GoogleClient("secret", post)).search("MTR station", ORIGIN, language="en")
+    assert post.calls[0][1]["languageCode"] == "en"
     assert post.calls[0][1]["locationBias"]["circle"]["center"] == {"latitude": 22.3, "longitude": 114.2}
     assert [(p.name, p.lng, p.lat, p.coordinate_frame) for p in places] == [
         ("九龙塘站", 114.1761, 22.3369, "WGS84"), ("乐富站", 114.187, 22.338, "WGS84")]

@@ -77,6 +77,7 @@ TEXT = {
            "say_again": "请再说一次你想去哪里。", "not_found": "附近没有找到{}。请换个说法再试。",
            "only_one": "只找到一个地点。", "candidate": "第{}个，{}，{}", "joiner": "。",
            "found": "找到{}个地点。{}。请按K2说要去第几个。", "range": "只有{}个候选。请说第一个到第{}个。",
+           "found_by_voice": "找到{}个地点。{}。请说唤醒词，再说要去第几个。",
            "destination": "目的地，{}{}。按K1开始导航。", "with_distance": "，{}",
            "stopped": "已停止导航。", "cancelled": "好的，已取消。",
            "cloud_down": "云端助手暂时不可用。请按K2，直接说出地点名称。",
@@ -89,6 +90,7 @@ TEXT = {
            "not_found": "I found no {} nearby. Please try other words.",
            "only_one": "I found one place. ", "candidate": "{}: {}, {}", "joiner": ". ",
            "found": "I found {} places. {}. Press K2 and say which one.",
+           "found_by_voice": "I found {} places. {}. Say the wake phrase and choose an option.",
            "range": "There are only {} places. Say a number from 1 to {}.",
            "destination": "Destination: {}{}. Press K1 to start.", "with_distance": ", {}",
            "stopped": "Navigation stopped.", "cancelled": "All right, cancelled.",
@@ -113,6 +115,9 @@ _ORDINAL_EN = re.compile(r"^(?:(?:i(?:'ll| will)? (?:take|want|choose|pick)|choo
                          r"(first|second|third|1st|2nd|3rd|one|two|three|[123])(?:\s+(?:one|place|option))?(?:\s+please)?$")
 _CANCEL_EN = {"cancel", "cancel it", "never mind", "nevermind", "forget it", "stop", "stop navigation",
               "cancel navigation", "end navigation", "no thanks", "i don't want to go"}
+_CONFIRM_EN = {"yes", "yes please", "ok", "okay", "confirm", "let's go", "start navigation"}
+_NEAREST_EN = {"nearest", "closest", "nearest one", "closest one", "the nearest", "the closest",
+               "the nearest one", "the closest one"}
 _DESTINATION_EN = re.compile(
     r"\b(?:navigat\w*|route|destination|directions?|take me|bring me|guide me|lead me|how (?:do|can) i get"
     r"|(?:i (?:want|would like|need)|i'd like|let's|we want) to go|go to|head to|walk to)\b")
@@ -168,9 +173,9 @@ def language_of(text):
     return "en" if re.search(r"[A-Za-z]", text) else None
 
 
-def _short_name(name):
+def _spoken_name(name, language):
     name = " ".join(name.split())
-    return name if len(name) <= 24 else name[:24]
+    return name if language == "en" else name[:24]
 
 
 def _compact(text):
@@ -252,7 +257,7 @@ class DestinationDialogue:
         message = str(error)
         return UNAVAILABLE_EN.get(message, UNAVAILABLE_EN["地图服务不可用。"]) if self.language == "en" else message
 
-    def handle(self, text, *, request_id=None, open_question=False, language=None):
+    def handle(self, text, *, request_id=None, open_question=False, language=None, by_voice=False):
         """Return the sentence to speak for one utterance.
 
         With open_question the utterance followed the wake phrase and may not be about a place.
@@ -269,12 +274,16 @@ class DestinationDialogue:
             # K1 started the route. The next utterance starts a new choice.
             self.reset()
         previous_turn, self.last_turn = self.last_turn, now
-        compact = _compact(text)
+        compact, plain = _compact(text), _plain(text)
         # Short, unambiguous replies are handled locally: faster, and they work without the cloud.
-        ordinal = _ORDINAL.fullmatch(compact) or _ORDINAL_EN.fullmatch(_plain(text))
+        ordinal = _ORDINAL.fullmatch(compact) or _ORDINAL_EN.fullmatch(plain)
         if ordinal and self.candidates:
             return self._remember(text, "choose", self._choose(ORDINALS[ordinal[1]]))
-        if compact in _CANCEL or _plain(text) in _CANCEL_EN:
+        if self.candidates and plain in _NEAREST_EN and self.candidates[0].distance_m is not None:
+            return self._remember(text, "choose", self._choose(1))
+        if plain in _CONFIRM_EN and (not open_question or self.candidates):
+            return self._remember(text, "confirm", self._t("press_k1" if self.chosen else "none_chosen"))
+        if compact in _CANCEL or plain in _CANCEL_EN:
             return self._remember(text, "cancel", self._cancel())
         try:
             action, query, choice, reply = parse_reply(
@@ -282,7 +291,7 @@ class DestinationDialogue:
                 len(self.candidates), allow_other=open_question)
         except AssistantError as error:
             LOG.warning("Destination dialogue fell back to a local search: %s", error)
-            return self._remember(text, "fallback", self._fallback(text))
+            return self._remember(text, "fallback", self._fallback(text, by_voice))
         if action == "other":
             self.last_turn = previous_turn
             return None
@@ -292,7 +301,7 @@ class DestinationDialogue:
         del self.history[:-2 * HISTORY_TURNS]
         self.last_action = action
         if action == "search":
-            return self._search(query)
+            return self._search(query, by_voice)
         if action == "choose":
             return self._choose(choice)
         if action == "cancel":
@@ -330,7 +339,7 @@ class DestinationDialogue:
                 {"role": "system", "content": state},
                 {"role": "user", "content": text}]
 
-    def _search(self, query):
+    def _search(self, query, by_voice):
         self.candidates, self.chosen = (), None
         self.navigation.clear_destination()
         try:
@@ -343,10 +352,10 @@ class DestinationDialogue:
         self.candidates = tuple(places)
         if len(places) == 1:
             return self._t("only_one") + self._choose(1)
-        parts = [self._t("candidate").format(index, _short_name(place.name),
+        parts = [self._t("candidate").format(index, _spoken_name(place.name, self.language),
                                              spoken_distance(place.distance_m, self.language))
                  for index, place in enumerate(places, 1)]
-        return self._t("found").format(len(places), self._t("joiner").join(parts))
+        return self._t("found_by_voice" if by_voice else "found").format(len(places), self._t("joiner").join(parts))
 
     def _choose(self, number):
         if not 1 <= number <= len(self.candidates):
@@ -358,15 +367,15 @@ class DestinationDialogue:
             return self._unavailable(error)
         self.chosen = place
         distance = spoken_distance(place.distance_m, self.language)
-        return self._t("destination").format(_short_name(place.name),
+        return self._t("destination").format(_spoken_name(place.name, self.language),
                                              self._t("with_distance").format(distance) if distance else "")
 
     def _cancel(self):
         self.reset()
         return self._t("stopped") if self.navigation.cancel_destination() else self._t("cancelled")
 
-    def _fallback(self, text):
+    def _fallback(self, text, by_voice):
         query = spoken_place_query(text)
         if query is None:
             return self._t("cloud_down")
-        return self._t("cloud_search") + self._search(query)
+        return self._t("cloud_search") + self._search(query, by_voice)

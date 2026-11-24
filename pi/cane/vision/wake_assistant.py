@@ -2,7 +2,7 @@
 
 from collections import deque
 from contextlib import contextmanager, nullcontext
-from functools import cached_property
+from functools import cached_property, partial
 from math import pi, sin
 import io
 import logging
@@ -18,7 +18,7 @@ import uuid
 from .assistant_media import foreground_is_dark, shared_jpeg, speech_only_pcm
 from .assistant_provider import SYSTEM_PROMPT, WALK_OBSERVATIONS, WALK_PROMPT, AssistantError
 from .voice_commands import CONCERN_QUERY, MockNavigationAdapter, confirmed, route_command
-from .wake_word import DISPLAY_PHRASE, WakeDetector
+from .wake_word import DISPLAY_PHRASE, MANDARIN_PHRASE, WakeDetector
 
 
 LOG = logging.getLogger(__name__)
@@ -67,7 +67,7 @@ TEXT = {
            "say_again": "I didn't catch that. Please say it again.",
            "no_route": "No route is active.", "route_locating": "Waiting for your location.",
            "route_crossing": "A crossing is ahead. Press K1 when you decide to cross.",
-           "route_left": "About {} to your destination.", "route_next": "{} in about {}. ",
+           "route_left": "About {} to your destination.", "route_next": "{maneuver} in about {distance}. ",
            "route_align": " Stand still and press K1 to confirm your heading.",
            "metres": "{} metres", "kilometres": "{:.1f} kilometres",
            "maneuvers": {"turn_left": "Turn left", "turn_right": "Turn right", "slight_left": "Bear left",
@@ -85,7 +85,7 @@ TEXT = {
            "say_again": "没有听清，请再说一次。",
            "no_route": "现在没有在导航。", "route_locating": "正在等待定位。",
            "route_crossing": "前方是路口。决定过街后按K1继续。",
-           "route_left": "距离目的地还有约{}。", "route_next": "前方约{}{}，",
+           "route_left": "距离目的地还有约{}。", "route_next": "前方约{distance}{maneuver}，",
            "route_align": "请先站稳，按K1对正方向。",
            "metres": "{}米", "kilometres": "{:.1f}公里",
            "maneuvers": {"turn_left": "左转", "turn_right": "右转", "slight_left": "向左前方走",
@@ -173,6 +173,7 @@ class WakeAssistant:
             fixed = self.destination_language if self.destination_language in TEXT else self.answer_language
             self.dialogue = DestinationDialogue(provider, self.navigation, language=fixed)
         self.wake_enabled = bool(config.get("wake_enabled", False))
+        self.wake_uses_vision_language = bool(config.get("wake_uses_vision_language", False))
         self.dashboard_test = not self.cloud and bool(config.get("dashboard_wake_test", False))
         self.ptt_gpio = config.get("ptt_gpio")
         if self.ptt_gpio is not None and (type(self.ptt_gpio) is not int or not 0 <= self.ptt_gpio <= 27):
@@ -231,7 +232,11 @@ class WakeAssistant:
             from .sherpa_speech import SpokenWake
             from .wake_word import spoken_wake
 
-            return SpokenWake(self.asr_directory / "silero_vad.onnx", self.asr, spoken_wake, self.wake_silence)
+            match = partial(spoken_wake, mandarin_only=True) if self.wake_uses_vision_language else spoken_wake
+            command_recognizer = (self.vision_asr if self.wake_uses_vision_language and self.vision_language
+                                  and self.vision_language != self.question_language else None)
+            return SpokenWake(self.asr_directory / "silero_vad.onnx", self.asr, match, self.wake_silence,
+                              command_recognizer=command_recognizer)
         return WakeDetector(
             self.models / "vosk-model-small-ko-0.22", lambda: self.speech.recognizer_model, self.confidence)
 
@@ -245,11 +250,16 @@ class WakeAssistant:
                            answer_language=self.answer_language, vosk_model=self.vosk_model,
                            piper_voice=self.piper_voice)
 
+    def _uses_vision_profile(self):
+        return self.cloud and (self.trigger not in NAVIGATION_PROFILE
+                               or (self.trigger == "wake" and self.wake_uses_vision_language))
+
     @property
     def _reply_language(self):
-        if self.cloud and self.trigger not in NAVIGATION_PROFILE:
+        if self._uses_vision_profile():
             return self.vision_language or self.answer_language
-        # A K2 turn answers in the language its destination was spoken in.
+        if self.trigger == "navigation_button" and self.dialogue is not None:
+            return self.turn_language or self.dialogue.language
         return self.turn_language or self.answer_language
 
     def _destination_reply_language(self, heard):
@@ -265,9 +275,15 @@ class WakeAssistant:
     @cached_property
     def destination_asr(self):
         """The recognizer of K2 when its language differs from question_language."""
-        from .sherpa_speech import SenseVoiceRecognizer
+        if self.destination_language == self.vision_language:
+            return self.vision_asr
+        if self.asr_backend == "sensevoice":
+            from .sherpa_speech import SenseVoiceRecognizer
 
-        return SenseVoiceRecognizer(self.asr_directory, self.destination_language, self.asr_threads)
+            return SenseVoiceRecognizer(self.asr_directory, self.destination_language, self.asr_threads)
+        from .local_speech import LocalSpeech
+
+        return LocalSpeech(self.models, question_language=self.destination_language)
 
     def _speech_for(self, language):
         """The local voice of a language: the K2 voice, the K4 voice, or one loaded for it."""
@@ -339,7 +355,8 @@ class WakeAssistant:
         with self.lock:
             fresh = self.captured_at is None or time.monotonic() - self.captured_at <= self.max_age
             return {"state": self.state, "error": self.error, "mode": self.mode, "request_id": self.request_id,
-                    "wake_enabled": self.wake_enabled, "wake_phrase": DISPLAY_PHRASE,
+                    "wake_enabled": self.wake_enabled,
+                    "wake_phrase": MANDARIN_PHRASE if self.cloud and self.wake_uses_vision_language else DISPLAY_PHRASE,
                     "dashboard_wake_test": self.dashboard_test, "recent_states": list(self.recent),
                     "demo_exclusive_vision": self.exclusive_vision is not None,
                     "ptt_gpio_unavailable": self.ptt_gpio is not None and self.gpio_button is None,
@@ -656,12 +673,12 @@ class WakeAssistant:
         pcm = speech_only_pcm(pcm, self.silence_level)
         if not pcm:
             return ""
-        use_vision = self.cloud and self.trigger not in NAVIGATION_PROFILE and self.vision_language
+        use_vision = self._uses_vision_profile() and self.vision_language
         recognizer = (self.vision_asr if use_vision and self.vision_language != self.question_language
                       else self.asr or self.speech)
         # SenseVoice writes English for English speech and Chinese for Chinese whatever language it
         # is set to, so "auto" needs no second copy of the model. A fixed other language gets one.
-        if (self.trigger == "navigation_button" and self.dialogue is not None and self.asr_backend == "sensevoice"
+        if (self.trigger == "navigation_button" and self.dialogue is not None
                 and self.destination_language not in (None, "auto", self.question_language)):
             recognizer = self.destination_asr
         return self._timed("asr", self.asr_backend, recognizer.transcribe, pcm).strip()
@@ -786,15 +803,13 @@ class WakeAssistant:
             return left
         if not progress["turns_ok"]:
             return left + self._text("route_align")
-        if self.answer_language == "zh":
-            return self._text("route_next").format(spoken(progress["to_turn_m"]), maneuver) + left
-        return self._text("route_next").format(maneuver, spoken(progress["to_turn_m"])) + left
+        return self._text("route_next").format(maneuver=maneuver, distance=spoken(progress["to_turn_m"])) + left
 
     def _destination_turn(self, question, *, open_question=False):
         """One utterance of the destination dialogue. False when Grok says it is not about a place."""
         self._state("PROCESSING")
         answer = self.dialogue.handle(question, request_id=self.request_id, open_question=open_question,
-                                      language=self._reply_language)
+                                      language=self._reply_language, by_voice=self.trigger == "wake")
         if answer is None:
             return False
         if answer and self._speak(answer, navigation=True):

@@ -391,6 +391,7 @@ def test_english_request_is_answered_in_english():
     assert grok.calls[0][-2]["content"] == "There are no candidate places yet."
     # A spoken number needs no cloud.
     assert dialogue.handle("THE SECOND ONE.") == "Destination: Station 1, about 820 metres. Press K1 to start."
+    assert dialogue.handle("Yes, please.") == "Press K1 to start."
     assert navigation.staged == [station(1, 820)] and len(grok.calls) == 1
     assert dialogue.language == "en"
     # The map is asked for names in the language the request was spoken in.
@@ -495,6 +496,13 @@ def test_k2_without_the_setting_keeps_the_assistant_language(monkeypatch):
 
 
 def test_k2_set_to_english_on_a_mandarin_cane(monkeypatch):
+    from cane.vision.local_speech import LocalSpeech
+
+    def transcribe(recognizer, pcm):
+        assert recognizer.language == "en"
+        return "THE NEAREST HOSPITAL"
+
+    monkeypatch.setattr(LocalSpeech, "transcribe", transcribe)
     said = k2_turn(monkeypatch, "THE NEAREST HOSPITAL", {**ZH, "destination_language": "en"},
                    [{"action": "search", "query": "hospital"}], [station(1, 450), station(2, 900)])
     assert said == [("I found 2 places. 1: Station 1, about 450 metres. 2: Station 2, about 900 metres. "

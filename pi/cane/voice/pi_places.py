@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from ..nav.amap import AmapError, NetworkError
 from ..nav.coords import wgs84_to_gcj02
+from ..nav.google import GoogleClient
 from ..nav.ors import OrsClient
 from ..nav.providers import MapClient, map_frame
 from .destinations import normalise
@@ -51,7 +52,7 @@ class PiPlaceSearch:
         if region is not None and shifted:
             region = wgs84_to_gcj02(*region)
         try:
-            if language in ("zh", "en") and isinstance(self.amap, OrsClient):
+            if language in ("zh", "en") and isinstance(self.amap, (OrsClient, GoogleClient)):
                 places = self.amap.search_places(query, region, english=language == "en")
             else:
                 places = self.amap.search_places(query, region)

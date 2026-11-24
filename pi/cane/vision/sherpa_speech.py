@@ -87,7 +87,7 @@ class SpokenWake:
     FOLLOW_S = 0.8
     KEEP_S = 30
 
-    def __init__(self, vad_model, recognizer, match, silence_s=0.7, max_s=12.0):
+    def __init__(self, vad_model, recognizer, match, silence_s=0.7, max_s=12.0, *, command_recognizer=None):
         import sherpa_onnx
 
         config = sherpa_onnx.VadModelConfig()
@@ -99,6 +99,7 @@ class SpokenWake:
         config.sample_rate = ASR_RATE
         self.vad = sherpa_onnx.VoiceActivityDetector(config, buffer_size_in_seconds=self.KEEP_S)
         self.recognizer, self.match = recognizer, match
+        self.command_recognizer = command_recognizer or recognizer
         self.heard = ""  # the start of the last utterance, for bench checks
         self.reset()
 
@@ -130,7 +131,7 @@ class SpokenWake:
             if self.follow_until is not None:
                 # The phrase came alone a moment ago. This utterance is the request.
                 self.follow_until = None
-                request = self.recognizer.transcribe_samples(utterance)
+                request = self.command_recognizer.transcribe_samples(utterance)
                 self.heard = request[:16]
                 continue
             request = self._request(utterance)

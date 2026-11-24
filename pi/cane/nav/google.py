@@ -186,8 +186,10 @@ class GoogleClient:
             "polylineEncoding": "GEO_JSON_LINESTRING"}, ROUTE_FIELDS)
         return parse_route(dict(data))
 
-    def search_places(self, query: str, region: tuple[float, float] | None = None) -> tuple[AmapPlace, ...]:
-        body: dict[str, JsonValue] = {"textQuery": query, "languageCode": self.language, "maxResultCount": 20}
+    def search_places(self, query: str, region: tuple[float, float] | None = None, *,
+                      english: bool | None = None) -> tuple[AmapPlace, ...]:
+        language = self.language if english is None else ("en" if english else "zh-CN")
+        body: dict[str, JsonValue] = {"textQuery": query, "languageCode": language, "maxResultCount": 20}
         if region is not None:
             body["locationBias"] = {"circle": {"center": {"latitude": round(region[1], 7),
                                                          "longitude": round(region[0], 7)}, "radius": 20000.0}}

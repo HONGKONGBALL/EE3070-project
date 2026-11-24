@@ -25,14 +25,8 @@ mode = "psyche_grok"          # cloud vision; ollama remains available for rollb
 microphone = "default"      # Use "follow-output" on Pi to use the selected headset's microphone.
 question_language = "en"    # en | zh (Mandarin). Selects the Vosk model.
 answer_language = "en"      # en | zh (Mandarin). Selects the Piper voice and the cloud answer language.
-vision_language = "en"      # K4-only ASR, Grok replies and Piper. K2 uses the settings above.
-# K2 only: "auto" lets the destination be said in Mandarin or in English and answers in the
-# language that was heard. "en" or "zh" fixes it. Unset: K2 uses the settings above. Turns the
-# destination dialogue on. See docs/pi-grok-destination.md.
-# destination_language = "auto"
-# K2 in psyche_grok mode: talk with Grok to choose a nearby place, then press K1. On by default
-# when answer_language = "zh". See docs/pi-grok-destination.md.
-# destination_dialogue = true
+vision_language = "en"      # K4 recognition and feedback.
+destination_language = "en" # K2 destination dialogue. Use "auto" with SenseVoice for bilingual input.
 # Override the model folder or voice file under speech_models_dir if needed.
 # vosk_model = "vosk-model-small-cn-0.22"
 # piper_voice = "zh_CN-huayan-medium.onnx"
@@ -59,8 +53,7 @@ ollama_port = 11434
 enabled = false
 config = "config/config.toml"
 # phone_pair = "certs/pi-phone"
-# Turn prompt clips: en | cmn. cmn needs the generated Mandarin catalog, otherwise English is used.
-# language = "cmn"
+language = "en"             # English walking directions.
 
 [model]
 directory = "models/yolo11n"

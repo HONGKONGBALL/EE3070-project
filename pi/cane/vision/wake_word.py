@@ -6,6 +6,7 @@ import unicodedata
 
 
 DISPLAY_PHRASE = "Hey APT"
+MANDARIN_PHRASE = "嘿，阿帕次"
 
 # The Mandarin assistant has no keyword model. It transcribes every utterance and looks for the
 # phrase at the start. SenseVoice writes 嘿，阿帕次 with whichever characters sound closest (黑阿帕次,
@@ -16,12 +17,12 @@ _READINGS = {
     "hey": "嘿黑嗨诶欸喂还孩海亥害骇哎唉哀埃挨矮艾碍爱",
     "hei": "嘿黑嗨诶欸喂",
     # 阿. "an" leaves out 啊, which also opens ordinary sentences.
-    "a": "阿啊吖安暗",
+    "a": "阿啊吖呀安暗",
     "an": "阿安暗",
     "pa": "帕怕趴啪爬琶葩",
     # 帕 heard without its puff of air or with another vowel: ba, bo, po, pao, bao, bu, fa, pai.
     "ba": "巴八吧把罢霸拔叭芭疤扒伯柏博波拨播薄脖勃泊婆坡破泼迫颇炮泡跑抛袍刨包宝保抱报饱爆堡不布步部补捕簿发法拍派排牌",
-    "b": "巴八",
+    "b": "巴八扒",
     # 帕 heard as another stop.
     "ta": "特他她它塔踏克可",
     # 次: ci, si, te, ce, se, zi.
@@ -80,7 +81,7 @@ def _wake_at(sounds, start):
     return 0
 
 
-def spoken_wake(text):
+def spoken_wake(text, *, mandarin_only=False):
     """What was said after the wake phrase at the start of a transcript.
 
     Returns "" when nothing follows the phrase and None when the transcript does not start with it.
@@ -100,6 +101,13 @@ def spoken_wake(text):
         ends.append(end)
         position = end
     # One misheard syllable may come first (K安帕, 配阿帕兹), or a greeting of two.
+    if mandarin_only:
+        if len(sounds) < 3 or text[ends[0] - 1] not in _READINGS["hei"]:
+            return None
+        length = _wake_at(sounds, 0)
+        if length < 3 or not ({"ci", "chi", "ci?"} & sounds[length - 1]):
+            return None
+        return text[ends[length - 1]:].lstrip(_SEPARATORS).strip()
     length = _wake_at(sounds, 0) or _wake_at(sounds, 1)
     if not length and "".join(char for char in text if char not in _SEPARATORS).startswith(_GREETINGS):
         length = _wake_at(sounds, 2)
