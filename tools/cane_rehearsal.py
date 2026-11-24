@@ -234,6 +234,7 @@ def build(args, work):
     nav_toml = nav_toml.replace('dir = "audio"', 'dir = "audio/navigation"').replace('role = "ground"', 'role = "front"')
     nav_toml = re.sub(r"(\[imu\]\nenabled = )true", r"\1false", nav_toml)
     nav_toml = re.sub(r"(\[vision\]\nenabled = )true", r"\1false", nav_toml)
+    nav_toml = nav_toml.replace('provider = "amap"', f'provider = "{getattr(args, "provider", "amap")}"')
     (work / "config" / "config.toml").write_text(nav_toml, "utf-8")
     address = args.address or lan_address()
     subprocess.run([sys.executable, str(repo / "tools" / "setup_pi_phone.py"), "--address", address,

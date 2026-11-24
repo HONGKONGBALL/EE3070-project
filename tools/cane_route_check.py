@@ -121,7 +121,7 @@ class Walker:
         self.cane, self.nav = world.cane, world.cane.navigator
         self.link = L.Cane(Path.cwd())
         self.random = random.Random(args.seed)
-        self.position = L.gcj02_to_wgs84(*L.DEFAULT_ORIGIN_GCJ)
+        self.position = tuple(args.origin) if args.origin else L.gcj02_to_wgs84(*L.DEFAULT_ORIGIN_GCJ)
         self.plan, self.plan_route = None, None
         self.heading = 0.0
         self.aligned_presses = self.crossings = 0
@@ -137,8 +137,15 @@ class Walker:
         lng, lat = bearing_step((lng, lat), self.random.uniform(0, 2 * math.pi), abs(self.random.gauss(0, sigma)))
         try:
             self.link.report(lng, lat, accuracy)
-        except OSError as error:
-            R.log(f"fix not delivered: {error}")
+            self.unreachable = False
+        except Exception as error:
+            # The computer changed network and the phone endpoint's address is gone: hand the fix
+            # to the cane itself, the way the endpoint would. The walk is about the guidance.
+            if not getattr(self, "unreachable", False):
+                R.log(f"phone endpoint unreachable ({error}); handing fixes to the cane directly")
+            self.unreachable = True
+            self.direct = getattr(self, "direct", 0) + 1
+            self.cane.on_location(lng, lat, accuracy)
 
     def tick(self, moved=0.0):
         self.rec.walked += moved
@@ -155,7 +162,9 @@ class Walker:
     def adopt_route(self):
         """Follow the cane's current route from the point on it nearest to where the walker stands."""
         route = self.nav.route
-        points = [L.gcj02_to_wgs84(*point) for point in route.polyline]
+        # AMap's route is in GCJ-02. The other services answer in the frame of the fixes.
+        shifted = getattr(self.cane.amap, "frame", "gcj02") == "gcj02"
+        points = [L.gcj02_to_wgs84(*point) if shifted else tuple(point) for point in route.polyline]
         nearest = min(range(len(points)), key=lambda index: L.metres(points[index], self.position))
         self.plan = L.Walk([self.position] + points[nearest:], self.args.speed)
         self.plan_route = route
@@ -484,15 +493,20 @@ def main():
     parser.add_argument("--reverse-after", type=float, help="turn round and walk back after this many metres")
     parser.add_argument("--max-minutes", type=float, default=75.0)
     parser.add_argument("--seed", type=int, default=3070)
+    parser.add_argument("--provider", choices=("amap", "ors", "google"), default="amap",
+                        help="map service to check (its key: AMAP_KEY, ORS_KEY or GOOGLE_MAPS_KEY)")
+    parser.add_argument("--origin", type=lambda text: [float(part) for part in text.split(",")], metavar="LNG,LAT",
+                        help="start point in WGS-84, as a phone reports it (default: the demo origin in Shenzhen)")
     parser.add_argument("--report", default=str(HERE.parent / "route-check" / "report.txt"),
                         help="where to write the report (the folder is not tracked by git)")
     args = parser.parse_args()
-    if not os.environ.get("AMAP_KEY"):
-        parser.error("AMAP_KEY is not set")
+    key = {"amap": "AMAP_KEY", "ors": "ORS_KEY", "google": "GOOGLE_MAPS_KEY"}[args.provider]
+    if not os.environ.get(key):
+        parser.error(f"{key} is not set")
     with tempfile.TemporaryDirectory(prefix="cane-route-check-") as directory:
         work = Path(directory).resolve()
         world = R.build(SimpleNamespace(repo=args.repo, address=None, imu="stationary", speech_speed=1.0,
-                                        speech_models=None), work)
+                                        speech_models=None, provider=args.provider), work)
         world.feeder = None
         recorder = Recorder(world)
         walker = Walker(world, recorder, args)
