@@ -10,7 +10,7 @@ from pathlib import Path
 
 from .app import CaneApp
 from .config import load_config
-from .nav.amap import AmapClient
+from .nav.providers import map_client
 from .voice.pi_places import PiPlaceSearch
 from .web.pairing import LAN_NETWORKS, PHONE_PORT, PhonePair
 
@@ -94,7 +94,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     log.info("starting (sim=%s) %r", args.sim, cfg.secrets)
 
-    amap = AmapClient(cfg.secrets.amap_key) if cfg.secrets.amap_key else None
+    amap = map_client(cfg)
     pi_places = PiPlaceSearch(amap) if args.phone_pair is not None else None
     app = CaneApp(cfg, sim=args.sim, amap=amap if cfg.nav.enabled else None, pi_places=pi_places)
     _attach_imu(app)

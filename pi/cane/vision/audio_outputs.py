@@ -75,7 +75,7 @@ class AudioOutputControl:
             raise ValueError('Select an output and an enabled setting')
         enabled, target = request['enabled'], request['target']
         with self.lock:
-            if enabled and target not in {o['target'] for o in connected_outputs()}:
+            if enabled and target and target not in {o['target'] for o in connected_outputs()}:
                 raise ValueError('Selected headphones are not connected. Refresh outputs.')
             if not self.config_path:
                 raise RuntimeError('No writable runtime configuration was provided')

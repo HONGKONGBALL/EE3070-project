@@ -9,7 +9,8 @@ import time
 from ..app import CaneApp
 from ..config import load_config
 from ..model import Priority, SensorFrame
-from ..nav.amap import AmapClient, _urllib_fetch
+from ..nav.amap import _urllib_fetch
+from ..nav.providers import map_client
 from ..prompts import destination_prompt_id
 from ..voice.destinations import match_destination
 from ..voice.pi_places import PiPlaceSearch
@@ -113,6 +114,16 @@ class SharedCane(CaneApp):
         self.say("dest_confirm", Priority.INFO)
 
 
+class StationaryImu:
+    """Stands in for the IMU in a bench demo: it always reports a cane that is not moving."""
+
+    moving = False
+    pitch_deg = None
+
+    def window(self):
+        return []
+
+
 class PiNavigation:
     def __init__(self, options, distance, audio, *, amap=None, request_budget=None, report=None):
         if not isinstance(distance, PicoDistanceProvider):
@@ -128,11 +139,9 @@ class PiNavigation:
             LOG.warning("No %s navigation clips in %s; turn prompts stay in English", language, cfg.audio.dir)
             language = "en"
         cfg.general.language = language
-        if amap is None and cfg.nav.enabled and cfg.secrets.amap_key:
-            if report:
-                amap = AmapClient(cfg.secrets.amap_key, fetch=measured_amap_fetch(request_budget, report))
-            else:
-                amap = AmapClient(cfg.secrets.amap_key)
+        if amap is None and cfg.nav.enabled:
+            # The request budget counts AMap requests. Google requests are not metered here.
+            amap = map_client(cfg, fetch=measured_amap_fetch(request_budget, report) if report else None)
         self.phone_configured = False
         if options.get("phone_pair"):
             pair_dir = Path(options["phone_pair"])
@@ -151,6 +160,7 @@ class PiNavigation:
         self.distance = distance
         self.distance.controller_owned = True
         audio.sink.catalog = Path(cfg.audio.dir) / language
+        self.assume_stationary = bool(options.get("demo_assume_stationary", False))
         self.thread = threading.Thread(target=self.controller.run, name="pi-navigation", daemon=True)
 
     def start(self):
@@ -158,6 +168,11 @@ class PiNavigation:
 
         app = self.controller
         _attach_imu(app)
+        if app.imu is None and self.assume_stationary:
+            # Without an IMU the heading can never be confirmed, so every turn prompt becomes
+            # "stop and face ahead". For a bench demo with a simulated location only.
+            LOG.warning("demo_assume_stationary: K1 confirms the heading without an IMU. Not for real walking.")
+            app.imu = StationaryImu()
         self.thread.start()
         if self.phone_configured:
             from ..web.app import serve
@@ -203,8 +218,29 @@ class PiNavigation:
                     "front_blocked": front is not None and front <= near,
                     "head_blocked": head is not None and head <= hazards.h.head_warn_m}
 
-    def find_places(self, query):
-        """Search AMap near the iPhone and return places with their straight-line distance."""
+    def progress(self):
+        """Where the active route stands, for a spoken answer. None without an active route."""
+        app = self.controller
+        with app._state_lock:
+            navigator = app.navigator
+            if not navigator.active:
+                return None
+            position, remaining = navigator.position, navigator.remaining_m()
+            if position is None or remaining is None:
+                return {"located": False}
+            step = navigator.route.steps[position.step]
+            last = position.step >= len(navigator.route.steps) - 1
+            return {"located": True, "remaining_m": remaining, "to_turn_m": position.to_step_end_m,
+                    "maneuver": None if last else step.maneuver,
+                    "crossing": navigator.waiting_crossing is not None,
+                    # A left or right is only worth saying while the heading is confirmed.
+                    "turns_ok": app.arbiter.orientation_ok}
+
+    def find_places(self, query, language=None):
+        """Search the map near the iPhone and return places with their straight-line distance.
+
+        language ("zh" or "en") is the one the request was spoken in.
+        """
         from ..voice.places import PlaceWorkerError
         from .destination_dialogue import Place, PlacesUnavailable, distance_m
 
@@ -216,7 +252,8 @@ class PiNavigation:
         if origin is None:
             raise PlacesUnavailable("还没有收到手机定位。请在手机上开始共享定位。")
         try:
-            results = app.pi_places.search(query, origin)
+            results = (app.pi_places.search(query, origin, language=language) if language
+                       else app.pi_places.search(query, origin))
         except PlaceWorkerError:
             raise PlacesUnavailable("地图搜索失败。请检查网络后再试。") from None
         return [Place(place.id, place.name, place.address, place.lng, place.lat,

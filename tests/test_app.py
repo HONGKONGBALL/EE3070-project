@@ -111,7 +111,7 @@ def test_voice_to_navigation_to_crossing(app, audio, clock):
     app.on_location(*lerp(A, B, 0.55), 5.0)
     feed(app, clock)
     flush(app, audio, clock)
-    assert ["turn_right", "dist_30"] in audio.played
+    assert ["turn_right", "dist_50"] in audio.played
 
     # crossing hand-off waits for OK
     app.on_location(*lerp(A, B, 0.97), 5.0)
@@ -135,8 +135,74 @@ def test_turns_blocked_without_alignment(app, audio, clock):
     app.on_location(*lerp(A, B, 0.55), 5.0)
     feed(app, clock)
     flush(app, audio, clock)
-    assert ["turn_right", "dist_30"] not in audio.played
+    assert ["turn_right", "dist_50"] not in audio.played
     assert ["nav_stop_align"] in audio.played
+
+
+def start_route(app, audio, clock):
+    feed(app, clock)
+    app.on_location(*A, 5.0)
+    feed(app, clock)
+    app.on_destination_text("城大")
+    flush(app, audio, clock)
+    app.on_button("ok", "short")
+    feed(app, clock)
+    assert app.navigator.active
+
+
+def test_start_asks_for_the_heading_and_k1_then_gives_the_first_instruction(app, audio, clock):
+    start_route(app, audio, clock)
+    flush(app, audio, clock)
+    assert audio.played[-2:] == [["nav_start"], ["nav_stop_align"]]
+    app.on_button("ok", "short")                         # standing still: the heading is confirmed
+    assert app.sm.aligned
+    flush(app, audio, clock)
+    assert audio.played[-1] == ["turn_right", "dist_100"]
+    assert ["nav_nothing_to_repeat"] not in audio.played
+
+
+def test_first_fix_on_a_route_does_not_cut_navigation_started(app, audio, clock):
+    start_route(app, audio, clock)
+    assert audio.played[-1] == ["nav_start"] and audio.busy()
+    stopped = audio.stopped
+    app.on_location(*lerp(A, B, 0.02), 5.0)
+    feed(app, clock)
+    assert audio.stopped == stopped and audio.busy()
+
+
+def test_leaving_the_route_is_announced_in_full_and_followed_by_the_new_first_instruction(app, audio, clock):
+    start_route(app, audio, clock)
+    flush(app, audio, clock)
+    app.on_button("ok", "short")                         # heading confirmed
+    flush(app, audio, clock)
+    for metres in (30, 60, 90):                          # walking away west of the start
+        app.on_location(A[0] - metres / 102_900, A[1], 5.0)
+        feed(app, clock)
+    assert audio.played[-1] == ["nav_offroute"] and audio.busy()
+    stopped = audio.stopped
+    for _ in range(40):                                  # the new route arrives while that is still playing
+        feed(app, clock)
+        if not app._route_pending:
+            break
+    assert not app._route_pending and app.navigator.active
+    app.on_location(*lerp(A, B, 0.02), 5.0)              # the first fix on the new route
+    feed(app, clock)
+    assert audio.stopped == stopped                      # "off route, rerouting" was not cut
+    flush(app, audio, clock)
+    assert audio.played[-1] == ["turn_right", "dist_100"]  # and the user hears what comes next
+
+
+def test_walking_the_wrong_way_down_the_route_says_turn_around(app, audio, clock):
+    start_route(app, audio, clock)
+    flush(app, audio, clock)
+    for fraction in (0.10, 0.20, 0.30, 0.40):
+        app.on_location(*lerp(A, B, fraction), 5.0)
+        feed(app, clock)
+    for fraction in (0.35, 0.30, 0.25, 0.20, 0.15):      # and back again
+        app.on_location(*lerp(A, B, fraction), 5.0)
+        feed(app, clock)
+    flush(app, audio, clock)
+    assert ["turn_around"] in audio.played
 
 
 def test_location_loss_stops_navigation_but_not_safety(app, audio, clock):

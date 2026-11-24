@@ -10,6 +10,7 @@ from .config import Destination
 from .model import Priority
 from .nav.amap import AmapError, NetworkError, WalkingRouteBlocked, WalkingRouteUnavailable
 from .nav.coords import wgs84_to_gcj02
+from .nav.providers import map_frame
 from .nav.navigator import NavOutput
 from .power import PowerStage
 from .state_machine import State
@@ -37,6 +38,8 @@ class NavigationMixin:
 
     def _to_amap(self: AppContext, lng: float, lat: float) -> tuple[float, float]:
         app = self
+        if map_frame(app.amap) == "wgs84":
+            return lng, lat  # the service speaks the frame of the fix
         mode = app.cfg.nav.coord_mode
         if mode == "offline_gcj02":
             return wgs84_to_gcj02(lng, lat)
@@ -48,6 +51,8 @@ class NavigationMixin:
 
     def _to_amap_fast(self: AppContext, lng: float, lat: float) -> tuple[float, float]:
         app = self
+        if map_frame(app.amap) == "wgs84":
+            return lng, lat
         if app.cfg.nav.coord_mode == "offline_gcj02":
             return wgs84_to_gcj02(lng, lat)
         if app.cfg.nav.coord_mode == "amap_api" and app._coord_offset is not None:
@@ -75,7 +80,10 @@ class NavigationMixin:
         position = app._to_amap_fast(lng, lat)
         outputs = app.navigator.update(position[0], position[1], acc)
         new_step = app.navigator.position.step if app.navigator.position else None
-        if previous_step != new_step:
+        # Directions for a step are obsolete once the user is on another one. The first fix on a
+        # new route has no step before it: discarding then cut "navigation started" and "off
+        # route, rerouting" short, and removed what the new route had to say first.
+        if previous_step is not None and previous_step != new_step:
             app.last_nav = None
             app.arbiter.discard_navigation()
         app._handle_nav_outputs(outputs)
@@ -205,7 +213,12 @@ class NavigationMixin:
             app.logbook.write("nav", event="route", steps=len(route.steps), distance=route.distance_m)
             if route.uses_alternative:
                 app.say("walk_route_alternative", Priority.SYSTEM)
-            app._handle_nav_outputs([] if reroute else outputs)
+            # A user who left the route needs to hear at once which way the new one goes. At the
+            # start the first instruction follows "navigation started": without a confirmed
+            # heading the arbiter turns it into "stop and align", and the K1 press that confirms
+            # the heading then repeats it instead of answering "no current instruction".
+            app._handle_nav_outputs(app.navigator.rerouted() if reroute
+                                    else outputs + app.navigator.first_instruction())
 
         app._jobs.put(apply)
 

@@ -1,0 +1,386 @@
+{
+ "_source": "openrouteservice.org answers of 2026-11-24, trimmed. Map data (c) OpenStreetMap contributors, ODbL.",
+ "route": {
+  "type": "FeatureCollection",
+  "features": [
+   {
+    "type": "Feature",
+    "geometry": {
+     "type": "LineString",
+     "coordinates": [
+      [
+       114.172838,
+       22.336436
+      ],
+      [
+       114.173491,
+       22.335844
+      ],
+      [
+       114.173684,
+       22.336018
+      ],
+      [
+       114.173814,
+       22.336135
+      ],
+      [
+       114.173916,
+       22.336231
+      ],
+      [
+       114.174062,
+       22.336367
+      ],
+      [
+       114.174091,
+       22.336395
+      ],
+      [
+       114.174147,
+       22.336447
+      ],
+      [
+       114.17457,
+       22.336765
+      ],
+      [
+       114.174597,
+       22.336787
+      ],
+      [
+       114.174811,
+       22.336899
+      ],
+      [
+       114.17499,
+       22.336993
+      ],
+      [
+       114.17501,
+       22.337003
+      ],
+      [
+       114.175208,
+       22.337107
+      ],
+      [
+       114.175269,
+       22.337225
+      ],
+      [
+       114.175285,
+       22.337237
+      ],
+      [
+       114.175339,
+       22.337272
+      ],
+      [
+       114.175722,
+       22.337466
+      ],
+      [
+       114.175895,
+       22.337177
+      ],
+      [
+       114.175917,
+       22.337177
+      ],
+      [
+       114.175927,
+       22.337195
+      ],
+      [
+       114.175866,
+       22.337303
+      ],
+      [
+       114.175878,
+       22.337325
+      ],
+      [
+       114.175901,
+       22.337318
+      ],
+      [
+       114.176295,
+       22.337309
+      ],
+      [
+       114.17632,
+       22.337303
+      ],
+      [
+       114.17635,
+       22.337265
+      ],
+      [
+       114.176325,
+       22.337168
+      ],
+      [
+       114.176294,
+       22.337085
+      ],
+      [
+       114.17629,
+       22.337066
+      ],
+      [
+       114.176271,
+       22.337004
+      ],
+      [
+       114.176107,
+       22.337013
+      ]
+     ]
+    },
+    "properties": {
+     "summary": {
+      "distance": 545.2,
+      "duration": 392.5
+     },
+     "segments": [
+      {
+       "distance": 545.2,
+       "duration": 392.5,
+       "steps": [
+        {
+         "distance": 94.1,
+         "duration": 67.7,
+         "instruction": "向 东南 前进",
+         "name": "-",
+         "type": 11,
+         "way_points": [
+          0,
+          1
+         ]
+        },
+        {
+         "distance": 46.3,
+         "duration": 33.4,
+         "instruction": "向左转",
+         "name": "-",
+         "type": 0,
+         "way_points": [
+          1,
+          3
+         ]
+        },
+        {
+         "distance": 180.9,
+         "duration": 130.2,
+         "instruction": "继续 直行",
+         "name": "-",
+         "type": 6,
+         "way_points": [
+          3,
+          13
+         ]
+        },
+        {
+         "distance": 126.0,
+         "duration": 90.7,
+         "instruction": "向左转",
+         "name": "-",
+         "type": 12,
+         "way_points": [
+          13,
+          22
+         ]
+        },
+        {
+         "distance": 81.1,
+         "duration": 58.4,
+         "instruction": "向右转",
+         "name": "-",
+         "type": 1,
+         "way_points": [
+          22,
+          30
+         ]
+        },
+        {
+         "distance": 16.8,
+         "duration": 12.1,
+         "instruction": "向右转",
+         "name": "-",
+         "type": 1,
+         "way_points": [
+          30,
+          31
+         ]
+        },
+        {
+         "distance": 0.0,
+         "duration": 0.0,
+         "instruction": "到达你的目的地, 在左边",
+         "name": "-",
+         "type": 10,
+         "way_points": [
+          31,
+          31
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "stations": {
+  "type": "FeatureCollection",
+  "features": [
+   {
+    "type": "Feature",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      114.165759,
+      22.336439
+     ]
+    },
+    "properties": {
+     "osm_id": 1023823067,
+     "osm_type": 2,
+     "distance": 588.57118842,
+     "category_ids": {
+      "610": {
+       "category_name": "station",
+       "category_group": "transport"
+      }
+     },
+     "osm_tags": {
+      "name": "白田 Pak Tin"
+     }
+    }
+   },
+   {
+    "type": "Feature",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      114.175211,
+      22.336686
+     ]
+    },
+    "properties": {
+     "osm_id": 11016144901,
+     "osm_type": 1,
+     "distance": 650.23951147,
+     "category_ids": {
+      "610": {
+       "category_name": "station",
+       "category_group": "transport"
+      }
+     },
+     "osm_tags": {
+      "name": "九龍塘（又一城） Kowloon Tong (Festival Walk)"
+     }
+    }
+   },
+   {
+    "type": "Feature",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      114.175859,
+      22.337002
+     ]
+    },
+    "properties": {
+     "osm_id": 1634974083,
+     "osm_type": 1,
+     "distance": 688.82015238,
+     "category_ids": {
+      "610": {
+       "category_name": "station",
+       "category_group": "transport"
+      }
+     },
+     "osm_tags": {
+      "name": "九龍塘 Kowloon Tong",
+      "wheelchair": "yes"
+     }
+    }
+   },
+   {
+    "type": "Feature",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      114.176898,
+      22.336822
+     ]
+    },
+    "properties": {
+     "osm_id": 1360643613,
+     "osm_type": 2,
+     "distance": 792.99419208,
+     "category_ids": {
+      "610": {
+       "category_name": "station",
+       "category_group": "transport"
+      }
+     },
+     "osm_tags": {
+      "wheelchair": "yes",
+      "name": "九龍塘 Kowloon Tong"
+     }
+    }
+   },
+   {
+    "type": "Feature",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      114.168883,
+      22.331899
+     ]
+    },
+    "properties": {
+     "osm_id": 816466449,
+     "osm_type": 2,
+     "distance": 904.3742632,
+     "category_ids": {
+      "610": {
+       "category_name": "station",
+       "category_group": "transport"
+      }
+     },
+     "osm_tags": {
+      "name": "石硤尾 Shek Kip Mei",
+      "wheelchair": "yes"
+     }
+    }
+   }
+  ]
+ },
+ "named": {
+  "type": "FeatureCollection",
+  "features": [
+   {
+    "type": "Feature",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      114.175523,
+      22.337228
+     ]
+    },
+    "properties": {
+     "id": "way/186845719",
+     "gid": "openstreetmap:venue:way/186845719",
+     "layer": "venue",
+     "name": "九龍塘站",
+     "label": "九龍塘站, 香港, CW, 香港",
+     "distance": 0.647
+    }
+   }
+  ]
+ }
+}

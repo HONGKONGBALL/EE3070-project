@@ -14,7 +14,7 @@ from starlette.responses import Response
 
 from ..app_types import ControlResult, SelectionResult, Status, TextResult
 from .access import DiagnosticsAccess
-from .schemas import ControlRequest, DestinationSelection, Fix, ScenarioRequest, SpokenText
+from .schemas import ButtonPress, ControlRequest, DestinationSelection, Fix, ScenarioRequest, SpokenText
 
 STATIC: Final = Path(__file__).parent / "static"
 ASSETS: Final = frozenset({"dashboard.css", "dashboard.js", "dashboard-render.js", "dashboard-dom.js", "dashboard-replay.js"})
@@ -31,6 +31,7 @@ class Controller(Protocol):
     def on_destination_text(self, text: str) -> TextResult | Mapping[str, JsonValue]: ...
     def select_destination(self, search_id: str, candidate_id: str) -> SelectionResult: ...
     def enqueue_control(self, action: str) -> ControlResult | Mapping[str, JsonValue]: ...
+    def press_button(self, button: str, kind: str) -> Mapping[str, JsonValue]: ...
     def enqueue_scenario(self, name: str) -> Mapping[str, JsonValue]: ...
     def camera_frame(self) -> bytes | None: ...
 
@@ -144,6 +145,12 @@ def create_app(
     def control(body: ControlRequest, request: Request) -> ControlResult | Mapping[str, JsonValue]:
         access.require_control(request)
         return ctrl.enqueue_control(body.action)
+
+    @app.post("/api/button", response_model=None)
+    def button(body: ButtonPress, request: Request) -> Mapping[str, JsonValue]:
+        # A key press without the Pico: for bench checks, and as a fallback when a switch fails.
+        access.require_control(request)
+        return ctrl.press_button(body.button, body.kind)
 
     @app.post("/api/sim/scenario")
     def scenario(body: ScenarioRequest, request: Request) -> Mapping[str, JsonValue]:

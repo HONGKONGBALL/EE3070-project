@@ -6,15 +6,16 @@ from typing import Protocol
 
 
 SAFETY_QUERY = re.compile(
-    r"\b(?:safe|okay|ok) (?:for me )?to (?:cross|walk|go|enter|proceed|continue|keep walking)\b"
-    r"|\b(?:can|could|should|may) i (?:cross|walk|go|enter|proceed|continue|keep walking)\b"
+    r"\b(?:safe|okay|ok) (?:for me )?to (?:cross|walk|go|enter|move|step|proceed|continue|keep walking)\b"
+    r"|\b(?:can|could|should|may) i (?:cross|walk|go|enter|move|step|proceed|continue|keep walking)\b"
     r"|\b(?:is|does) (?:the|this|that|my) (?:way|path|route|crossing|walkway|hallway|doorway)\b[^?]{0,40}"
     r"\b(?:safe|clear|passable)\b"
-    r"|\bam i clear to (?:cross|walk|go|enter|proceed)\b"
+    r"|\bam i clear to (?:cross|walk|go|enter|move|step|proceed)\b"
     # 前面可以走吗 / 能不能过去 / 这条路走得通吗 / 前面有没有障碍
     r"|(?:能不能|可不可以|可以|能否|能)(?:直接|继续|往前|向前|直|再){0,3}(?:走|过去|过吗|过马路|通过|前进|通行)"
     r"|走得通|走得了|过得去|安全吗|安不安全|有没有障碍|有障碍吗|挡(?:住|着|路)"
 )
+CONCERN_QUERY = re.compile(r"\b(?:obstacles?|watch out|anything unusual)\b", re.I)
 
 
 @dataclass(frozen=True)
@@ -60,9 +61,12 @@ def route_command(text):
     if key in {"stop navigation", "cancel navigation", "停止导航", "取消导航"}:
         return "stop", None
     if key in {"what's my next turn", "whats my next turn", "what is my next turn", "my next turn", "next turn",
-               "下一步怎么走"}:
+               "下一步怎么走"} or re.fullmatch(r"(?:下一步|接下来)(?:怎么走|往哪走?|去哪|该怎么走)[啊呀呢]?", key):
         return "next", None
-    if key in {"where am i", "how far to my destination", "how far is my destination", "我在哪里", "离目的地还有多远"}:
+    # Only about the route as a whole: "椅子还有多远" stays a question about the view.
+    if (key in {"where am i", "how far to my destination", "how far is my destination", "我在哪里", "离目的地还有多远"}
+            or re.fullmatch(r"(?:我|我们|现在)?(?:离|距离|到)?(?:目的地|终点)?"
+                            r"(?:还有多远|还要走多[久远]|还要多久|多久能?到|快到了吗|走到哪了)[啊呀呢吗]?", key)):
         return "status", None
     if re.fullmatch(r"(?:(?:what's|what is) (?:my|the) )?(?:navigation|route) status", key):
         return "status", None

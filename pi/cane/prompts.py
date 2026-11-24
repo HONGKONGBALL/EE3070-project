@@ -120,10 +120,15 @@ def destination_prompt_id(dest_id: str) -> str:
 
 
 def distance_clip(distance_m: float) -> str:
-    """Nearest bucket at or below the distance (never over-promise)."""
+    """The largest bucket that is no more than 15% above the distance.
+
+    A turn is announced on the first fix under a threshold, so at 50 m the distance is 49 or 48.
+    Rounding down alone called that "30 m", which sends a user who counts steps into the wrong
+    opening. A longer distance than the real one is still never promised by more than 15%.
+    """
     best = DISTANCE_BUCKETS_M[0]
     for b in DISTANCE_BUCKETS_M:
-        if b <= distance_m:
+        if b <= distance_m * 1.15:
             best = b
     return f"dist_{best}"
 

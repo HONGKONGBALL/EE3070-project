@@ -97,11 +97,16 @@ class Destination:
 @dataclass
 class NavCfg:
     enabled: bool = True
+    # amap: the mainland, GCJ-02. ors (openrouteservice) or google: Hong Kong and abroad, WGS-84;
+    # coord_mode is then ignored.
+    provider: str = "amap"
     coord_mode: str = "amap_api"
     city: str = ""
     announce_m: list[float] = field(default_factory=lambda: [50.0, 20.0, 8.0])
     arrive_m: float = 8.0
     offroute_m: float = 25.0
+    # Walking this far back along the route gets a "turn around" prompt.
+    wrong_way_m: float = 20.0
     read_route_with_tts: bool = False
     destinations: list[Destination] = field(default_factory=list)
     provider_coordinates_verified: bool = False
@@ -140,11 +145,15 @@ class Secrets:
     """Read from the environment only. repr() never shows values."""
 
     amap_key: str | None = None
+    google_maps_key: str | None = None
+    ors_key: str | None = None
     phone_token: str | None = None
 
     def __repr__(self) -> str:  # never leak secrets into logs
         return (
             f"Secrets(amap_key={'set' if self.amap_key else 'unset'}, "
+            f"google_maps_key={'set' if self.google_maps_key else 'unset'}, "
+            f"ors_key={'set' if self.ors_key else 'unset'}, "
             f"phone_token={'set' if self.phone_token else 'unset'})"
         )
 
@@ -153,6 +162,8 @@ class Secrets:
         env = os.environ if env is None else env
         return cls(
             amap_key=env.get("AMAP_KEY") or None,
+            google_maps_key=env.get("GOOGLE_MAPS_KEY") or None,
+            ors_key=env.get("ORS_KEY") or None,
             phone_token=env.get("CANE_PHONE_TOKEN") or None,
         )
 
@@ -208,6 +219,8 @@ def load_config(path: str | Path | None = None, env: dict[str, str] | None = Non
         raise ValueError(f"general.language must be one of {LANGUAGES}")
     if cfg.tfmini.role not in ("ground", "front"):
         raise ValueError("tfmini.role must be 'ground' or 'front'")
+    if cfg.nav.provider not in ("amap", "ors", "google"):
+        raise ValueError("nav.provider must be amap, ors or google")
     if cfg.nav.coord_mode not in ("amap_api", "offline_gcj02", "none"):
         raise ValueError("nav.coord_mode must be amap_api, offline_gcj02 or none")
     cfg.secrets = Secrets.from_env(env)

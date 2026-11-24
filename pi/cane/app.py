@@ -27,7 +27,8 @@ from .config import Config, Destination
 from .hazard import HazardAssessor
 from .logbook import Logbook
 from .model import Direction, OutputRequest, Priority, SensorFrame
-from .nav.amap import AmapClient, RouteClient
+from .nav.amap import RouteClient
+from .nav.providers import map_client
 from .nav.navigator import Navigator, NavOutput
 from .pico_link import PicoLinkBase, SerialPicoLink, SimPicoLink
 from .power import PowerPolicy
@@ -92,8 +93,8 @@ class CaneApp(ControlsMixin, NavigationMixin, SensingMixin, VoiceMixin, StatusMi
         self.navigator = Navigator(cfg.nav)
         self.roughness = RoughnessClassifier()
         self.power = PowerPolicy()
-        if amap is None and cfg.nav.enabled and cfg.secrets.amap_key:
-            amap = AmapClient(cfg.secrets.amap_key)
+        if amap is None and cfg.nav.enabled:
+            amap = map_client(cfg)
         self.amap = amap
         self.imu = imu
         self.vision: VisionRunner | None = None
