@@ -511,3 +511,24 @@ def test_english_cane_gets_the_dialogue_once_k2_has_a_language(monkeypatch):
 def test_unknown_k2_language_is_refused(monkeypatch):
     with pytest.raises(ValueError, match="destination_language"):
         Harness(monkeypatch, config={**ZH, "destination_language": "fr"})
+
+
+def test_request_after_the_wake_phrase_follows_its_language_when_k2_takes_both(monkeypatch):
+    navigation = FakeNavigation([station(1, 450)])
+    replies = ScriptedGrok({"action": "search", "query": "Festival Walk"})
+    said = []
+    with Harness(monkeypatch, navigation=navigation, config={**ZH, "destination_language": "auto"},
+                 chat=replies.chat, detector=SaidOnce("TAKE ME TO FESTIVAL WALK")) as h:
+        monkeypatch.setattr(h.assistant, "_speak",
+                            lambda text, **kwargs: said.append((text, h.assistant._reply_language)) or True)
+        assert h.idle.wait(3)
+    assert said == [("I found one place. Destination: Station 1, about 450 metres. Press K1 to start.", "en")]
+    # A Mandarin cane without the setting answers the same request in Mandarin, as before.
+    said.clear()
+    with Harness(monkeypatch, navigation=FakeNavigation([station(1, 450)]), config=ZH,
+                 chat=ScriptedGrok({"action": "search", "query": "Festival Walk"}).chat,
+                 detector=SaidOnce("TAKE ME TO FESTIVAL WALK")) as h:
+        monkeypatch.setattr(h.assistant, "_speak",
+                            lambda text, **kwargs: said.append((text, h.assistant._reply_language)) or True)
+        assert h.idle.wait(3)
+    assert said == [("只找到一个地点。目的地，Station 1，约450米。按K1开始导航。", "zh")]

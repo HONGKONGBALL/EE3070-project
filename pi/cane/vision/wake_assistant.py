@@ -726,6 +726,9 @@ class WakeAssistant:
         # After the wake phrase the same turn serves both keys: a place goes to the K2 dialogue,
         # anything else is a K4 question. A safety question always stays a K4 question.
         voice = kind == "wake" and self.dialogue is not None
+        if voice and self.destination_language == "auto":
+            # With K2 taking both languages, a request after the wake phrase is answered in its own too.
+            self.turn_language = self._destination_reply_language(question)
         if self.cloud and action in {"next", "status"} and hasattr(self.navigation, "progress"):
             # "What next" and "how far" are answered from the route itself, for K4 and for the wake phrase.
             answer = self._route_answer()
