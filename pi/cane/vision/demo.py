@@ -64,6 +64,7 @@ async function audioRequest(path,body){
 }
 async function loadOutputs(){
  try{const result=await audioRequest('/audio-outputs');output.replaceChildren();
+ output.append(new Option('System default', ''));
  for(const device of result.outputs){const option=document.createElement('option');option.value=device.target;option.textContent=`${device.name} (${device.transport})`;output.append(option)}
  if(result.target)output.value=result.target;
  audioEnabled.checked=result.enabled;
