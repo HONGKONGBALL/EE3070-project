@@ -229,7 +229,8 @@ def build(args, work):
     os.chdir(work)
     (work / "config").mkdir()
     (work / "logs").mkdir()
-    (work / "audio" / "navigation" / "cmn").mkdir(parents=True)
+    language = getattr(args, "language", "cmn")  # of the turn prompts: cmn or en
+    (work / "audio" / "navigation" / language).mkdir(parents=True)
     nav_toml = (repo / "config" / "config.example.toml").read_text("utf-8")
     nav_toml = nav_toml.replace('dir = "audio"', 'dir = "audio/navigation"').replace('role = "ground"', 'role = "front"')
     nav_toml = re.sub(r"(\[imu\]\nenabled = )true", r"\1false", nav_toml)
@@ -241,7 +242,8 @@ def build(args, work):
                     "--directory", "certs/pi-phone"], check=True, stdout=subprocess.DEVNULL,
                    env=dict(os.environ, PYTHONPATH=str(repo / "pi")))
     (work / "config" / "camera.unified.toml").write_text(
-        '[navigation]\nenabled = true\nconfig = "config/config.toml"\nphone_pair = "certs/pi-phone"\nlanguage = "cmn"\n', "utf-8")
+        '[navigation]\nenabled = true\nconfig = "config/config.toml"\nphone_pair = "certs/pi-phone"\n'
+        f'language = "{language}"\n', "utf-8")
 
     from unittest.mock import patch
 
@@ -252,7 +254,7 @@ def build(args, work):
     from cane.vision.speech import Speech
     from cane.vision.wake_assistant import WakeAssistant
 
-    PROMPTS.update({name: prompt.text("cmn") for name, prompt in CATALOG.items()})
+    PROMPTS.update({name: prompt.text(language) for name, prompt in CATALOG.items()})
     pico, texts = PicoFixture(), []
     patch("cane.pico_link.SerialPicoLink._open", lambda _self: pico).start()
     patch.object(wake_assistant, "shared_jpeg", lambda camera: (b"jpeg", 1, time.monotonic())).start()
@@ -260,7 +262,7 @@ def build(args, work):
     sink = audio.sink = Sink(audio._record_audio, texts, args.speech_speed)
     distance = PicoDistanceProvider("rehearsal-serial")
     navigation = PiNavigation({"enabled": True, "config": "config/config.toml", "phone_pair": "certs/pi-phone",
-                               "language": "cmn", "demo_assume_stationary": args.imu == "stationary"}, distance, audio)
+                               "language": language, "demo_assume_stationary": args.imu == "stationary"}, distance, audio)
     voice = Voice(texts)
     if os.environ.get("PSYCHE_API_KEY"):
         from cane.vision.assistant_provider import PsycheGrokVisionProvider

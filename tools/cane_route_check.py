@@ -495,6 +495,7 @@ def main():
     parser.add_argument("--seed", type=int, default=3070)
     parser.add_argument("--provider", choices=("amap", "ors", "google"), default="amap",
                         help="map service to check (its key: AMAP_KEY, ORS_KEY or GOOGLE_MAPS_KEY)")
+    parser.add_argument("--language", choices=("cmn", "en"), default="cmn", help="language of the turn prompts")
     parser.add_argument("--origin", type=lambda text: [float(part) for part in text.split(",")], metavar="LNG,LAT",
                         help="start point in WGS-84, as a phone reports it (default: the demo origin in Shenzhen)")
     parser.add_argument("--report", default=str(HERE.parent / "route-check" / "report.txt"),
@@ -506,7 +507,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="cane-route-check-") as directory:
         work = Path(directory).resolve()
         world = R.build(SimpleNamespace(repo=args.repo, address=None, imu="stationary", speech_speed=1.0,
-                                        speech_models=None, provider=args.provider), work)
+                                        speech_models=None, provider=args.provider, language=args.language), work)
         world.feeder = None
         recorder = Recorder(world)
         walker = Walker(world, recorder, args)
